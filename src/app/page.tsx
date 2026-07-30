@@ -1,16 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import CVBuilder from "../../../src/components/CVBuilder";; // Sesuaikan path dengan lokasi file Anda
 
-export default function Page() {
-  return (
-    <main className="min-h-screen bg-neutral-100">
-      {/* Panggil komponen di sini */}
-      <CVBuilder /> 
-    </main>
-  );
-}
 // Helper to convert base64 PCM16 audio data into a playable WAV Blob URL
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
@@ -48,6 +39,8 @@ function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
 
   return new Blob([buffer], { type: 'audio/wav' });
 }
+
+import CVBuilder from ".../src/components/CVBuilder";; // Sesuaikan path dengan lokasi file Anda
 
 export default function ElevateCVApp() {
   const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep" | "pitch-tts" | "ai-avatar">("cover-letter");
