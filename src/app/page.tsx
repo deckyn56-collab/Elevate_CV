@@ -689,13 +689,13 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
         <header className="text-center mb-8 space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium tracking-wide uppercase">
-            <span>✨ Elevate Your Career</span>
+            <span>✨ Lamaran Your Career</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white font-serif">
-            Elevate<span className="text-yellow-500">CV</span> 
+            Lamaran<span className="text-yellow-500">AI</span> 
           </h1>
           <p className="text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Buat surat lamaran kerja profesional instan dengan AI dan Analisis Skor ATS Anda.
+            Platform AI untuk membuat Surat Lamaran instan dengan AI dan Analisis Skor ATS.
           </p>
         </header>
 
