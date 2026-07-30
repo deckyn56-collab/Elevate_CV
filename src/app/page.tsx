@@ -1,7 +1,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import CVBuilder from "@/components/CVBuilder"; // Sesuaikan path dengan lokasi file Anda
 
+export default function Page() {
+  return (
+    <main className="min-h-screen bg-neutral-100">
+      {/* Panggil komponen di sini */}
+      <CVBuilder /> 
+    </main>
+  );
+}
 // Helper to convert base64 PCM16 audio data into a playable WAV Blob URL
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
