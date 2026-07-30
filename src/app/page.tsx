@@ -692,7 +692,7 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
             <span>✨ Generative AI Career Suite</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white font-serif">
-            Elevate<span className="text-yellow-500">CV</span> Pro
+            Elevate<span className="text-yellow-500">CV</span> 
           </h1>
           <p className="text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
             Asisten AI Karir Serba Ada: Generator Surat Lamaran, Analisis Skor ATS, Prep Interview STAR, Pitch Suara TTS & Foto Profil AI.
@@ -846,7 +846,7 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
                 {isGeneratingLetter ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 text-neutral-500 py-20">
                     <div className="w-8 h-8 border-4 border-yellow-600 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-sm font-medium">Gemini 3.6 Flash sedang menyusun surat lamaran terbaik untuk Anda...</p>
+                    <p className="text-sm font-medium">Sedang menulis surat lamaran profesional yang disesuaikan dengan data Anda...</p>
                   </div>
                 ) : outputLetter ? (
                   viewMode === "edit" ? (
@@ -872,7 +872,7 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10 pb-4 mb-6">
                 <div>
                   <h2 className="text-xl font-bold text-white font-serif">Analisis Kecocokan ATS & Kata Kunci CV</h2>
-                  <p className="text-xs text-neutral-400">Pemeriksaan instan kualifikasi CV Anda terhadap Deskripsi Pekerjaan target menggunakan Gemini 3.6 Flash Structured JSON.</p>
+                  <p className="text-xs text-neutral-400">Pemeriksaan instan kualifikasi CV Anda terhadap Deskripsi Pekerjaan target menggunakan analisis AI cerdas.</p>
                 </div>
                 <button onClick={handleAnalyzeAts} disabled={isAnalyzingAts} className="py-2.5 px-6 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 font-bold text-white text-sm rounded-xl transition-all shadow-lg disabled:opacity-50">
                   {isAnalyzingAts ? "Menganalisis Kualifikasi..." : "Jalankan Analisis ATS 📊"}
