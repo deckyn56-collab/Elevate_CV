@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import type { Metadata } from "next";
 
+export const metadata: Metadata = {
+  title: "ElevateCV - Surat Lamaran AI",
+  description: "Buat surat lamaran kerja profesional instan dengan AI.",
+};
 // Helper to convert base64 PCM16 audio data into a playable WAV Blob URL
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
@@ -689,13 +694,13 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
         <header className="text-center mb-8 space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium tracking-wide uppercase">
-            <span>✨ Generative AI Career Suite</span>
+            <span>✨ Elevate Your Career</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white font-serif">
             Elevate<span className="text-yellow-500">CV</span> 
           </h1>
           <p className="text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Asisten AI Karir Serba Ada: Generator Surat Lamaran dan Analisis Skor ATS.
+            Buat surat lamaran kerja profesional instan dengan AI dan Analisis Skor ATS Anda.
           </p>
         </header>
 
