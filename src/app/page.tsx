@@ -695,7 +695,7 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
             Elevate<span className="text-yellow-500">CV</span> 
           </h1>
           <p className="text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Asisten AI Karir Serba Ada: Generator Surat Lamaran, Analisis Skor ATS, Prep Interview STAR, Pitch Suara TTS & Foto Profil AI.
+            Asisten AI Karir Serba Ada: Generator Surat Lamaran dan Analisis Skor ATS.
           </p>
         </header>
 
