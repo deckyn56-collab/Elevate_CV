@@ -1,10 +1,5 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "ElevateCV - Surat Lamaran AI",
-  description: "Buat surat lamaran kerja profesional instan dengan AI.",
-};
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,7 +12,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
+export const metadata: Metadata = {
+  title: "ElevateCV - Surat Lamaran AI",
+  description: "Buat surat lamaran kerja profesional instan dengan AI.",
+};
 export default function RootLayout({
   children,
 }: Readonly<{
