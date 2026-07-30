@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "ElevateCV - Surat Lamaran AI",
-  description: "Buat surat lamaran kerja profesional instan dengan AI.",
-};
 // Helper to convert base64 PCM16 audio data into a playable WAV Blob URL
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
