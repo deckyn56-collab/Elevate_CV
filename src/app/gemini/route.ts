@@ -22,7 +22,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}?key=${apiKey}`;
+    // --- PERBAIKAN DI SINI (1 BARIS) ---
+    // Pisahkan nama model dari suffix ":generateContent"
+    const baseModel = modelEndpoint.replace(":generateContent", "");
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${baseModel}:generateContent?key=${apiKey}`;
 
     const response = await fetch(apiUrl, {
       method: "POST",
