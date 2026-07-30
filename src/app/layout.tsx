@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "ElevateCV - Surat Lamaran AI",
+  description: "Buat surat lamaran kerja profesional instan dengan AI.",
+};
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
