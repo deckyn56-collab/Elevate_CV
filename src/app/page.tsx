@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import CVBuilder from "@/components/CVBuilder"; // Sesuaikan path dengan lokasi file Anda
+import CVBuilder from "../../../src/components/CVBuilder";; // Sesuaikan path dengan lokasi file Anda
 
 export default function Page() {
   return (
