@@ -1,53 +1,94 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic"; // WAJIB: Mencegah Next.js melakukan caching pada API ini
+// 1. Mencegah Next.js melakukan caching statis pada route API ini
+//    (Sangat penting untuk API yang dinamis seperti AI)
+export const dynamic = "force-dynamic";
 
 export async function POST(request) {
   try {
-    // 1. Mengambil API Key dari Environment Variables (Vercel)
+    // 2. Ambil API Key
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
+      console.error("❌ GEMINI_API_KEY tidak ditemukan di environment variable.");
       return NextResponse.json(
-        { error: "Server Error: GEMINI_API_KEY belum dikonfigurasi di Environment Variables Vercel." },
+        { 
+          error: "Konfigurasi server tidak lengkap. Pastikan GEMINI_API_KEY sudah diatur di Vercel." 
+        },
         { status: 500 }
       );
     }
 
-    const body = await request.json();
-    const { modelEndpoint, payload } = body;
-
-    if (!modelEndpoint || !payload) {
+    // 3. Parsing body request dengan aman (menangkal JSON invalid)
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
       return NextResponse.json(
-        { error: "Permintaan tidak valid. Endpoint atau payload tidak ditemukan." },
+        { error: "Format request bukan JSON yang valid." },
         { status: 400 }
       );
     }
 
+    const { modelEndpoint, payload } = body;
+
+    // 4. Validasi input
+    if (!modelEndpoint || !payload) {
+      return NextResponse.json(
+        { error: "Permintaan tidak valid. 'modelEndpoint' dan 'payload' wajib diisi." },
+        { status: 400 }
+      );
+    }
+
+    // 5. Construct URL API Gemini
+    //    (Pastikan endpoint sesuai dengan model yang valid, contoh: gemini-1.5-flash)
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelEndpoint}?key=${apiKey}`;
 
+    // 6. Lakukan request ke Google Gemini
     const response = await fetch(apiUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json" 
+      },
       body: JSON.stringify(payload),
+      // OPSIONAL: Tambahkan timeout agar request tidak menggantung selamanya
+      // signal: AbortSignal.timeout(15000) // 15 detik timeout
     });
 
-    const contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
+    // 7. Handling Response (JSON vs Non-JSON)
+    const contentType = response.headers.get("content-type") || "";
+    
+    if (contentType.includes("application/json")) {
+      // Jika respons JSON (Sukses atau Error dari Google)
       const data = await response.json();
+      
+      // Kembalikan respons dengan status HTTP yang sesuai
       return NextResponse.json(data, { status: response.status });
     } else {
+      // Jika Google mengembalikan HTML/Text (misal API Key salah, atau model tidak tersedia)
       const text = await response.text();
+      
+      // Log error di server untuk debugging
+      console.error("❌ Google mengembalikan non-JSON:", text.slice(0, 200));
+      
       return NextResponse.json(
-        { error: `Respon Google Gemini bukan JSON (Status ${response.status}): ${text.slice(0, 150)}` },
-        { status: response.status || 500 }
+        { 
+          error: `Layanan AI merespons dengan format tidak valid (Status ${response.status}).`,
+          detail: text.slice(0, 150) 
+        },
+        { status: response.status || 502 } // 502 Bad Gateway
       );
     }
 
   } catch (error) {
-    console.error("API Error:", error);
+    // 8. Handling Global Error (Network error, dll)
+    console.error("🔥 Server API Error:", error);
+    
     return NextResponse.json(
-      { error: error?.message || "Terjadi kesalahan pada server internal." },
+      { 
+        error: "Terjadi kesalahan pada server internal.", 
+        message: error?.message || "Unknown error" 
+      },
       { status: 500 }
     );
   }
