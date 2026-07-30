@@ -4,7 +4,7 @@ import "./globals.css";
 
 // --- METADATA HARUS BERADA DI PALING ATAS (SEBELUM FONT) ---
 export const metadata: Metadata = {
-  title: "ElevateCV - Surat Lamaran AI",
+  title: "LamaranAI - Surat Lamaran Kerja Otomatis dengan AI",
   description: "Buat surat lamaran kerja profesional instan dengan AI.",
 };
 
