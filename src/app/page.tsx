@@ -604,7 +604,7 @@ PENTING:
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-1.5-flash:generateContent",
+          modelEndpoint: "gemini-3.6-flash:generateContent",
           payload: { contents: [{ parts: [{ text: prompt }] }] }
         })
       });
