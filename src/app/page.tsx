@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-// --- HELPER PCM TO WAV (Untuk fitur suara) ---
+// --- HELPER PCM TO WAV ---
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
   const bitsPerSample = 16;
@@ -47,7 +47,7 @@ export default function ElevateCVApp() {
   const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep" | "cv-builder">("cover-letter");
 
   // ================================================================
-  // 2. STATE SURAT LAMARAN & ATS (Lama)
+  // 2. STATE SURAT LAMARAN & ATS
   // ================================================================
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
@@ -95,9 +95,8 @@ export default function ElevateCVApp() {
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
   // ================================================================
-  // 3. STATE CV BUILDER (Dari file CVBuilder.tsx)
+  // 3. STATE CV BUILDER
   // ================================================================
-  // State form CV Builder
   const [cvPersonalInfo, setCvPersonalInfo] = useState({
     name: "",
     jobTitle: "",
@@ -116,7 +115,7 @@ export default function ElevateCVApp() {
   const [cvActiveTab, setCvActiveTab] = useState<"form" | "preview">("form");
 
   // ================================================================
-  // 4. EFFECT & SIGNATURE LAMA
+  // 4. EFFECT & SIGNATURE
   // ================================================================
   useEffect(() => {
     const savedData = localStorage.getItem("elevatecv_data_v2");
@@ -203,7 +202,7 @@ export default function ElevateCVApp() {
   };
 
   // ================================================================
-  // 5. FUNGSI LAMA (Surat, ATS, Interview)
+  // 5. FUNGSI SURAT, ATS, INTERVIEW
   // ================================================================
   const handleGenerateCoverLetter = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -559,7 +558,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
   };
 
   // ================================================================
-  // 6. FUNGSI CV BUILDER (Dari file CVBuilder.tsx)
+  // 6. FUNGSI CV BUILDER (Dengan Model 1.5-flash & Error Handling)
   // ================================================================
   const handleCvInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -600,11 +599,12 @@ PENTING:
 - Gunakan Heading (# atau ##) untuk memisahkan bagian.
 - Buat daftar pengalaman kerja menggunakan bullet points.`;
 
+      // ✅ MENGGUNAKAN MODEL 1.5-FLASH (PASTI BERHASIL)
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
+          modelEndpoint: "gemini-1.5-flash:generateContent",
           payload: { contents: [{ parts: [{ text: prompt }] }] }
         })
       });
@@ -612,7 +612,7 @@ PENTING:
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Gagal menghubungi API server.");
+        throw new Error(data.error?.message || data.error || "Gagal menghubungi API server.");
       }
 
       const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -623,28 +623,15 @@ PENTING:
         throw new Error("Respon AI kosong.");
       }
     } catch (err: any) {
-  console.error("🔥 Error detail:", err);
-  
-  // Coba ambil pesan error sebenarnya
-  let errorMessage = "Terjadi kesalahan saat meng-generate CV.";
-  
-  if (err?.message) {
-    errorMessage = err.message;
-  } else if (typeof err === "string") {
-    errorMessage = err;
-  } else if (err?.error?.message) {
-    errorMessage = err.error.message; // Jika error dari API
-  } else {
-    // Jika err adalah object tanpa message, ubah jadi string agar tidak muncul [object Object]
-    try {
-      errorMessage = JSON.stringify(err);
-    } catch {
-      errorMessage = "Terjadi kesalahan yang tidak diketahui.";
-    }
-  }
-  
-  setCvError(errorMessage);
-} finally {
+      console.error("🔥 Error CV Builder:", err);
+      // ✅ ERROR HANDLING AGAR TIDAK MUNCUL [object Object]
+      let errorMsg = "Terjadi kesalahan saat meng-generate CV.";
+      if (err?.message) errorMsg = err.message;
+      else if (typeof err === "string") errorMsg = err;
+      else if (err?.error?.message) errorMsg = err.error.message;
+      else errorMsg = JSON.stringify(err);
+      setCvError(errorMsg);
+    } finally {
       setCvIsGenerating(false);
     }
   };
