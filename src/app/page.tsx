@@ -623,9 +623,28 @@ PENTING:
         throw new Error("Respon AI kosong.");
       }
     } catch (err: any) {
-      console.error(err);
-      setCvError(err.message || "Terjadi kesalahan saat meng-generate CV.");
-    } finally {
+  console.error("🔥 Error detail:", err);
+  
+  // Coba ambil pesan error sebenarnya
+  let errorMessage = "Terjadi kesalahan saat meng-generate CV.";
+  
+  if (err?.message) {
+    errorMessage = err.message;
+  } else if (typeof err === "string") {
+    errorMessage = err;
+  } else if (err?.error?.message) {
+    errorMessage = err.error.message; // Jika error dari API
+  } else {
+    // Jika err adalah object tanpa message, ubah jadi string agar tidak muncul [object Object]
+    try {
+      errorMessage = JSON.stringify(err);
+    } catch {
+      errorMessage = "Terjadi kesalahan yang tidak diketahui.";
+    }
+  }
+  
+  setCvError(errorMessage);
+} finally {
       setCvIsGenerating(false);
     }
   };
