@@ -609,7 +609,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                     <button type="button" onClick={clearSignature} className="text-[11px] text-red-400 hover:underline">Hapus Canvas</button>
                   </div>
                   <div className="bg-white rounded-xl overflow-hidden h-[110px] w-full relative touch-none border border-neutral-300">
-                    <canvas ref={canvasRef} width={110} height={110} className="w-full h-full cursor-crosshair" onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} onTouchStart={startDrawing} onTouchMove={draw} onTouchEnd={stopDrawing} />
+                    <canvas ref={canvasRef} width={380} height={110} className="w-full h-full cursor-crosshair" onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} onTouchStart={startDrawing} onTouchMove={draw} onTouchEnd={stopDrawing} />
                     {!hasSignature && <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-xs italic">Goreskan tanda tangan Anda di sini</div>}
                   </div>
                   <p className="text-[11px] text-neutral-400 mt-1">Tanda tangan akan otomatis disisipkan di antara "Hormat saya," dan Nama Anda saat PDF dibuat.</p>
