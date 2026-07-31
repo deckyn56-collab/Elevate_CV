@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 
-// Helper to convert base64 PCM16 audio data into a playable WAV Blob URL
+// --- HELPER PCM TO WAV (Untuk fitur suara) ---
 function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   const numChannels = 1;
   const bitsPerSample = 16;
@@ -40,11 +40,15 @@ function pcmToWav(pcm16Data: Int16Array, sampleRate: number = 24000): Blob {
   return new Blob([buffer], { type: 'audio/wav' });
 }
 
-import CVBuilder from ".../src/components/CVBuilder";; // Sesuaikan path dengan lokasi file Anda
-
 export default function ElevateCVApp() {
-  const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep" | "pitch-tts" | "ai-avatar">("cover-letter");
+  // ================================================================
+  // 1. STATE UTAMA & NAVIGASI
+  // ================================================================
+  const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep" | "cv-builder">("cover-letter");
 
+  // ================================================================
+  // 2. STATE SURAT LAMARAN & ATS (Lama)
+  // ================================================================
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
   const [userAddress, setUserAddress] = useState("");
@@ -80,24 +84,40 @@ export default function ElevateCVApp() {
   }>>([]);
   const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
-  const [pitchScript, setPitchScript] = useState("");
-  const [isGeneratingPitch, setIsGeneratingPitch] = useState(false);
-  const [voice, setVoice] = useState("Zephyr");
-  const [isSynthesizingSpeech, setIsSynthesizingSpeech] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-
-  const [avatarPrompt, setAvatarPrompt] = useState("Professional corporate headshot of a friendly candidate in business attire, modern office background, studio lighting, highly detailed");
-  const [generatedAvatar, setGeneratedAvatar] = useState<string | null>(null);
-  const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
-
-  const [error, setError] = useState("");
-  const [copyStatus, setCopyStatus] = useState<string | null>(null);
-
+  // --- Canvas Signature ---
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasSignature, setHasSignature] = useState(false);
   const [signatureDataUrl, setSignatureDataUrl] = useState<string | null>(null);
 
+  // --- Global Error ---
+  const [error, setError] = useState("");
+  const [copyStatus, setCopyStatus] = useState<string | null>(null);
+
+  // ================================================================
+  // 3. STATE CV BUILDER (Dari file CVBuilder.tsx)
+  // ================================================================
+  // State form CV Builder
+  const [cvPersonalInfo, setCvPersonalInfo] = useState({
+    name: "",
+    jobTitle: "",
+    email: "",
+    phone: "",
+    location: "",
+    linkedin: "",
+  });
+  const [cvSummary, setCvSummary] = useState("");
+  const [cvExperience, setCvExperience] = useState("");
+  const [cvEducation, setCvEducation] = useState("");
+  const [cvSkills, setCvSkills] = useState("");
+  const [cvIsGenerating, setCvIsGenerating] = useState(false);
+  const [cvGeneratedCV, setCvGeneratedCV] = useState<string | null>(null);
+  const [cvError, setCvError] = useState("");
+  const [cvActiveTab, setCvActiveTab] = useState<"form" | "preview">("form");
+
+  // ================================================================
+  // 4. EFFECT & SIGNATURE LAMA
+  // ================================================================
   useEffect(() => {
     const savedData = localStorage.getItem("elevatecv_data_v2");
     if (savedData) {
@@ -182,7 +202,9 @@ export default function ElevateCVApp() {
     setSignatureDataUrl(null);
   };
 
-  // --- GENERATE SURAT LAMARAN (Menggunakan gemini-3.6-flash) ---
+  // ================================================================
+  // 5. FUNGSI LAMA (Surat, ATS, Interview)
+  // ================================================================
   const handleGenerateCoverLetter = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setError("");
@@ -237,7 +259,6 @@ Kembalikan HANYA teks lengkap surat lamaran tanpa tanda bintang markdown (*), ha
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // ✅ PERBAIKAN: Model teks terbaru
           modelEndpoint: "gemini-3.6-flash:generateContent",
           payload: { contents: [{ parts: [{ text: promptText }] }] }
         })
@@ -255,7 +276,6 @@ Kembalikan HANYA teks lengkap surat lamaran tanpa tanda bintang markdown (*), ha
     }
   };
 
-  // --- REFINE SURAT (Menggunakan gemini-3.6-flash) ---
   const handleRefineLetter = async (instruction: string) => {
     if (!outputLetter) return;
     setIsGeneratingLetter(true);
@@ -291,7 +311,6 @@ Pertahankan struktur surat lamaran resmi. Kembalikan teks surat lamaran saja tan
     }
   };
 
-  // --- ANALISIS ATS (Menggunakan gemini-3.6-flash) ---
   const handleAnalyzeAts = async () => {
     if (!jobDescription.trim() || !experience.trim()) {
       setError("Mohon isi Deskripsi Pekerjaan dan Pengalaman CV Anda terlebih dahulu.");
@@ -352,7 +371,6 @@ Berikan penilaian objektif dalam format JSON yang valid.`;
     }
   };
 
-  // --- INTERVIEW PREP (Menggunakan gemini-3.6-flash) ---
   const handleGenerateInterviewPrep = async () => {
     if (!jobTitle.trim()) {
       setError("Mohon isi Posisi yang Dilamar.");
@@ -410,150 +428,6 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
     }
   };
 
-  // --- GENERATE PITCH (Menggunakan gemini-3.6-flash) ---
-  const handleGeneratePitch = async () => {
-    setIsGeneratingPitch(true);
-    setError("");
-
-    try {
-      const promptText = `Buat naskah Elevator Pitch (perkenalan singkat 30-45 detik) untuk pelamar bernama ${name || "Pelamar"} yang melamar posisi ${jobTitle || "Posisi Target"} di ${company || "Perusahaan"}.
-Pengalaman/Keahlian: ${experience || "Memiliki keterampilan relevan dan semangat tinggi."}
-
-Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kembalikan naskah saja.`;
-
-      const response = await fetch("/api/gemini", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload: { contents: [{ parts: [{ text: promptText }] }] }
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal membuat pitch.");
-
-      const script = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setPitchScript(script);
-    } catch (err: any) {
-      setError(err.message || "Gagal membuat naskah pitch.");
-    } finally {
-      setIsGeneratingPitch(false);
-    }
-  };
-
-  // --- TTS (TETAP PAKAI gemini-2.0-flash-exp karena khusus suara) ---
-  const handleSynthesizePitchSpeech = async () => {
-    if (!pitchScript.trim()) {
-      setError("Buat atau ketik naskah pitch terlebih dahulu.");
-      return;
-    }
-
-    setIsSynthesizingSpeech(true);
-    setError("");
-    setAudioUrl(null);
-
-    try {
-      const payload = {
-        contents: [{
-          parts: [{ text: pitchScript }]
-        }],
-        generationConfig: {
-          responseModalities: ["AUDIO"],
-          speechConfig: {
-            voiceConfig: {
-              prebuiltVoiceConfig: {
-                voiceName: voice === "Zephyr" ? "Zephyr" : 
-                          voice === "Puck" ? "Puck" : 
-                          voice === "Kore" ? "Kore" : 
-                          voice === "Fenrir" ? "Fenrir" : "Aoede"
-              }
-            }
-          }
-        }
-      };
-
-      const response = await fetch("/api/gemini", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          // ✅ Model khusus suara (tetap pakai ini)
-          modelEndpoint: "gemini-2.0-flash-exp:generateContent",
-          payload
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal melakukan sintesis suara TTS.");
-
-      const part = data.candidates?.[0]?.content?.parts?.[0];
-      const base64Audio = part?.inlineData?.data;
-      const mimeType = part?.inlineData?.mimeType || "";
-
-      if (base64Audio) {
-        const binaryStr = window.atob(base64Audio);
-        const len = binaryStr.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryStr.charCodeAt(i);
-        }
-
-        const pcm16 = new Int16Array(bytes.buffer);
-        const matchRate = mimeType.match(/rate=(\d+)/);
-        const sampleRate = matchRate ? parseInt(matchRate[1], 10) : 24000;
-
-        const wavBlob = pcmToWav(pcm16, sampleRate);
-        const url = URL.createObjectURL(wavBlob);
-        setAudioUrl(url);
-      } else {
-        throw new Error("Respon audio dari Gemini TTS kosong.");
-      }
-    } catch (err: any) {
-      setError(err.message || "Terjadi masalah saat menghasilkan suara audio.");
-    } finally {
-      setIsSynthesizingSpeech(false);
-    }
-  };
-
-  // --- GENERATE AVATAR (TETAP PAKAI imagen-3.0-generate-001 karena khusus gambar) ---
-  const handleGenerateAvatar = async () => {
-    if (!avatarPrompt.trim()) return;
-    setIsGeneratingAvatar(true);
-    setError("");
-
-    try {
-      const payload = {
-        instances: [{ prompt: avatarPrompt }],
-        parameters: { sampleCount: 1 }
-      };
-
-      const response = await fetch("/api/gemini", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          // ✅ Model khusus gambar (tetap pakai ini)
-          modelEndpoint: "imagen-3.0-generate-001:predict",
-          payload
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal membuat foto profil AI.");
-
-      const base64Data = data.predictions?.[0]?.bytesBase64Encoded;
-      if (base64Data) {
-        setGeneratedAvatar(`data:image/png;base64,${base64Data}`);
-      } else {
-        throw new Error("Format gambar dari server tidak ditemukan.");
-      }
-    } catch (err: any) {
-      setError(err.message || "Gagal memproses gambar AI.");
-    } finally {
-      setIsGeneratingAvatar(false);
-    }
-  };
-
-  // --- EXPORT PDF ---
   const exportPDF = async () => {
     if (!outputLetter) return;
     try {
@@ -684,6 +558,261 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
     return <div className="space-y-1">{formattedElements}</div>;
   };
 
+  // ================================================================
+  // 6. FUNGSI CV BUILDER (Dari file CVBuilder.tsx)
+  // ================================================================
+  const handleCvInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCvPersonalInfo((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleGenerateCV = async () => {
+    setCvIsGenerating(true);
+    setCvError("");
+
+    try {
+      const prompt = `Anda adalah seorang ahli penulis Resume/CV berstandar ATS (Applicant Tracking System).
+Tugas Anda adalah merapikan, memoles, dan menyusun data berikut menjadi format CV Markdown yang profesional, kuat, dan menarik.
+Gunakan bahasa yang aktif dan berorientasi pada hasil (action-oriented).
+
+DATA PELAMAR:
+Nama: ${cvPersonalInfo.name || "[Nama Lengkap]"}
+Posisi Target: ${cvPersonalInfo.jobTitle || "[Posisi]"}
+Email: ${cvPersonalInfo.email || "[Email]"}
+Telepon: ${cvPersonalInfo.phone || "[Telepon]"}
+Lokasi: ${cvPersonalInfo.location || "[Lokasi]"}
+LinkedIn: ${cvPersonalInfo.linkedin || "Tidak ada"}
+
+RINGKASAN PROFIL:
+${cvSummary || "Belum diisi. Buatkan ringkasan singkat berdasarkan peran target."}
+
+PENGALAMAN KERJA:
+${cvExperience || "Belum diisi."}
+
+PENDIDIKAN:
+${cvEducation || "Belum diisi."}
+
+KEAHLIAN (SKILLS):
+${cvSkills || "Belum diisi."}
+
+PENTING:
+- Keluarkan HANYA teks Markdown murni (tanpa tag pembungkus seperti \`\`\`markdown).
+- Gunakan Heading (# atau ##) untuk memisahkan bagian.
+- Buat daftar pengalaman kerja menggunakan bullet points.`;
+
+      const response = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modelEndpoint: "gemini-1.5-flash:generateContent",
+          payload: { contents: [{ parts: [{ text: prompt }] }] }
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Gagal menghubungi API server.");
+      }
+
+      const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (aiText) {
+        setCvGeneratedCV(aiText);
+        setCvActiveTab("preview");
+      } else {
+        throw new Error("Respon AI kosong.");
+      }
+    } catch (err: any) {
+      console.error(err);
+      setCvError(err.message || "Terjadi kesalahan saat meng-generate CV.");
+    } finally {
+      setCvIsGenerating(false);
+    }
+  };
+
+  const exportCVPDF = async () => {
+    try {
+      if (!(window as any).jspdf) {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error("Gagal memuat library PDF."));
+          document.body.appendChild(script);
+        });
+      }
+
+      const { jsPDF } = (window as any).jspdf;
+      const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+      let cursorY = 20;
+      const marginLeft = 20;
+      const contentWidth = 170;
+
+      doc.setFontSize(22);
+      doc.setFont("helvetica", "bold");
+      doc.text(cvPersonalInfo.name || "NAMA LENGKAP", marginLeft, cursorY);
+      cursorY += 8;
+
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 100, 100);
+      doc.text(cvPersonalInfo.jobTitle || "Posisi Profesional", marginLeft, cursorY);
+      cursorY += 6;
+
+      doc.setFontSize(10);
+      doc.setTextColor(50, 50, 50);
+      const contactInfo = `${cvPersonalInfo.email} | ${cvPersonalInfo.phone} | ${cvPersonalInfo.location}`;
+      doc.text(contactInfo, marginLeft, cursorY);
+      cursorY += 10;
+
+      doc.setDrawColor(200, 200, 200);
+      doc.line(marginLeft, cursorY, 190, cursorY);
+      cursorY += 10;
+
+      doc.setTextColor(0, 0, 0);
+      const lines = cvGeneratedCV ? cvGeneratedCV.split("\n") : [];
+      
+      for (const line of lines) {
+        if (cursorY > 275) {
+          doc.addPage();
+          cursorY = 20;
+        }
+
+        const trimmedLine = line.trim();
+        
+        if (trimmedLine.startsWith("# ")) {
+          cursorY += 5;
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(14);
+          doc.text(trimmedLine.replace("# ", ""), marginLeft, cursorY);
+          cursorY += 8;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(11);
+        } else if (trimmedLine.startsWith("## ")) {
+          cursorY += 4;
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(12);
+          doc.text(trimmedLine.replace("## ", ""), marginLeft, cursorY);
+          cursorY += 7;
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(11);
+        } else if (trimmedLine.startsWith("* ") || trimmedLine.startsWith("- ")) {
+          doc.text("•", marginLeft + 2, cursorY);
+          const splitText = doc.splitTextToSize(trimmedLine.substring(2), contentWidth - 5);
+          doc.text(splitText, marginLeft + 6, cursorY);
+          cursorY += splitText.length * 6;
+        } else if (trimmedLine !== "") {
+          const splitText = doc.splitTextToSize(trimmedLine, contentWidth);
+          doc.text(splitText, marginLeft, cursorY);
+          cursorY += splitText.length * 6;
+        } else {
+          cursorY += 3;
+        }
+      }
+
+      const fileName = cvPersonalInfo.name ? `CV_${cvPersonalInfo.name.replace(/\s+/g, '_')}.pdf` : "CV_Profesional.pdf";
+      doc.save(fileName);
+    } catch (err: any) {
+      alert("Gagal mengekspor PDF: " + err.message);
+    }
+  };
+
+  // ================================================================
+  // 7. RENDER UI CV BUILDER
+  // ================================================================
+  const renderCVForm = () => (
+    <div className="space-y-6 animate-in fade-in duration-300">
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200">
+        <h3 className="text-lg font-bold text-neutral-800 mb-4 border-b pb-2">Informasi Pribadi</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Nama Lengkap</label>
+            <input type="text" name="name" value={cvPersonalInfo.name} onChange={handleCvInfoChange} placeholder="John Doe" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Posisi Target</label>
+            <input type="text" name="jobTitle" value={cvPersonalInfo.jobTitle} onChange={handleCvInfoChange} placeholder="Software Engineer" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Email</label>
+            <input type="email" name="email" value={cvPersonalInfo.email} onChange={handleCvInfoChange} placeholder="john@email.com" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Telepon / WA</label>
+            <input type="text" name="phone" value={cvPersonalInfo.phone} onChange={handleCvInfoChange} placeholder="08123456789" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Lokasi / Kota</label>
+            <input type="text" name="location" value={cvPersonalInfo.location} onChange={handleCvInfoChange} placeholder="Jakarta, Indonesia" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Profil LinkedIn (Opsional)</label>
+            <input type="text" name="linkedin" value={cvPersonalInfo.linkedin} onChange={handleCvInfoChange} placeholder="linkedin.com/in/johndoe" className="w-full p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-neutral-200 space-y-4">
+        <div>
+          <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Ringkasan Profil (Summary)</label>
+          <textarea rows={3} value={cvSummary} onChange={(e) => setCvSummary(e.target.value)} placeholder="Tuliskan 2-3 kalimat mengenai keahlian dan fokus karir Anda..." className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none transition-all" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Pengalaman Kerja</label>
+          <textarea rows={4} value={cvExperience} onChange={(e) => setCvExperience(e.target.value)} placeholder="Misal: Senior Developer di PT Tech (2020-2023) - Memimpin tim beranggotakan 5 orang..." className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none transition-all" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Pendidikan</label>
+          <textarea rows={2} value={cvEducation} onChange={(e) => setCvEducation(e.target.value)} placeholder="S1 Teknik Informatika - Universitas Indonesia (2016-2020)" className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none resize-none transition-all" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-neutral-500 uppercase mb-1">Keahlian (Skills)</label>
+          <input type="text" value={cvSkills} onChange={(e) => setCvSkills(e.target.value)} placeholder="React, Node.js, Project Management, SEO" className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderCVPreview = () => (
+    <div className="bg-white rounded-2xl shadow-lg border border-neutral-200 h-full min-h-[600px] flex flex-col overflow-hidden animate-in fade-in duration-300">
+      <div className="bg-neutral-50 border-b border-neutral-200 px-4 py-3 flex justify-between items-center">
+        <span className="text-sm font-semibold text-neutral-600">Dokumen CV (Format A4)</span>
+        <button 
+          onClick={exportCVPDF} 
+          disabled={!cvGeneratedCV}
+          className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-neutral-300 text-white text-xs font-bold rounded-md transition-colors shadow-sm"
+        >
+          📥 Unduh PDF
+        </button>
+      </div>
+      
+      <div className="flex-1 p-8 overflow-y-auto bg-neutral-100 flex justify-center">
+        <div className="bg-white w-full max-w-[210mm] min-h-[297mm] shadow-md p-10 font-serif text-neutral-800 break-words">
+          {cvGeneratedCV ? (
+            <div className="whitespace-pre-wrap text-sm leading-relaxed">
+              {cvGeneratedCV.split('\n').map((line, i) => {
+                if (line.startsWith('# ')) return <h1 key={i} className="text-2xl font-bold mt-4 mb-2">{line.replace('# ', '')}</h1>;
+                if (line.startsWith('## ')) return <h2 key={i} className="text-lg font-bold mt-4 mb-2 uppercase border-b border-neutral-300 pb-1">{line.replace('## ', '')}</h2>;
+                if (line.startsWith('* ') || line.startsWith('- ')) return <li key={i} className="ml-4 mb-1">{line.substring(2)}</li>;
+                if (line.trim() === '') return <br key={i} />;
+                return <p key={i} className="mb-1">{line}</p>;
+              })}
+            </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-neutral-400 space-y-4 pt-32">
+              <span className="text-5xl">📄</span>
+              <p className="text-sm">Isi formulir dan klik "Generate AI & Format CV" untuk melihat pratinjau.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // ================================================================
+  // 8. RENDER UTAMA APP
+  // ================================================================
   return (
     <main className="min-h-screen bg-[#050505] text-neutral-100 font-sans pb-16 selection:bg-yellow-500/30">
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-yellow-600/10 via-amber-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
@@ -691,13 +820,13 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
         <header className="text-center mb-8 space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium tracking-wide uppercase">
-            <span>✨ Lamaran Your Career</span>
+            <span>✨ LamaranAI</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-white font-serif">
             Lamaran<span className="text-yellow-500">AI</span> 
           </h1>
           <p className="text-neutral-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-            Platform AI untuk membuat Surat Lamaran instan dengan AI dan Analisis Skor ATS.
+            Platform AI untuk membuat Surat Lamaran, CV Profesional & Analisis Skor ATS.
           </p>
         </header>
 
@@ -708,18 +837,18 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
           </div>
         )}
 
+        {/* NAVIGASI TAB */}
         <div className="flex overflow-x-auto gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl mb-8 no-scrollbar backdrop-blur-md">
           {[
             { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
             { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
             { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" },
-            { id: "pitch-tts", label: "🎙️ Elevator Pitch & TTS", desc: "Suara AI Gemini" },
-            { id: "ai-avatar", label: "👤 Foto Profil AI", desc: "Imagen 4.0 Studio" }
+            { id: "cv-builder", label: "📄 CV Builder", desc: "AI Format & PDF" }
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex-1 min-w-[170px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
+              className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 text-white font-bold shadow-lg shadow-yellow-600/20"
                   : "text-neutral-400 hover:text-white hover:bg-white/5"
@@ -731,6 +860,9 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
           ))}
         </div>
 
+        {/* ========================================================== */}
+        {/* TAB SURAT LAMARAN */}
+        {/* ========================================================== */}
         {activeTab === "cover-letter" && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-5 space-y-6 bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
@@ -868,6 +1000,9 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
           </div>
         )}
 
+        {/* ========================================================== */}
+        {/* TAB ATS */}
+        {/* ========================================================== */}
         {activeTab === "ats-analyzer" && (
           <div className="space-y-6">
             <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
@@ -917,6 +1052,9 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
           </div>
         )}
 
+        {/* ========================================================== */}
+        {/* TAB INTERVIEW */}
+        {/* ========================================================== */}
         {activeTab === "interview-prep" && (
           <div className="space-y-6">
             <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
@@ -957,106 +1095,71 @@ Tuliskan dalam Bahasa Indonesia yang natural. Panjang sekitar 70-100 kata. Kemba
           </div>
         )}
 
-        {activeTab === "pitch-tts" && (
-          <div className="space-y-6">
-            <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl space-y-6">
-              <div className="border-b border-white/10 pb-4">
-                <h2 className="text-xl font-bold text-white font-serif">Elevator Pitch & Sintesis Suara Gemini TTS</h2>
-                <p className="text-xs text-neutral-400">Gunakan Gemini 2.0 Flash Exp untuk mendengarkan pelafalan perkenalan diri Anda secara lisan.</p>
+        {/* ========================================================== */}
+        {/* TAB CV BUILDER (Gabungan Langsung) */}
+        {/* ========================================================== */}
+        {activeTab === "cv-builder" && (
+          <div className="w-full animate-in fade-in duration-300">
+            <div className="max-w-7xl mx-auto p-4 sm:p-6 font-sans text-neutral-800 bg-neutral-900/40 border border-white/10 rounded-2xl backdrop-blur-xl">
+              {/* Header CV Builder */}
+              <div className="mb-8">
+                <h1 className="text-3xl font-extrabold text-indigo-900 tracking-tight">AI CV Builder Pro</h1>
+                <p className="text-neutral-500 mt-1">Susun resume profesional dengan bantuan AI Gemini dan langsung ekspor ke PDF berstandar ATS.</p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div className="md:col-span-7 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <label className="text-xs font-bold text-neutral-300 uppercase tracking-wider">Naskah Elevator Pitch (30-45 Detik)</label>
-                    <button onClick={handleGeneratePitch} disabled={isGeneratingPitch} className="text-xs text-yellow-400 hover:underline flex items-center gap-1">
-                      {isGeneratingPitch ? "Menyusun..." : "✨ Buatkan Naskah AI"}
+              {cvError && (
+                <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r-lg">
+                  <strong>Peringatan:</strong> {cvError}
+                </div>
+              )}
+
+              {/* Grid Layout */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <div className="lg:col-span-5 flex flex-col space-y-6">
+                  <div className="flex bg-neutral-200/50 p-1 rounded-xl">
+                    <button 
+                      onClick={() => setCvActiveTab("form")}
+                      className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${cvActiveTab === "form" ? "bg-white text-indigo-700 shadow-sm" : "text-neutral-500 hover:text-neutral-700"}`}
+                    >
+                      📝 Isi Data
+                    </button>
+                    <button 
+                      onClick={() => setCvActiveTab("preview")}
+                      className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all lg:hidden ${cvActiveTab === "preview" ? "bg-white text-indigo-700 shadow-sm" : "text-neutral-500 hover:text-neutral-700"}`}
+                    >
+                      👁️ Lihat Hasil
                     </button>
                   </div>
-                  <textarea rows={7} value={pitchScript} onChange={(e) => setPitchScript(e.target.value)} placeholder="Tuliskan naskah perkenalan diri di sini atau klik 'Buatkan Naskah AI'..." className="w-full bg-black/60 border border-neutral-700 rounded-xl p-4 text-sm text-white focus:border-yellow-500 outline-none resize-none leading-relaxed" />
-                </div>
 
-                <div className="md:col-span-5 bg-black/40 border border-white/10 rounded-xl p-5 space-y-5 flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <h3 className="text-sm font-bold text-yellow-400 border-b border-white/10 pb-2">Pilih Suara Narator AI</h3>
-                    <div>
-                      <label className="block text-xs text-neutral-400 mb-1.5">Model Suara Gemini Prebuilt</label>
-                      <select value={voice} onChange={(e) => setVoice(e.target.value)} className="w-full bg-neutral-900 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none cursor-pointer">
-                        <option value="Zephyr">Zephyr (Cerah & Jelas)</option>
-                        <option value="Puck">Puck (Energik & Antusias)</option>
-                        <option value="Kore">Kore (Tegas & Profesional)</option>
-                        <option value="Fenrir">Fenrir (Kuat & Berwibawa)</option>
-                        <option value="Aoede">Aoede (Hangat & Ramah)</option>
-                      </select>
+                  <div className={cvActiveTab === "form" ? "block" : "hidden lg:block"}>
+                    {renderCVForm()}
+                    <div className="mt-6">
+                      <button
+                        onClick={handleGenerateCV}
+                        disabled={cvIsGenerating || !cvPersonalInfo.name || !cvPersonalInfo.jobTitle}
+                        className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+                      >
+                        {cvIsGenerating ? (
+                          <>
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            Memproses dengan AI...
+                          </>
+                        ) : (
+                          <>
+                            ✨ Generate AI & Format CV
+                          </>
+                        )}
+                      </button>
+                      <p className="text-xs text-center text-neutral-400 mt-2">Pastikan Nama dan Posisi Target sudah terisi.</p>
                     </div>
-                    <button onClick={handleSynthesizePitchSpeech} disabled={isSynthesizingSpeech || !pitchScript.trim()} className="w-full py-3 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 font-bold text-white text-sm rounded-xl transition-all shadow-md disabled:opacity-50">
-                      {isSynthesizingSpeech ? "Mengonversi ke Suara..." : "🔊 Sintesis Suara Pitch"}
-                    </button>
                   </div>
-
-                  {audioUrl && (
-                    <div className="pt-3 border-t border-white/10 space-y-2">
-                      <span className="text-xs font-semibold text-green-400 flex items-center gap-1">✓ Audio Siap Diputar:</span>
-                      <audio controls src={audioUrl} className="w-full h-10 rounded-lg" />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "ai-avatar" && (
-          <div className="space-y-6">
-            <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl space-y-6">
-              <div className="border-b border-white/10 pb-4">
-                <h2 className="text-xl font-bold text-white font-serif">Foto Profil Karir Studio AI (Imagen 4.0)</h2>
-                <p className="text-xs text-neutral-400">Buat foto headshot profesional studio menggunakan model `imagen-3.0-generate-001`.</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                <div className="md:col-span-7 space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2">Prompt Deskripsi Foto Studio</label>
-                    <textarea rows={4} value={avatarPrompt} onChange={(e) => setAvatarPrompt(e.target.value)} className="w-full bg-black/60 border border-neutral-700 rounded-xl p-3.5 text-sm text-white focus:border-yellow-500 outline-none resize-none" />
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-xs text-neutral-500">Preset Prompt:</span>
-                    {[
-                      "Executive Corporate Male Headshot, black suit, studio neutral background",
-                      "Professional Corporate Female Headshot, blazer, soft studio lighting",
-                      "Tech Startup Founder headshot, modern office background, casual blazer"
-                    ].map((p, i) => (
-                      <button key={i} onClick={() => setAvatarPrompt(p)} className="text-[11px] bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1 rounded-md transition-colors">Preset #{i + 1}</button>
-                    ))}
-                  </div>
-                  <button onClick={handleGenerateAvatar} disabled={isGeneratingAvatar} className="w-full py-3 bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 font-bold text-white text-sm rounded-xl transition-all shadow-md disabled:opacity-50">
-                    {isGeneratingAvatar ? "Membuat Foto Studio AI..." : "🎨 Hasilkan Foto Studio AI"}
-                  </button>
                 </div>
 
-                <div className="md:col-span-5 flex flex-col items-center justify-center">
-                  <div className="w-64 h-64 rounded-2xl bg-black/60 border-2 border-dashed border-neutral-800 flex items-center justify-center overflow-hidden relative shadow-2xl">
-                    {isGeneratingAvatar ? (
-                      <div className="flex flex-col items-center space-y-2 text-yellow-500">
-                        <div className="w-8 h-8 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin" />
-                        <span className="text-xs font-medium">Memproses Render Imagen...</span>
-                      </div>
-                    ) : generatedAvatar ? (
-                      <img src={generatedAvatar} alt="AI Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="text-center p-4 text-neutral-500">
-                        <span className="text-3xl block mb-1">🖼️</span>
-                        <span className="text-xs">Foto profil AI akan muncul di sini</span>
-                      </div>
-                    )}
-                  </div>
-                  {generatedAvatar && (
-                    <a href={generatedAvatar} download="Foto_Profil_ElevateCV.png" className="mt-3 text-xs text-yellow-400 hover:underline font-semibold flex items-center gap-1">
-                      📥 Unduh Foto Profil
-                    </a>
-                  )}
+                <div className={`lg:col-span-7 ${cvActiveTab === "preview" ? "block" : "hidden lg:block"}`}>
+                  {renderCVPreview()}
                 </div>
+
               </div>
             </div>
           </div>
