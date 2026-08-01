@@ -774,13 +774,8 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-12 text-neutral-500 border border-dashed border-neutral-800 rounded-xl"><p className="text-sm font-medium">Klik "Buat Simulasi Wawancara" untuk memprediksi pertanyaan wawancara spesifik.</p></div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-    </main>
+              ) : <div className="text-center py-12 text-neutral-500 border border-dashed border-neutral-800 rounded-xl"><p className="text-sm font-medium">Klik "Buat Simulasi Wawancara" untuk memprediksi pertanyaan wawancara spesifik.</p></div>
+              }  
+      </main>
   );
 }
