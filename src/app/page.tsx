@@ -504,14 +504,15 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-b from-yellow-600/10 via-amber-500/5 to-transparent blur-3xl pointer-events-none -z-10" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
-        <div className="flex flex-col items-center gap-3 mb-2">
-  {/* Tambahkan logo di sini */}
-  <img 
-    src="favicon.png" 
-    alt="LamaranAI Logo" 
-    className="h-20 w-auto object-contain drop-shadow-md"
-  />
         <header className="text-center mb-8 space-y-2">
+          {/* LOGO DIPINDAHKAN KE DALAM HEADER */}
+          <div className="flex justify-center mb-2">
+            <img 
+              src="/favicon.png" 
+              alt="LamaranAI Logo" 
+              className="h-20 w-auto object-contain drop-shadow-md"
+            />
+          </div>
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 text-xs font-medium tracking-wide uppercase">
             <span>✨ LamaranAI</span>
           </div>
@@ -780,6 +781,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
             </div>
           </div>
         )}
-      </main>
-  )
-}`
+      </div>
+    </main>
+  );
+}
