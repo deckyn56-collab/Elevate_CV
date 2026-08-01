@@ -4,8 +4,8 @@ import "./globals.css";
 
 // --- METADATA HARUS BERADA DI PALING ATAS (SEBELUM FONT) ---
 export const metadata: Metadata = {
-  title: "LamaranAI - Surat Lamaran Kerja Otomatis dengan AI",
-  description: "Buat surat lamaran kerja profesional instan dengan AI.",
+  title: "LamaranAI - Buat Surat Lamaran & CV ATS Instan",
+  description: "Platform AI profesional untuk membuat surat lamaran kerja, analisis skor ATS, dan simulasi wawancara dengan metode STAR secara instan.",
 };
 
 const geistSans = Geist({
