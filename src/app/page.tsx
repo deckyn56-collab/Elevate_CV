@@ -782,4 +782,4 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
         )}
       </main>
   )
-}
+}`
