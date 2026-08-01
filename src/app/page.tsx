@@ -507,7 +507,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
         <div className="flex flex-col items-center gap-3 mb-2">
   {/* Tambahkan logo di sini */}
   <img 
-    src="/favicon.png" 
+    src="favicon.png" 
     alt="LamaranAI Logo" 
     className="h-20 w-auto object-contain drop-shadow-md"
   />
