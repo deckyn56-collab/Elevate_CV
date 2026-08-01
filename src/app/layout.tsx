@@ -26,8 +26,8 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="/favicon.png" sizes="16x16" />
+        {/* Favicon Logo Anda */}
+        <link rel="icon" type="image/png" href="/favicon.png" sizes="any" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
         {children}
