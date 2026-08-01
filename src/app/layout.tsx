@@ -28,6 +28,18 @@ export default function RootLayout({
       <head>
         {/* Favicon Logo Anda */}
         <link rel="icon" href="/favicon.ico" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBXP5LDFGH" />
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QBXP5LDFGH');
+      `
+    }}
+  />
+  />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
         {children}
