@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function ElevateCVApp() {
   // --- NAVIGASI UTAMA ---
-  const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep">("cover-letter");
+  const [activeTab, setActiveTab] = useState<"cover-letter" | "ats-analyzer" | "interview-prep" | "cv-2-column">("cover-letter");
 
   // --- STATE SURAT LAMARAN ---
   const [name, setName] = useState("");
