@@ -395,20 +395,14 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
     setCv2Error("");
 
     try {
-      const prompt = `Anda adalah penulis CV profesional. Rapikan dan susun data berikut menjadi teks CV yang rapi dalam Bahasa Indonesia.
+      const prompt = `Anda adalah penulis CV profesional. Tugas Anda hanya menulis "Ringkasan Profil" (3-4 kalimat kuat) untuk pelamar bernama ${cv2Name}.
 
 DATA:
-Nama: ${cv2Name}
-Ringkasan: ${cv2Summary || "Belum diisi"}
-Pendidikan: ${cv2Edu || "Belum diisi"}
-Pengalaman Kerja: ${cv2Exp || "Belum diisi"}
-Organisasi: ${cv2Org || "Belum diisi"}
-Keahlian: ${cv2Skills || "Belum diisi"}
+Pendidikan: ${cv2Edu}
+Pengalaman: ${cv2Exp}
+Keahlian: ${cv2Skills}
 
-Tugas Anda:
-1. Buat ringkasan profil yang kuat (3-4 kalimat).
-2. Rapikan pengalaman kerja menjadi bullet point.
-3. Buat daftar keahlian (hard skill & soft skill) yang rapi.
+Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis bagian lain seperti Pendidikan atau Pengalaman. Kembalikan HANYA teks ringkasan.`;
 
 Kembalikan HANYA teks biasa, tanpa markdown.`;
 
@@ -434,27 +428,33 @@ Kembalikan HANYA teks biasa, tanpa markdown.`;
   };
 
   // --- EXPORT PDF CV 2 KOLOM ---
-  const exportCv2PDF = async () => {
+    const exportCv2PDF = async () => {
     if (!cv2Result) return;
     try {
-      if (!(window as any).jspdf) {
+      // Pastikan html2pdf sudah dimuat
+      if (!(window as any).html2pdf) {
         await new Promise((resolve) => {
           const script = document.createElement("script");
-          script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+          script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js";
           document.body.appendChild(script);
           script.onload = resolve;
         });
       }
-      const { jsPDF } = (window as any).jspdf;
-      const doc = new jsPDF({ unit: "mm", format: "a4" });
 
-      // Layout 2 kolom di PDF (simulasi sederhana)
-      doc.setFontSize(22);
-      doc.text(cv2Name || "Nama", 100, 20, { align: "center" });
-      doc.setFontSize(11);
-      doc.text(cv2Result || "", 20, 35);
+      // Ambil elemen container CV
+      const element = document.querySelector('#cv2-preview-container');
+      if (!element) return;
 
-      doc.save(`CV_${cv2Name}.pdf`);
+      // Ekspor ke PDF dengan pengaturan A4
+      const opt = {
+        margin:       5,
+        filename:     `CV_${cv2Name || 'Profesional'}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, letterRendering: true, useCORS: true },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      await (window as any).html2pdf().set(opt).from(element).save();
     } catch (err: any) {
       alert("Gagal export PDF: " + err.message);
     }
@@ -920,24 +920,109 @@ Kembalikan HANYA teks biasa, tanpa markdown.`;
                   </button>
                 </div>
 
-                {/* Kolom Kanan: Preview */}
-                <div className="bg-white rounded-xl p-4 min-h-[400px] text-black font-serif text-sm overflow-auto">
-                  {cv2Result ? (
-                    <div className="whitespace-pre-line">{cv2Result}</div>
-                  ) : (
-                    <div className="text-neutral-400 text-center mt-20">Hasil CV akan muncul di sini</div>
-                  )}
+                {/* Kolom Kanan: Preview Layout 2 Kolom */}
+<div id="cv2-preview-container" className="bg-white rounded-xl p-0 min-h-[500px] text-black overflow-hidden shadow-lg relative">
+  {cv2Result ? (
+    <div className="flex flex-row h-full min-h-[500px] font-serif text-sm text-neutral-800">
+      
+      {/* SIDEBAR KIRI (30%) */}
+      <div className="w-[30%] bg-[#D9C8B0] p-4 flex flex-col items-center min-h-full">
+        {/* Foto Profil */}
+        <div className="w-24 h-24 rounded-full bg-red-500 mb-4 overflow-hidden border-2 border-white shadow-sm">
+          {cv2Photo ? (
+            <img src={cv2Photo} alt="Foto" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full bg-neutral-300 flex items-center justify-center text-neutral-500 text-xs">No Photo</div>
+          )}
+        </div>
+        
+        {/* Nama di Sidebar */}
+        <h3 className="font-bold text-base text-neutral-800 mb-2">{cv2Name || "Nama Anda"}</h3>
+        
+        {/* Data Kontak */}
+        <div className="w-full space-y-1 text-[10px] text-neutral-700 mt-2 px-1">
+          <div className="flex items-center gap-2"><span className="text-sm">👤</span> {cv2Name || "-"}</div>
+          <div className="flex items-center gap-2"><span className="text-sm">✉️</span> {cv2Email || "-"}</div>
+          <div className="flex items-center gap-2"><span className="text-sm">📞</span> {cv2Phone || "-"}</div>
+          <div className="flex items-center gap-2"><span className="text-sm">📍</span> {cv2Address || "-"}</div>
+          <div className="flex items-center gap-2"><span className="text-sm">🎂</span> {cv2Birth || "-"}</div>
+        </div>
+        
+        {/* Keahlian dengan Dot Rating */}
+        <div className="w-full mt-4 border-t border-neutral-500/30 pt-2">
+          <h4 className="font-bold text-xs text-neutral-800 mb-2">Keahlian</h4>
+          <div className="space-y-1">
+            {cv2Skills.split(',').filter(s => s.trim()).map((skill, idx) => (
+              <div key={idx} className="flex justify-between items-center text-[10px] text-neutral-700">
+                <span className="truncate w-20">{skill.trim()}</span>
+                <div className="flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < 3 ? 'bg-neutral-700' : 'bg-neutral-300'}`} />
+                  ))}
                 </div>
               </div>
+            ))}
+          </div>
+        </div>
 
-              {cv2Error && <div className="mt-3 text-red-400 text-sm">{cv2Error}</div>}
+        {/* Hobi */}
+        <div className="w-full mt-3 border-t border-neutral-500/30 pt-2">
+          <h4 className="font-bold text-xs text-neutral-800 mb-1">Hobi</h4>
+          <div className="text-[10px] text-neutral-700 space-y-0.5">
+            {cv2Hobbies.split(',').filter(s => s.trim()).map((h, i) => (
+              <div key={i} className="flex items-center gap-2"><span className="text-[8px]">■</span> {h.trim()}</div>
+            ))}
+          </div>
+        </div>
+      </div>
 
-              {cv2Result && (
-                <button onClick={exportCv2PDF} className="mt-4 w-full py-3 bg-green-600 hover:bg-green-500 font-bold rounded-xl">
-                  📥 Download PDF
-                </button>
-              )}
-            </div>
+      {/* KONTEN KANAN (70%) */}
+      <div className="w-[70%] p-6 bg-white overflow-y-auto max-h-[500px]">
+        {/* Nama Besar di Kanan */}
+        <h1 className="text-3xl font-bold text-neutral-700 mb-1">{cv2Name || "Nama Anda"}</h1>
+        
+        {/* Ringkasan Profil */}
+        <div className="text-xs text-neutral-600 leading-relaxed mb-4">
+          {cv2Result ? (
+            // Parsing sederhana: Ambil bagian pertama jika ada "===PROFILE==="
+            cv2Result.includes('===PROFILE===') ? 
+              cv2Result.split('===PROFILE===')[1].split('\n')[0] : 
+              cv2Result.split('\n')[0]
+          ) : (
+            "Ringkasan profil akan muncul di sini..."
+          )}
+        </div>
+
+        {/* Pendidikan */}
+        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+          <h3 className="text-base font-bold text-neutral-600 mb-1">Pendidikan</h3>
+          <div className="text-xs text-neutral-700 whitespace-pre-line">
+            {cv2Edu || "Belum diisi"}
+          </div>
+        </div>
+
+        {/* Pengalaman Kerja */}
+        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Kerja</h3>
+          <div className="text-xs text-neutral-700 whitespace-pre-line">
+            {cv2Exp || "Belum diisi"}
+          </div>
+        </div>
+
+        {/* Organisasi */}
+        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Organisasi</h3>
+          <div className="text-xs text-neutral-700 whitespace-pre-line">
+            {cv2Org || "Belum diisi"}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  ) : (
+    <div className="text-neutral-400 text-center mt-20 py-20">Isi data dan klik Generate untuk melihat CV Anda</div>
+  )}
+</div>
           </div>
         )}
       </div>
