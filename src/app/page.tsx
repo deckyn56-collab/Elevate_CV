@@ -611,26 +611,26 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                     </label>
                     <button type="button" onClick={clearSignature} className="text-[11px] text-red-400 hover:underline">Hapus Canvas</button>
                   </div>
-                  <div className="bg-white rounded-xl overflow-hidden w-full h-24 relative touch-none border border-neutral-300 shadow-sm">
-      <canvas 
-        ref={canvasRef} 
-        width={400} 
-        height={120} 
-        className="w-full h-full cursor-crosshair" 
-        onMouseDown={startDrawing} 
-        onMouseMove={draw} 
-        onMouseUp={stopDrawing} 
-        onMouseLeave={stopDrawing} 
-        onTouchStart={startDrawing} 
-        onTouchMove={draw} 
-        onTouchEnd={stopDrawing} 
-      />
-      {!hasSignature && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-xs italic">
-          Goreskan tanda tangan
-        </div>
-      )}
+                  <div className="bg-white rounded-xl overflow-hidden w-40 h-24 relative touch-none border border-neutral-300 shadow-sm">
+  <canvas 
+    ref={canvasRef} 
+    width={400} 
+    height={120} 
+    className="w-full h-full cursor-crosshair object-contain" 
+    onMouseDown={startDrawing} 
+    onMouseMove={draw} 
+    onMouseUp={stopDrawing} 
+    onMouseLeave={stopDrawing} 
+    onTouchStart={startDrawing} 
+    onTouchMove={draw} 
+    onTouchEnd={stopDrawing} 
+  />
+  {!hasSignature && (
+    <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-[10px] italic leading-tight p-1 text-center">
+      Tanda Tangan
     </div>
+  )}
+</div>
   </div>
 
   {/* KOLOM KANAN: INFO TTD & TIPS */}
