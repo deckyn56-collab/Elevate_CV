@@ -1002,14 +1002,7 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
           <div className="space-y-6">
             <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
               <h2 className="text-xl font-bold text-white font-serif mb-4">📄 CV 2 Kolom Profesional</h2>
-              <button 
-  onClick={exportCv2PDF} 
-  disabled={!cv2Result}
-  className="mb-4 w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:grayscale-50"
->
-  {cv2Result ? "📥 Unduh CV Sebagai PDF" : "⏳ Generate CV dulu sebelum unduh"}
-</button>
-
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Kolom Kiri: Form */}
                 <div className="space-y-3">
@@ -1022,9 +1015,22 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
                 </div>
               </div>
 
-        
+              {/* --- TAMBAHKAN TOMBOL INI DI SINI (Di bawah grid) --- */}
+              <button 
+  onClick={exportCv2PDF} 
+  disabled={!cv2Result}
+  className="mt-6 w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:grayscale-50"
+>
+  {cv2Result ? "📥 Unduh CV Sebagai PDF" : "⏳ Generate CV dulu sebelum unduh"}
+</button>
+              )}
+            </div>
+          </div>
+        )}
                 </div>
               </div>
+            </div>
+          </div>
         )}
       </div>
     </main>
