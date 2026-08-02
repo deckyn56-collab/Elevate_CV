@@ -463,7 +463,7 @@ Kembalikan HANYA teks hasil ringkasan.`;
     }
   };
 
-  // --- EXPORT PDF CV 2 KOLOM YANG RAPI ---
+    // --- EXPORT PDF CV 2 KOLOM YANG RAPI (Dengan Perbaikan Color Error) ---
   const exportCv2PDF = async () => {
     if (!cv2Result) return;
     try {
@@ -482,13 +482,20 @@ Kembalikan HANYA teks hasil ringkasan.`;
       const opt = {
         margin:       10,
         filename:     `CV_${cv2Name || 'Profesional'}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+        image:        { type: 'jpeg', quality: 0.95 },
+        html2canvas:  { 
+          scale: 1.5, 
+          useCORS: false,      // <-- Ganti ke false
+          letterRendering: true,
+          logging: false       // <-- Matikan logging agar tidak muncul error di console
+        },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       await (window as any).html2pdf().set(opt).from(element).save();
     } catch (err: any) {
+      // Tangani error agar tidak muncul popup "OK" yang mengganggu
+      console.error("PDF Error:", err.message);
       alert("Gagal export PDF: " + err.message);
     }
   };
