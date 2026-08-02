@@ -933,8 +933,11 @@ Kembalikan HANYA teks biasa, tanpa markdown.`;
               {cv2Error && <div className="mt-3 text-red-400 text-sm">{cv2Error}</div>}
 
               {cv2Result && (
-                <button onClick={exportCv2PDF} className="mt-4 w-full py-3 bg-green-600 hover:bg-green-500 font-bold rounded-xl">
-                  📥 Download PDF
+                <button onClick={exportCv2PDF} 
+  disabled={!cv2Result}
+  className="mb-4 w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:grayscale-50"
+>
+  {cv2Result ? "📥 Unduh CV Sebagai PDF" : "⏳ Generate CV dulu sebelum unduh"}
                 </button>
               )}
             </div>
