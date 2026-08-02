@@ -483,10 +483,10 @@ Kembalikan HANYA teks hasil ringkasan.`;
       const printMode = element.cloneNode(true) as HTMLElement;
       
       // Sembunyikan dulu elemen asli, lalu inject elemen print
-      element.style.display = 'none';
+      (element as HTMLElement).style.display = 'none';
       document.body.appendChild(printMode);
-      printMode.id = 'cv2-print-version';
-      printMode.style.width = '210mm';
+      (printMode as HTMLElement).id = 'cv2-print-version';
+(printMode as HTMLElement).style.width = '210mm';
       printMode.style.padding = '10mm';
       printMode.style.background = 'white';
       printMode.style.color = 'black';
