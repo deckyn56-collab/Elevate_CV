@@ -617,26 +617,26 @@ Kembalikan HANYA teks biasa, tanpa markdown.`;
 
         {/* NAVIGASI TAB (3 Tab) */}
         <div className="flex overflow-x-auto gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl mb-8 no-scrollbar backdrop-blur-md">
-          {[
-            { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
-            { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
-            { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" }
-      { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
-                activeTab === tab.id
-                  ? "bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 text-white font-bold shadow-lg shadow-yellow-600/20"
-                  : "text-neutral-400 hover:text-white hover:bg-white/5"
-              }`}
-            >
-              <div className="text-sm font-semibold">{tab.label}</div>
-              <div className="text-[11px] opacity-80 font-normal">{tab.desc}</div>
-            </button>
-          ))}
-        </div>
+  {[
+    { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
+    { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
+    { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" },
+    { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
+  ].map((tab) => (
+    <button
+      key={tab.id}
+      onClick={() => setActiveTab(tab.id as any)}
+      className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
+        activeTab === tab.id
+          ? "bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 text-white font-bold shadow-lg shadow-yellow-600/20"
+          : "text-neutral-400 hover:text-white hover:bg-white/5"
+      }`}
+    >
+      <div className="text-sm font-semibold">{tab.label}</div>
+      <div className="text-[11px] opacity-80 font-normal">{tab.desc}</div>
+    </button>
+  ))}
+</div>
 
         {/* --- TAB SURAT LAMARAN --- */}
         {activeTab === "cover-letter" && (
