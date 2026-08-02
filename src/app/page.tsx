@@ -1023,7 +1023,7 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
 >
   {cv2Result ? "📥 Unduh CV Sebagai PDF" : "⏳ Generate CV dulu sebelum unduh"}
 </button>
-              )}
+              }
             </div>
           </div>
         )}
