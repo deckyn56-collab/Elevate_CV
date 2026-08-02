@@ -593,6 +593,10 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                   </div>
                 </div>
                 <div>
+                  <div className="mt-3">
+  <label className="block text-xs text-neutral-400 mb-1">Alamat Perusahaan (Kantor)</label>
+  <input type="text" value={companyAddress} onChange={(e) => setCompanyAddress(e.target.value)} placeholder="Jl. Depati Hamzah, Semabung Lama, Pangkalpinang" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none" />
+                    </div>
                   <label className="block text-xs text-neutral-400 mb-1">Gaya Bahasa Surat</label>
                   <select value={tone} onChange={(e) => setTone(e.target.value)} className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none cursor-pointer">
                     <option value="Profesional">Profesional & Formal (Sangat direkomendasikan)</option>
