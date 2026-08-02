@@ -44,7 +44,7 @@ export default function ElevateCVApp() {
   }>>([]);
   const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
-    // --- STATE CV 2 KOLOM ---
+  // --- STATE CV 2 KOLOM ---
   const [cv2Name, setCv2Name] = useState("");
   const [cv2Photo, setCv2Photo] = useState("");
   const [cv2Phone, setCv2Phone] = useState("");
@@ -385,7 +385,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
     }
   };
 
-    // --- GENERATE CV 2 KOLOM DENGAN AI ---
+  // --- GENERATE CV 2 KOLOM DENGAN AI ---
   const handleGenerateCv2 = async () => {
     if (!cv2Name.trim()) {
       setCv2Error("Nama wajib diisi.");
@@ -426,10 +426,9 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
   };
 
   // --- EXPORT PDF CV 2 KOLOM ---
-    const exportCv2PDF = async () => {
+  const exportCv2PDF = async () => {
     if (!cv2Result) return;
     try {
-      // Pastikan html2pdf sudah dimuat
       if (!(window as any).html2pdf) {
         await new Promise((resolve) => {
           const script = document.createElement("script");
@@ -439,17 +438,15 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
         });
       }
 
-      // Ambil elemen container CV
       const element = document.querySelector('#cv2-preview-container');
       if (!element) return;
 
-      // Ekspor ke PDF dengan pengaturan A4
       const opt = {
-        margin:       5,
-        filename:     `CV_${cv2Name || 'Profesional'}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, letterRendering: true, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 5,
+        filename: `CV_${cv2Name || 'Profesional'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, letterRendering: true, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       await (window as any).html2pdf().set(opt).from(element).save();
@@ -494,21 +491,25 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
         const line = paragraphs[i].trim();
 
         if (line.toLowerCase().includes("hormat saya")) {
-  if (cursorY + 45 > pageHeight - marginBottom) doc.addPage();
-  doc.text(line, marginLeft, cursorY);
-  cursorY += 8;
-  
-  // TANDA TANGAN DI SINI
-  if (validSignatureUrl) {
-    doc.addImage(validSignatureUrl, "PNG", marginLeft, cursorY, 42, 18);
-    cursorY += 21;
-  } else {
-    cursorY += 16;
-  }
+          if (cursorY + 45 > pageHeight - marginBottom) doc.addPage();
+          doc.text(line, marginLeft, cursorY);
+          cursorY += 8;
+          
+          if (validSignatureUrl) {
+            doc.addImage(validSignatureUrl, "PNG", marginLeft, cursorY, 42, 18);
+            cursorY += 21;
+          } else {
+            cursorY += 16;
+          }
 
-  while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") i++;
-  continue;
-}
+          while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") i++;
+          continue;
+        }
+
+        if (line === "") {
+          cursorY += 4;
+          continue;
+        }
 
         const splitText = doc.splitTextToSize(line, maxLineWidth);
         for (let j = 0; j < splitText.length; j++) {
@@ -587,7 +588,6 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-8">
         <header className="text-center mb-8 space-y-2">
-          {/* LOGO DIPINDAHKAN KE DALAM HEADER */}
           <div className="flex justify-center mb-2">
             <img 
               src="/favicon.png" 
@@ -613,28 +613,28 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
           </div>
         )}
 
-        {/* NAVIGASI TAB (3 Tab) */}
+        {/* NAVIGASI TAB (4 Tab) */}
         <div className="flex overflow-x-auto gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl mb-8 no-scrollbar backdrop-blur-md">
-  {[
-    { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
-    { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
-    { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" },
-    { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
-  ].map((tab) => (
-    <button
-      key={tab.id}
-      onClick={() => setActiveTab(tab.id as any)}
-      className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
-        activeTab === tab.id
-          ? "bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 text-white font-bold shadow-lg shadow-yellow-600/20"
-          : "text-neutral-400 hover:text-white hover:bg-white/5"
-      }`}
-    >
-      <div className="text-sm font-semibold">{tab.label}</div>
-      <div className="text-[11px] opacity-80 font-normal">{tab.desc}</div>
-    </button>
-  ))}
-</div>
+          {[
+            { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
+            { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
+            { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" },
+            { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex-1 min-w-[140px] py-3 px-4 rounded-xl text-left transition-all duration-200 ${
+                activeTab === tab.id
+                  ? "bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 text-white font-bold shadow-lg shadow-yellow-600/20"
+                  : "text-neutral-400 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <div className="text-sm font-semibold">{tab.label}</div>
+              <div className="text-[11px] opacity-80 font-normal">{tab.desc}</div>
+            </button>
+          ))}
+        </div>
 
         {/* --- TAB SURAT LAMARAN --- */}
         {activeTab === "cover-letter" && (
@@ -677,9 +677,9 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
                 </div>
                 <div>
                   <div className="mt-3">
-  <label className="block text-xs text-neutral-400 mb-1">Alamat Perusahaan (Kantor)</label>
-  <input type="text" value={companyAddress} onChange={(e) => setCompanyAddress(e.target.value)} placeholder="Jl. Depati Hamzah, Semabung Lama, Pangkalpinang" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none" />
-                    </div>
+                    <label className="block text-xs text-neutral-400 mb-1">Alamat Perusahaan (Kantor)</label>
+                    <input type="text" value={companyAddress} onChange={(e) => setCompanyAddress(e.target.value)} placeholder="Jl. Depati Hamzah, Semabung Lama, Pangkalpinang" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none" />
+                  </div>
                   <label className="block text-xs text-neutral-400 mb-1">Gaya Bahasa Surat</label>
                   <select value={tone} onChange={(e) => setTone(e.target.value)} className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white focus:border-yellow-500 outline-none cursor-pointer">
                     <option value="Profesional">Profesional & Formal (Sangat direkomendasikan)</option>
@@ -704,32 +704,32 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
                     <button type="button" onClick={clearSignature} className="text-[11px] text-red-400 hover:underline">Hapus Canvas</button>
                   </div>
                   <div className="bg-white rounded-xl overflow-hidden w-40 h-24 relative touch-none border border-neutral-300 shadow-sm">
-  <canvas 
-    ref={canvasRef} 
-    width={400} 
-    height={120} 
-    className="w-full h-full cursor-crosshair object-contain" 
-    onMouseDown={startDrawing} 
-    onMouseMove={draw} 
-    onMouseUp={stopDrawing} 
-    onMouseLeave={stopDrawing} 
-    onTouchStart={startDrawing} 
-    onTouchMove={draw} 
-    onTouchEnd={stopDrawing} 
-  />
-  {!hasSignature && (
-    <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-[10px] italic leading-tight p-1 text-center">
-      Tanda Tangan
-    </div>
-  )}
-</div>
-  </div>
+                    <canvas 
+                      ref={canvasRef} 
+                      width={400} 
+                      height={120} 
+                      className="w-full h-full cursor-crosshair object-contain" 
+                      onMouseDown={startDrawing} 
+                      onMouseMove={draw} 
+                      onMouseUp={stopDrawing} 
+                      onMouseLeave={stopDrawing} 
+                      onTouchStart={startDrawing} 
+                      onTouchMove={draw} 
+                      onTouchEnd={stopDrawing} 
+                    />
+                    {!hasSignature && (
+                      <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-[10px] italic leading-tight p-1 text-center">
+                        Tanda Tangan
+                      </div>
+                    )}
+                  </div>
+                </div>
 
-  {/* KOLOM KANAN: INFO TTD & TIPS */}
-  <div className="flex flex-col justify-end h-full pb-1">
-    <p className="text-[11px] text-neutral-400 leading-tight">
-      Tanda tangan akan muncul di <strong>sebelah kiri</strong> dokumen, sejajar dengan "Hormat saya,".
-    </p>
+                {/* KOLOM KANAN: INFO TTD & TIPS */}
+                <div className="flex flex-col justify-end h-full pb-1">
+                  <p className="text-[11px] text-neutral-400 leading-tight">
+                    Tanda tangan akan muncul di <strong>sebelah kiri</strong> dokumen, sejajar dengan "Hormat saya,".
+                  </p>
                 </div>
                 <button type="button" onClick={() => handleGenerateCoverLetter()} disabled={isGeneratingLetter} className="w-full py-3.5 bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50">
                   {isGeneratingLetter ? "Menganalisis & Menulis Surat..." : "Buat Surat Lamaran AI ✨"}
@@ -891,14 +891,13 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
           </div>
         )}
 
-                {/* --- TAB CV 2 KOLOM --- */}
+        {/* --- TAB CV 2 KOLOM --- */}
         {activeTab === "cv-2-column" && (
           <div className="space-y-6">
             <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
               <h2 className="text-xl font-bold text-white font-serif mb-4">📄 CV 2 Kolom Profesional</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Kolom Kiri: Form */}
                 <div className="space-y-3">
                   <input type="text" value={cv2Name} onChange={(e) => setCv2Name(e.target.value)} placeholder="Nama Lengkap" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
                   <input type="text" value={cv2Photo} onChange={(e) => setCv2Photo(e.target.value)} placeholder="URL Foto (opsional)" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
@@ -918,111 +917,92 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
                   </button>
                 </div>
 
-                {/* Kolom Kanan: Preview Layout 2 Kolom */}
-<div id="cv2-preview-container" className="bg-white rounded-xl p-0 min-h-[500px] text-black overflow-hidden shadow-lg relative">
-  {cv2Result ? (
-    <div className="flex flex-row h-full min-h-[500px] font-serif text-sm text-neutral-800">
-      
-      {/* SIDEBAR KIRI (30%) */}
-      <div className="w-[30%] bg-[#D9C8B0] p-4 flex flex-col items-center min-h-full">
-        {/* Foto Profil */}
-        <div className="w-24 h-24 rounded-full bg-red-500 mb-4 overflow-hidden border-2 border-white shadow-sm">
-          {cv2Photo ? (
-            <img src={cv2Photo} alt="Foto" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full bg-neutral-300 flex items-center justify-center text-neutral-500 text-xs">No Photo</div>
-          )}
-        </div>
-        
-        {/* Nama di Sidebar */}
-        <h3 className="font-bold text-base text-neutral-800 mb-2">{cv2Name || "Nama Anda"}</h3>
-        
-        {/* Data Kontak */}
-        <div className="w-full space-y-1 text-[10px] text-neutral-700 mt-2 px-1">
-          <div className="flex items-center gap-2"><span className="text-sm">👤</span> {cv2Name || "-"}</div>
-          <div className="flex items-center gap-2"><span className="text-sm">✉️</span> {cv2Email || "-"}</div>
-          <div className="flex items-center gap-2"><span className="text-sm">📞</span> {cv2Phone || "-"}</div>
-          <div className="flex items-center gap-2"><span className="text-sm">📍</span> {cv2Address || "-"}</div>
-          <div className="flex items-center gap-2"><span className="text-sm">🎂</span> {cv2Birth || "-"}</div>
-        </div>
-        
-        {/* Keahlian dengan Dot Rating */}
-        <div className="w-full mt-4 border-t border-neutral-500/30 pt-2">
-          <h4 className="font-bold text-xs text-neutral-800 mb-2">Keahlian</h4>
-          <div className="space-y-1">
-            {cv2Skills.split(',').filter(s => s.trim()).map((skill, idx) => (
-              <div key={idx} className="flex justify-between items-center text-[10px] text-neutral-700">
-                <span className="truncate w-20">{skill.trim()}</span>
-                <div className="flex gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < 3 ? 'bg-neutral-700' : 'bg-neutral-300'}`} />
-                  ))}
+                <div id="cv2-preview-container" className="bg-white rounded-xl p-0 min-h-[500px] text-black overflow-hidden shadow-lg relative">
+                  {cv2Result ? (
+                    <div className="flex flex-row h-full min-h-[500px] font-serif text-sm text-neutral-800">
+                      {/* SIDEBAR KIRI (30%) */}
+                      <div className="w-[30%] bg-[#D9C8B0] p-4 flex flex-col items-center min-h-full">
+                        <div className="w-24 h-24 rounded-full bg-red-500 mb-4 overflow-hidden border-2 border-white shadow-sm">
+                          {cv2Photo ? (
+                            <img src={cv2Photo} alt="Foto" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full bg-neutral-300 flex items-center justify-center text-neutral-500 text-xs">No Photo</div>
+                          )}
+                        </div>
+                        <h3 className="font-bold text-base text-neutral-800 mb-2">{cv2Name || "Nama Anda"}</h3>
+                        <div className="w-full space-y-1 text-[10px] text-neutral-700 mt-2 px-1">
+                          <div className="flex items-center gap-2"><span className="text-sm">👤</span> {cv2Name || "-"}</div>
+                          <div className="flex items-center gap-2"><span className="text-sm">✉️</span> {cv2Email || "-"}</div>
+                          <div className="flex items-center gap-2"><span className="text-sm">📞</span> {cv2Phone || "-"}</div>
+                          <div className="flex items-center gap-2"><span className="text-sm">📍</span> {cv2Address || "-"}</div>
+                          <div className="flex items-center gap-2"><span className="text-sm">🎂</span> {cv2Birth || "-"}</div>
+                        </div>
+                        <div className="w-full mt-4 border-t border-neutral-500/30 pt-2">
+                          <h4 className="font-bold text-xs text-neutral-800 mb-2">Keahlian</h4>
+                          <div className="space-y-1">
+                            {cv2Skills.split(',').filter(s => s.trim()).map((skill, idx) => (
+                              <div key={idx} className="flex justify-between items-center text-[10px] text-neutral-700">
+                                <span className="truncate w-20">{skill.trim()}</span>
+                                <div className="flex gap-0.5">
+                                  {[...Array(5)].map((_, i) => (
+                                    <div key={i} className={`w-1.5 h-1.5 rounded-full ${i < 3 ? 'bg-neutral-700' : 'bg-neutral-300'}`} />
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="w-full mt-3 border-t border-neutral-500/30 pt-2">
+                          <h4 className="font-bold text-xs text-neutral-800 mb-1">Hobi</h4>
+                          <div className="text-[10px] text-neutral-700 space-y-0.5">
+                            {cv2Hobbies.split(',').filter(s => s.trim()).map((h, i) => (
+                              <div key={i} className="flex items-center gap-2"><span className="text-[8px]">■</span> {h.trim()}</div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* KONTEN KANAN (70%) */}
+                      <div className="w-[70%] p-6 bg-white overflow-y-auto max-h-[500px]">
+                        <h1 className="text-3xl font-bold text-neutral-700 mb-1">{cv2Name || "Nama Anda"}</h1>
+                        <div className="text-xs text-neutral-600 leading-relaxed mb-4">
+                          {cv2Result ? (
+                            cv2Result.includes('===PROFILE===') ? 
+                              cv2Result.split('===PROFILE===')[1].split('\n')[0] : 
+                              cv2Result.split('\n')[0]
+                          ) : (
+                            "Ringkasan profil akan muncul di sini..."
+                          )}
+                        </div>
+                        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+                          <h3 className="text-base font-bold text-neutral-600 mb-1">Pendidikan</h3>
+                          <div className="text-xs text-neutral-700 whitespace-pre-line">
+                            {cv2Edu || "Belum diisi"}
+                          </div>
+                        </div>
+                        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+                          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Kerja</h3>
+                          <div className="text-xs text-neutral-700 whitespace-pre-line">
+                            {cv2Exp || "Belum diisi"}
+                          </div>
+                        </div>
+                        <div className="border-t border-neutral-300/50 pt-3 mb-3">
+                          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Organisasi</h3>
+                          <div className="text-xs text-neutral-700 whitespace-pre-line">
+                            {cv2Org || "Belum diisi"}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-neutral-400 text-center mt-20 py-20">Isi data dan klik Generate untuk melihat CV Anda</div>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Hobi */}
-        <div className="w-full mt-3 border-t border-neutral-500/30 pt-2">
-          <h4 className="font-bold text-xs text-neutral-800 mb-1">Hobi</h4>
-          <div className="text-[10px] text-neutral-700 space-y-0.5">
-            {cv2Hobbies.split(',').filter(s => s.trim()).map((h, i) => (
-              <div key={i} className="flex items-center gap-2"><span className="text-[8px]">■</span> {h.trim()}</div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* KONTEN KANAN (70%) */}
-      <div className="w-[70%] p-6 bg-white overflow-y-auto max-h-[500px]">
-        {/* Nama Besar di Kanan */}
-        <h1 className="text-3xl font-bold text-neutral-700 mb-1">{cv2Name || "Nama Anda"}</h1>
-        
-        {/* Ringkasan Profil */}
-        <div className="text-xs text-neutral-600 leading-relaxed mb-4">
-          {cv2Result ? (
-            // Parsing sederhana: Ambil bagian pertama jika ada "===PROFILE==="
-            cv2Result.includes('===PROFILE===') ? 
-              cv2Result.split('===PROFILE===')[1].split('\n')[0] : 
-              cv2Result.split('\n')[0]
-          ) : (
-            "Ringkasan profil akan muncul di sini..."
-          )}
-        </div>
-
-        {/* Pendidikan */}
-        <div className="border-t border-neutral-300/50 pt-3 mb-3">
-          <h3 className="text-base font-bold text-neutral-600 mb-1">Pendidikan</h3>
-          <div className="text-xs text-neutral-700 whitespace-pre-line">
-            {cv2Edu || "Belum diisi"}
-          </div>
-        </div>
-
-        {/* Pengalaman Kerja */}
-        <div className="border-t border-neutral-300/50 pt-3 mb-3">
-          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Kerja</h3>
-          <div className="text-xs text-neutral-700 whitespace-pre-line">
-            {cv2Exp || "Belum diisi"}
-          </div>
-        </div>
-
-        {/* Organisasi */}
-        <div className="border-t border-neutral-300/50 pt-3 mb-3">
-          <h3 className="text-base font-bold text-neutral-600 mb-1">Pengalaman Organisasi</h3>
-          <div className="text-xs text-neutral-700 whitespace-pre-line">
-            {cv2Org || "Belum diisi"}
-          </div>
-        </div>
-      </div>
-
-    </div>
-  ) : (
-    <div className="text-neutral-400 text-center mt-20 py-20">Isi data dan klik Generate untuk melihat CV Anda</div>
-  )}
-          </div>
-        </div>
             </div>
+          </div>
+        )}
+      </div>
     </main>
+  );
 }
-);
