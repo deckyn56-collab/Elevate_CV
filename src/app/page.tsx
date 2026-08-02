@@ -404,8 +404,6 @@ Keahlian: ${cv2Skills}
 
 Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis bagian lain seperti Pendidikan atau Pengalaman. Kembalikan HANYA teks ringkasan.`;
 
-Kembalikan HANYA teks biasa, tanpa markdown.`;
-
       const response = await fetch("/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
