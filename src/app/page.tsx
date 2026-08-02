@@ -44,6 +44,24 @@ export default function ElevateCVApp() {
   }>>([]);
   const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
 
+    // --- STATE CV 2 KOLOM ---
+  const [cv2Name, setCv2Name] = useState("");
+  const [cv2Photo, setCv2Photo] = useState("");
+  const [cv2Phone, setCv2Phone] = useState("");
+  const [cv2Email, setCv2Email] = useState("");
+  const [cv2Address, setCv2Address] = useState("");
+  const [cv2Birth, setCv2Birth] = useState("");
+  const [cv2Summary, setCv2Summary] = useState("");
+  const [cv2Edu, setCv2Edu] = useState("");
+  const [cv2Exp, setCv2Exp] = useState("");
+  const [cv2Org, setCv2Org] = useState("");
+  const [cv2Skills, setCv2Skills] = useState("");
+  const [cv2Hobbies, setCv2Hobbies] = useState("");
+  
+  const [cv2Result, setCv2Result] = useState<string | null>(null);
+  const [isGenCv2, setIsGenCv2] = useState(false);
+  const [cv2Error, setCv2Error] = useState("");
+
   // --- SIGNATURE CANVAS ---
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -367,6 +385,81 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
     }
   };
 
+    // --- GENERATE CV 2 KOLOM DENGAN AI ---
+  const handleGenerateCv2 = async () => {
+    if (!cv2Name.trim()) {
+      setCv2Error("Nama wajib diisi.");
+      return;
+    }
+    setIsGenCv2(true);
+    setCv2Error("");
+
+    try {
+      const prompt = `Anda adalah penulis CV profesional. Rapikan dan susun data berikut menjadi teks CV yang rapi dalam Bahasa Indonesia.
+
+DATA:
+Nama: ${cv2Name}
+Ringkasan: ${cv2Summary || "Belum diisi"}
+Pendidikan: ${cv2Edu || "Belum diisi"}
+Pengalaman Kerja: ${cv2Exp || "Belum diisi"}
+Organisasi: ${cv2Org || "Belum diisi"}
+Keahlian: ${cv2Skills || "Belum diisi"}
+
+Tugas Anda:
+1. Buat ringkasan profil yang kuat (3-4 kalimat).
+2. Rapikan pengalaman kerja menjadi bullet point.
+3. Buat daftar keahlian (hard skill & soft skill) yang rapi.
+
+Kembalikan HANYA teks biasa, tanpa markdown.`;
+
+      const response = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modelEndpoint: "gemini-3.6-flash:generateContent",
+          payload: { contents: [{ parts: [{ text: prompt }] }] }
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error?.message || "Gagal memproses CV.");
+
+      const result = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+      setCv2Result(result);
+    } catch (err: any) {
+      setCv2Error(err.message || "Error saat generate CV.");
+    } finally {
+      setIsGenCv2(false);
+    }
+  };
+
+  // --- EXPORT PDF CV 2 KOLOM ---
+  const exportCv2PDF = async () => {
+    if (!cv2Result) return;
+    try {
+      if (!(window as any).jspdf) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+          document.body.appendChild(script);
+          script.onload = resolve;
+        });
+      }
+      const { jsPDF } = (window as any).jspdf;
+      const doc = new jsPDF({ unit: "mm", format: "a4" });
+
+      // Layout 2 kolom di PDF (simulasi sederhana)
+      doc.setFontSize(22);
+      doc.text(cv2Name || "Nama", 100, 20, { align: "center" });
+      doc.setFontSize(11);
+      doc.text(cv2Result || "", 20, 35);
+
+      doc.save(`CV_${cv2Name}.pdf`);
+    } catch (err: any) {
+      alert("Gagal export PDF: " + err.message);
+    }
+  };
+
   // --- EXPORT PDF SURAT LAMARAN ---
   const exportPDF = async () => {
     if (!outputLetter) return;
@@ -526,6 +619,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
         <div className="flex overflow-x-auto gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl mb-8 no-scrollbar backdrop-blur-md">
           {[
             { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
+      { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
             { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
             { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" }
           ].map((tab) => (
@@ -794,6 +888,54 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                 </div>
               ) : (
                 <div className="text-center py-12 text-neutral-500 border border-dashed border-neutral-800 rounded-xl"><p className="text-sm font-medium">Klik "Buat Simulasi Wawancara" untuk memprediksi pertanyaan wawancara spesifik.</p></div>
+              )}
+            </div>
+          </div>
+        )}
+
+                {/* --- TAB CV 2 KOLOM --- */}
+        {activeTab === "cv-2-column" && (
+          <div className="space-y-6">
+            <div className="bg-neutral-900/40 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
+              <h2 className="text-xl font-bold text-white font-serif mb-4">📄 CV 2 Kolom Profesional</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Kolom Kiri: Form */}
+                <div className="space-y-3">
+                  <input type="text" value={cv2Name} onChange={(e) => setCv2Name(e.target.value)} placeholder="Nama Lengkap" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Photo} onChange={(e) => setCv2Photo(e.target.value)} placeholder="URL Foto (opsional)" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Phone} onChange={(e) => setCv2Phone(e.target.value)} placeholder="No. Telepon" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Email} onChange={(e) => setCv2Email(e.target.value)} placeholder="Email" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Address} onChange={(e) => setCv2Address(e.target.value)} placeholder="Alamat" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Birth} onChange={(e) => setCv2Birth(e.target.value)} placeholder="Tanggal Lahir (cth: 12 Desember 1999)" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <textarea rows={3} value={cv2Summary} onChange={(e) => setCv2Summary(e.target.value)} placeholder="Ringkasan Profil" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white resize-none" />
+                  <textarea rows={3} value={cv2Edu} onChange={(e) => setCv2Edu(e.target.value)} placeholder="Pendidikan" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white resize-none" />
+                  <textarea rows={3} value={cv2Exp} onChange={(e) => setCv2Exp(e.target.value)} placeholder="Pengalaman Kerja" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white resize-none" />
+                  <textarea rows={2} value={cv2Org} onChange={(e) => setCv2Org(e.target.value)} placeholder="Pengalaman Organisasi" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white resize-none" />
+                  <input type="text" value={cv2Skills} onChange={(e) => setCv2Skills(e.target.value)} placeholder="Keahlian (pisahkan koma)" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  <input type="text" value={cv2Hobbies} onChange={(e) => setCv2Hobbies(e.target.value)} placeholder="Hobi (pisahkan koma)" className="w-full bg-black/50 border border-neutral-700 rounded-lg p-2.5 text-sm text-white" />
+                  
+                  <button onClick={handleGenerateCv2} disabled={isGenCv2} className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 font-bold rounded-xl mt-2">
+                    {isGenCv2 ? "Memproses..." : "✨ Generate CV AI"}
+                  </button>
+                </div>
+
+                {/* Kolom Kanan: Preview */}
+                <div className="bg-white rounded-xl p-4 min-h-[400px] text-black font-serif text-sm overflow-auto">
+                  {cv2Result ? (
+                    <div className="whitespace-pre-line">{cv2Result}</div>
+                  ) : (
+                    <div className="text-neutral-400 text-center mt-20">Hasil CV akan muncul di sini</div>
+                  )}
+                </div>
+              </div>
+
+              {cv2Error && <div className="mt-3 text-red-400 text-sm">{cv2Error}</div>}
+
+              {cv2Result && (
+                <button onClick={exportCv2PDF} className="mt-4 w-full py-3 bg-green-600 hover:bg-green-500 font-bold rounded-xl">
+                  📥 Download PDF
+                </button>
               )}
             </div>
           </div>
