@@ -1020,9 +1020,8 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
   ) : (
     <div className="text-neutral-400 text-center mt-20 py-20">Isi data dan klik Generate untuk melihat CV Anda</div>
   )}
-</div>
           </div>
-        )}
+        </div>
       </div>
     </main>
   );
