@@ -403,30 +403,21 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
         const line = paragraphs[i].trim();
 
         if (line.toLowerCase().includes("hormat saya")) {
-          if (cursorY + 45 > pageHeight - marginBottom) {
-            doc.addPage();
-            cursorY = 25;
-          }
-          doc.text(line, marginLeft, cursorY);
-          cursorY += 8;
+  if (cursorY + 45 > pageHeight - marginBottom) doc.addPage();
+  doc.text(line, marginLeft, cursorY);
+  cursorY += 8;
+  
+  // TANDA TANGAN DI SINI
+  if (validSignatureUrl) {
+    doc.addImage(validSignatureUrl, "PNG", marginLeft, cursorY, 42, 18);
+    cursorY += 21;
+  } else {
+    cursorY += 16;
+  }
 
-          if (validSignatureUrl) {
-            doc.addImage(validSignatureUrl, "PNG", marginLeft, cursorY, 42, 18);
-            cursorY += 21;
-          } else {
-            cursorY += 16;
-          }
-
-          while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") {
-            i++;
-          }
-          continue;
-        }
-
-        if (line === "") {
-          cursorY += 4;
-          continue;
-        }
+  while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") i++;
+  continue;
+}
 
         const splitText = doc.splitTextToSize(line, maxLineWidth);
         for (let j = 0; j < splitText.length; j++) {
@@ -620,11 +611,33 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
                     </label>
                     <button type="button" onClick={clearSignature} className="text-[11px] text-red-400 hover:underline">Hapus Canvas</button>
                   </div>
-                  <div className="bg-white rounded-xl overflow-hidden h-[110px] w-full relative touch-none border border-neutral-300">
-                    <canvas ref={canvasRef} width={380} height={110} className="w-full h-full cursor-crosshair" onMouseDown={startDrawing} onMouseMove={draw} onMouseUp={stopDrawing} onMouseLeave={stopDrawing} onTouchStart={startDrawing} onTouchMove={draw} onTouchEnd={stopDrawing} />
-                    {!hasSignature && <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-xs italic">Goreskan tanda tangan Anda di sini</div>}
-                  </div>
-                  <p className="text-[11px] text-neutral-400 mt-1">Tanda tangan akan otomatis disisipkan di antara "Hormat saya," dan Nama Anda saat PDF dibuat.</p>
+                  <div className="bg-white rounded-xl overflow-hidden w-full h-24 relative touch-none border border-neutral-300 shadow-sm">
+      <canvas 
+        ref={canvasRef} 
+        width={400} 
+        height={120} 
+        className="w-full h-full cursor-crosshair" 
+        onMouseDown={startDrawing} 
+        onMouseMove={draw} 
+        onMouseUp={stopDrawing} 
+        onMouseLeave={stopDrawing} 
+        onTouchStart={startDrawing} 
+        onTouchMove={draw} 
+        onTouchEnd={stopDrawing} 
+      />
+      {!hasSignature && (
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center text-neutral-400 text-xs italic">
+          Goreskan tanda tangan
+        </div>
+      )}
+    </div>
+  </div>
+
+  {/* KOLOM KANAN: INFO TTD & TIPS */}
+  <div className="flex flex-col justify-end h-full pb-1">
+    <p className="text-[11px] text-neutral-400 leading-tight">
+      Tanda tangan akan muncul di <strong>sebelah kiri</strong> dokumen, sejajar dengan "Hormat saya,".
+    </p>
                 </div>
                 <button type="button" onClick={() => handleGenerateCoverLetter()} disabled={isGeneratingLetter} className="w-full py-3.5 bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-600 hover:from-yellow-500 hover:to-amber-500 text-white font-bold rounded-xl shadow-lg transition-all disabled:opacity-50">
                   {isGeneratingLetter ? "Menganalisis & Menulis Surat..." : "Buat Surat Lamaran AI ✨"}
