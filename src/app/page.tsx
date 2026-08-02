@@ -463,7 +463,7 @@ Kembalikan HANYA teks hasil ringkasan.`;
     }
   };
 
-    // --- EXPORT PDF CV 2 KOLOM YANG RAPI (Dengan Perbaikan Color Error) ---
+      // --- EXPORT PDF CV 2 KOLOM (VERSI PUTIH POLOS & RAPI) ---
   const exportCv2PDF = async () => {
     if (!cv2Result) return;
     try {
@@ -479,22 +479,42 @@ Kembalikan HANYA teks hasil ringkasan.`;
       const element = document.querySelector('#cv2-preview-container');
       if (!element) return;
 
+      // Ubah elemen menjadi mode print (putih polos) sebelum diekspor
+      const printMode = element.cloneNode(true) as HTMLElement;
+      
+      // Sembunyikan dulu elemen asli, lalu inject elemen print
+      element.style.display = 'none';
+      document.body.appendChild(printMode);
+      printMode.id = 'cv2-print-version';
+      printMode.style.width = '210mm';
+      printMode.style.padding = '10mm';
+      printMode.style.background = 'white';
+      printMode.style.color = 'black';
+
+      // Hapus semua background warna di sidebar & ganti menjadi putih
+      const sidebar = printMode.querySelector('.cv2-sidebar');
+      if (sidebar) {
+        (sidebar as HTMLElement).style.backgroundColor = '#f5f5f5'; // Abu-abu sangat muda agar tetap ada kontras tipis
+        (sidebar as HTMLElement).style.color = '#000';
+      }
+
       const opt = {
-        margin:       10,
+        margin:       0,
         filename:     `CV_${cv2Name || 'Profesional'}.pdf`,
         image:        { type: 'jpeg', quality: 0.95 },
         html2canvas:  { 
-          scale: 1.5, 
-          useCORS: false,      // <-- Ganti ke false
-          letterRendering: true,
-          logging: false       // <-- Matikan logging agar tidak muncul error di console
+          scale: 2,
+          useCORS: true,
+          letterRendering: true
         },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      await (window as any).html2pdf().set(opt).from(element).save();
+      await (window as any).html2pdf().set(opt).from(printMode).save();
+
+      document.body.removeChild(printMode);
+      element.style.display = 'block';
     } catch (err: any) {
-      // Tangani error agar tidak muncul popup "OK" yang mengganggu
       console.error("PDF Error:", err.message);
       alert("Gagal export PDF: " + err.message);
     }
