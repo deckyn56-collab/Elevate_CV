@@ -619,9 +619,9 @@ Kembalikan HANYA teks biasa, tanpa markdown.`;
         <div className="flex overflow-x-auto gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl mb-8 no-scrollbar backdrop-blur-md">
           {[
             { id: "cover-letter", label: "📝 Surat Lamaran", desc: "Generator & Signature" },
-      { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
             { id: "ats-analyzer", label: "📊 Analisis ATS", desc: "Skor Kecocokan CV" },
             { id: "interview-prep", label: "🎯 Simulasi Interview", desc: "Pertanyaan STAR" }
+      { id: "cv-2-column", label: "📄 CV 2 Kolom", desc: "Format Profesional" }
           ].map((tab) => (
             <button
               key={tab.id}
