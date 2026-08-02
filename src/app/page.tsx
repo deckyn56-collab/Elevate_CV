@@ -1024,5 +1024,5 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
         </div>
             </div>
     </main>
-  );
 }
+);
