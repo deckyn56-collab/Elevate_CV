@@ -513,7 +513,7 @@ Kembalikan HANYA teks hasil ringkasan.`;
       await (window as any).html2pdf().set(opt).from(printMode).save();
 
       document.body.removeChild(printMode);
-      element.style.display = 'block';
+      (element as HTMLElement).style.display = 'block';
     } catch (err: any) {
       console.error("PDF Error:", err.message);
       alert("Gagal export PDF: " + err.message);
