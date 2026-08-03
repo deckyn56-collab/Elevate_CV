@@ -159,7 +159,7 @@ export default function ElevateCVApp() {
     setSignatureDataUrl(null);
   };
 
-  // --- GENERATE SURAT LAMARAN ---
+  // --- GENERATE SURAT LAMARAN (DeepSeek) ---
   const handleGenerateCoverLetter = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setError("");
@@ -210,20 +210,19 @@ ${phone ? "Telp: " + phone : ""} | ${email ? "Email: " + email : ""}
 
 Kembalikan HANYA teks lengkap surat lamaran tanpa tanda bintang markdown (*), hashtag (#), atau kutipan tambahan.`;
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload: { contents: [{ parts: [{ text: promptText }] }] }
+          systemPrompt: "Anda adalah konsultan karir profesional terbaik. Tulis surat lamaran kerja dalam Bahasa Indonesia yang elegan, meyakinkan, dan relevan.",
+          prompt: promptText
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal menghubungi Gemini API.");
+      if (!response.ok) throw new Error(data.error || "Gagal menghubungi DeepSeek.");
 
-      const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setOutputLetter(textResult);
+      setOutputLetter(data.content || "");
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan saat membuat surat lamaran.");
     } finally {
@@ -231,7 +230,7 @@ Kembalikan HANYA teks lengkap surat lamaran tanpa tanda bintang markdown (*), ha
     }
   };
 
-  // --- REFINE SURAT ---
+  // --- REFINE SURAT (DeepSeek) ---
   const handleRefineLetter = async (instruction: string) => {
     if (!outputLetter) return;
     setIsGeneratingLetter(true);
@@ -246,20 +245,19 @@ ${outputLetter}
 Instruksi perbaikan dari pelamar: "${instruction}".
 Pertahankan struktur surat lamaran resmi. Kembalikan teks surat lamaran saja tanpa komentar.`;
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload: { contents: [{ parts: [{ text: promptText }] }] }
+          systemPrompt: "Anda adalah editor profesional. Perbaiki dan sesuaikan surat lamaran sesuai instruksi.",
+          prompt: promptText
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal memperbarui surat.");
+      if (!response.ok) throw new Error(data.error || "Gagal memperbarui surat.");
 
-      const updatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setOutputLetter(updatedText);
+      setOutputLetter(data.content || "");
     } catch (err: any) {
       setError(err.message || "Gagal memperbarui surat lamaran.");
     } finally {
@@ -267,7 +265,7 @@ Pertahankan struktur surat lamaran resmi. Kembalikan teks surat lamaran saja tan
     }
   };
 
-  // --- ANALISIS ATS ---
+  // --- ANALISIS ATS (DeepSeek) ---
   const handleAnalyzeAts = async () => {
     if (!jobDescription.trim() || !experience.trim()) {
       setError("Mohon isi Deskripsi Pekerjaan dan Pengalaman CV Anda terlebih dahulu.");
@@ -288,38 +286,19 @@ ${experience}
 
 Berikan penilaian objektif dalam format JSON yang valid.`;
 
-      const payload = {
-        contents: [{ parts: [{ text: userPrompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "OBJECT",
-            properties: {
-              matchScore: { type: "NUMBER", description: "Persentase kecocokan dari 0 sampai 100" },
-              summary: { type: "STRING", description: "Ringkasan kesimpulan analisis" },
-              matchingSkills: { type: "ARRAY", items: { type: "STRING" }, description: "Skill yang sudah sesuai" },
-              missingKeywords: { type: "ARRAY", items: { type: "STRING" }, description: "Kata kunci penting yang belum ada di CV" },
-              recommendations: { type: "ARRAY", items: { type: "STRING" }, description: "Saran perbaikan konkret" },
-              strengths: { type: "ARRAY", items: { type: "STRING" }, description: "Keunggulan utama pelamar" }
-            },
-            required: ["matchScore", "summary", "matchingSkills", "missingKeywords", "recommendations", "strengths"]
-          }
-        }
-      };
-
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload
+          systemPrompt: "Anda adalah ahli HRD dan ATS. Lakukan analisis pencocokan CV dalam format JSON yang valid.",
+          prompt: userPrompt
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal memproses analisis ATS.");
+      if (!response.ok) throw new Error(data.error || "Gagal memproses analisis ATS.");
 
-      const jsonString = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const jsonString = data.content || "";
       if (jsonString) setAtsResult(JSON.parse(jsonString));
     } catch (err: any) {
       setError(err.message || "Gagal melakukan analisis ATS.");
@@ -328,7 +307,7 @@ Berikan penilaian objektif dalam format JSON yang valid.`;
     }
   };
 
-  // --- INTERVIEW PREP ---
+  // --- INTERVIEW PREP (DeepSeek) ---
   const handleGenerateInterviewPrep = async () => {
     if (!jobTitle.trim()) {
       setError("Mohon isi Posisi yang Dilamar.");
@@ -345,39 +324,19 @@ Pengalaman Pelamar: ${experience || "Fresh graduate / profesional berpengalaman.
 
 Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Situation, Task, Action, Result) dalam Bahasa Indonesia.`;
 
-      const payload = {
-        contents: [{ parts: [{ text: userPrompt }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "ARRAY",
-            items: {
-              type: "OBJECT",
-              properties: {
-                category: { type: "STRING", description: "Teknis / Behavioral / Situasional" },
-                question: { type: "STRING", description: "Pertanyaan pewawancara" },
-                suggestedAnswer: { type: "STRING", description: "Jawaban ideal format STAR" },
-                tip: { type: "STRING", description: "Tips penyampaian" }
-              },
-              required: ["category", "question", "suggestedAnswer", "tip"]
-            }
-          }
-        }
-      };
-
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload
+          systemPrompt: "Anda adalah ahli HRD. Buat pertanyaan wawancara dan jawaban metode STAR dalam format JSON.",
+          prompt: userPrompt
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal membuat pertanyaan wawancara.");
+      if (!response.ok) throw new Error(data.error || "Gagal membuat pertanyaan wawancara.");
 
-      const jsonString = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      const jsonString = data.content || "";
       if (jsonString) setInterviewQuestions(JSON.parse(jsonString));
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan saat memuat simulasi interview.");
@@ -386,7 +345,7 @@ Kembalikan daftar pertanyaan beserta contoh jawaban ideal dengan metode STAR (Si
     }
   };
 
-  // --- GENERATE CV 2 KOLOM DENGAN AI ---
+  // --- GENERATE CV 2 KOLOM (DeepSeek) ---
   const handleGenerateCv2 = async () => {
     if (!cv2Name.trim()) {
       setCv2Error("Nama wajib diisi.");
@@ -405,20 +364,19 @@ Keahlian: ${cv2Skills}
 
 Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis bagian lain seperti Pendidikan atau Pengalaman. Kembalikan HANYA teks ringkasan.`;
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload: { contents: [{ parts: [{ text: prompt }] }] }
+          systemPrompt: "Anda adalah penulis CV profesional. Tugas Anda hanya menulis 'Ringkasan Profil' yang kuat.",
+          prompt: prompt
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal memproses CV.");
+      if (!response.ok) throw new Error(data.error || "Gagal memproses CV.");
 
-      const result = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setCv2Result(result);
+      setCv2Result(data.content || "");
     } catch (err: any) {
       setCv2Error(err.message || "Error saat generate CV.");
     } finally {
@@ -426,7 +384,7 @@ Tulis ringkasan yang menarik, profesional, dan berorientasi hasil. JANGAN tulis 
     }
   };
 
-  // --- RINGKASKAN CV 2 KOLOM DENGAN AI ---
+  // --- RINGKASKAN CV (DeepSeek) ---
   const handleSummarizeCv2 = async () => {
     if (!cv2Result) return;
     setIsGenCv2(true);
@@ -442,20 +400,19 @@ ${cv2Result}
 
 Kembalikan HANYA teks hasil ringkasan.`;
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("/api/deepseek", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          modelEndpoint: "gemini-3.6-flash:generateContent",
-          payload: { contents: [{ parts: [{ text: prompt }] }] }
+          systemPrompt: "Anda adalah editor CV profesional. Ringkaskan teks CV berikut menjadi lebih singkat, padat, dan profesional.",
+          prompt: prompt
         })
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || "Gagal meringkaskan CV.");
+      if (!response.ok) throw new Error(data.error || "Gagal meringkaskan CV.");
 
-      const summary = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-      setCv2Result(summary);
+      setCv2Result(data.content || "");
     } catch (err: any) {
       setCv2Error(err.message || "Error saat meringkaskan CV.");
     } finally {
@@ -463,7 +420,7 @@ Kembalikan HANYA teks hasil ringkasan.`;
     }
   };
 
-      // --- EXPORT PDF CV 2 KOLOM (VERSI PUTIH POLOS & RAPI) ---
+  // --- EXPORT PDF CV 2 KOLOM ---
   const exportCv2PDF = async () => {
     if (!cv2Result) return;
     try {
@@ -479,23 +436,20 @@ Kembalikan HANYA teks hasil ringkasan.`;
       const element = document.querySelector('#cv2-preview-container');
       if (!element) return;
 
-      // Ubah elemen menjadi mode print (putih polos) sebelum diekspor
       const printMode = element.cloneNode(true) as HTMLElement;
       
-      // Sembunyikan dulu elemen asli, lalu inject elemen print
       (element as HTMLElement).style.display = 'none';
       document.body.appendChild(printMode);
-      (printMode as HTMLElement).id = 'cv2-print-version';
-(printMode as HTMLElement).style.width = '210mm';
+      printMode.id = 'cv2-print-version';
+      printMode.style.width = '210mm';
       printMode.style.padding = '10mm';
       printMode.style.background = 'white';
       printMode.style.color = 'black';
 
-      // Hapus semua background warna di sidebar & ganti menjadi putih
-      const sidebar = printMode.querySelector('.cv2-sidebar');
+      const sidebar = printMode.querySelector('.cv2-sidebar') as HTMLElement;
       if (sidebar) {
-        (sidebar as HTMLElement).style.backgroundColor = '#f5f5f5'; // Abu-abu sangat muda agar tetap ada kontras tipis
-        (sidebar as HTMLElement).style.color = '#000';
+        sidebar.style.backgroundColor = '#f5f5f5';
+        sidebar.style.color = '#000';
       }
 
       const opt = {
@@ -845,7 +799,7 @@ Kembalikan HANYA teks hasil ringkasan.`;
                 {isGeneratingLetter ? (
                   <div className="h-full flex flex-col items-center justify-center space-y-4 text-neutral-500 py-20">
                     <div className="w-8 h-8 border-4 border-yellow-600 border-t-transparent rounded-full animate-spin" />
-                    <p className="text-sm font-medium">Sedang menulis surat lamaran profesional yang disesuaikan dengan data Anda...</p>
+                    <p className="text-sm font-medium">DeepSeek-V4 sedang menyusun surat lamaran terbaik untuk Anda...</p>
                   </div>
                 ) : outputLetter ? (
                   viewMode === "edit" ? (
