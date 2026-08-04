@@ -26,19 +26,21 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        {/* Favicon Logo Anda */}
-        <link rel="icon" href="/favicon.ico" />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QBXP5LDFGH" />
-  <script
-    dangerouslySetInnerHTML={{
-      __html: `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-QBXP5LDFGH');
-      `
-    }}
-  />
+        {/* --- FAVICON ANDA (SUDAH ADA) --- */}
+        <link rel="icon" href="/favicon.png" />
+
+        {/* --- TEMPELKAN KODE GOOGLE ANALYTICS DI SINI --- */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-20YRTQNM80"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-20YRTQNM80');
+            `
+          }}
+        ></script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
         {children}
