@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>About Us - LamaranAI Blog</title>
+  <meta name="description" content="Learn about LamaranAI Blog and our mission to help professionals land their dream jobs with expert resume, cover letter, and interview tips.">
+  <meta name="keywords" content="about us, our mission, lamaranai blog">
+  
+  <link rel="canonical" href="https://lamaranai.com/en/about.html">
+  
+  <meta name="og:title" content="About Us - LamaranAI Blog">
+  <meta name="og:description" content="Learn about LamaranAI Blog and our mission to help professionals.">
+  <meta name="og:type" content="website">
+  <meta name="og:url" content="https://lamaranai.com/en/about.html">
+  <meta name="og:image" content="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=630&fit=crop">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About Us - LamaranAI Blog">
+  <meta name="twitter:description" content="Learn about LamaranAI Blog.">
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&h=630&fit=crop">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="en-style.css">
+</head>
+<body>
+  <button class="theme-toggle" aria-label="Toggle Dark Mode">
+    <i class="fas fa-moon"></i>
+  </button>
+  
+  <header>
+    <a href="/en/index.html">LamaranAI Blog</a>
+    <nav>
+      <a href="/en/index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="/en/all-articles.html"><i class="fas fa-newspaper"></i> Articles</a>
+      <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>About LamaranAI Blog</h1>
+    <p class="date">Last Updated: August 30, 2026</p>
+
+    <p>LamaranAI Blog is a platform dedicated to helping professionals achieve their career goals. We provide expert advice on:</p>
+    <ul>
+      <li>Resume writing and optimization</li>
+      <li>Cover letter strategies</li>
+      <li>Job interview preparation</li>
+      <li>Salary negotiation</li>
+      <li>Career growth and development</li>
+    </ul>
+
+    <p>We also have a main platform, <a href="https://lamaranai.com" target="_blank">LamaranAI</a>, which uses AI technology to create professional resumes and cover letters instantly.</p>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 LamaranAI Blog. All rights reserved.</p>
+    <div class="legal-links">
+      <a href="privacy-policy.html">Privacy Policy</a> |
+      <a href="terms-of-service.html">Terms of Service</a>
+    </div>
+    <div class="social-icons">
+      <a href="https://instagram.com/lamaranai" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://tiktok.com/@lamaranai" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://linkedin.com/in/lamaranai" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+      <a href="https://youtube.com/@lamaranai" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://lamaranai.com" target="_blank" aria-label="Main Website"><i class="fas fa-globe"></i></a>
+    </div>
+  </footer>
+
+  <!-- Adsterra Social Bar -->
+  <script src="https://pl31058719.profitableratecpmnetwork.com/bb/d1/6d/bbd16d53cb23ecaaacd791d3ce7761fa.js"></script>
+
+  <!-- JavaScript: Tombol Dark Mode -->
+  <script>
+    const themeToggle = document.querySelector('.theme-toggle');
+    const currentTheme = localStorage.getItem('theme');
+    
+    if (currentTheme === 'dark') {
+      document.body.classList.add('dark-mode');
+      themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+      themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+      localStorage.setItem('theme', theme);
+      themeToggle.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+  </script>
+</body>
+</html>
