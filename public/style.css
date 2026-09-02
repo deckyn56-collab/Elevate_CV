@@ -1406,30 +1406,39 @@ select {
     cursor: not-allowed;
 }
 
-/* API Key Box untuk CV */
+/* ==========================================
+   INFO BOX - FITUR OTOMATIS (CV)
+   ========================================== */
+
 .api-key-box {
-    background-color: #fffbeb;
-    border: 1px solid #fcd34d;
+    background-color: rgba(234, 179, 8, 0.1);
+    border: 1px solid rgba(234, 179, 8, 0.3);
     padding: 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     margin-bottom: 20px;
     font-size: 0.85rem;
-    color: #78350f;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.api-key-box input {
-    width: 100%;
-    padding: 6px;
-    margin-top: 5px;
-    border: 1px solid #fcd34d;
-    border-radius: 4px;
-    background: #fff;
-    color: #333;
+.api-key-box i {
+    color: var(--accent-color);
+    font-size: 1.2rem;
 }
 
-.api-key-box a {
-    color: #d97706;
-    font-weight: bold;
+.api-key-box strong {
+    color: var(--text-primary);
+}
+
+/* Responsive untuk Info Box */
+@media screen and (max-width: 500px) {
+    .api-key-box {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
 }
 
 /* Responsive untuk CV */

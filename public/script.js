@@ -360,7 +360,7 @@ function clearSignature() {
 }
 
 // ============================================
-// API CALL (Vercel Serverless)
+// API CALL (Serverless Vercel)
 // ============================================
 async function callGeminiAPI(prompt, systemPrompt = "") {
     try {
@@ -608,6 +608,7 @@ async function exportPDF() {
 // CV PROFESIONAL 1 KOLOM (RAMAH ATS)
 // ============================================
 
+// Update CV Preview secara real-time
 function updateCVPreview() {
     document.getElementById('view-cv2-name').innerText = document.getElementById('cv2Name').value || 'Nama Anda';
     document.getElementById('view-cv2-title').innerText = document.getElementById('cv2Title').value || 'Posisi / Spesialisasi';
@@ -636,6 +637,7 @@ function updateCVPreview() {
     document.getElementById('view-cv2-soft-skills').innerText = document.getElementById('cv2SoftSkills').value;
 }
 
+// Format bullet points untuk CV
 function formatCVBullets(inputId, viewId) {
     const text = document.getElementById(inputId).value;
     const ul = document.getElementById(viewId);
@@ -648,6 +650,7 @@ function formatCVBullets(inputId, viewId) {
     });
 }
 
+// Generate CV PDF
 function generateCV_PDF() {
     const element = document.getElementById('cv2-paper');
     const name = document.getElementById('cv2Name').value || 'CV';
@@ -666,31 +669,37 @@ function generateCV_PDF() {
     });
 }
 
-async function callGeminiAPI_LOCAL(prompt, button, inputId) {
-    const apiKey = document.getElementById('cv-api-key').value.trim();
-    if (!apiKey) {
-        alert("Harap masukkan API Key terlebih dahulu.");
-        return;
-    }
+// Fungsi AI untuk CV (Serverless)
+async function callGeminiAPI_CV(prompt, button, inputId) {
     const originalText = button.innerText;
     button.innerText = "⏳ Memproses...";
     button.disabled = true;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
     try {
-        const response = await fetch(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+        // Panggil serverless function yang sama
+        const response = await fetch('/api/gemini', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { temperature: 0.7 }
+                prompt,
+                systemPrompt: "Anda adalah penulis CV profesional. Tugas Anda hanya menulis teks yang diminta."
             })
         });
-        if (!response.ok) throw new Error("API Error: Pastikan API Key valid.");
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'API Error');
+        }
+
         const data = await response.json();
-        const aiResult = data.candidates[0].content.parts[0].text;
-        const cleanedText = aiResult.replace(/\*\*/g, '');
+        const aiResult = data.content;
+        
+        // Bersihkan hasil markdown dari AI
+        const cleanedText = aiResult.replace(/\*\*/g, '').replace(/^#+\s*/gm, '');
+
         document.getElementById(inputId).value = cleanedText.trim();
         updateCVPreview();
+
     } catch (error) {
         alert("Terjadi kesalahan: " + error.message);
     } finally {
@@ -699,21 +708,27 @@ async function callGeminiAPI_LOCAL(prompt, button, inputId) {
     }
 }
 
+// Generate Ringkasan dengan AI
 function generateSummary() {
     const title = document.getElementById('cv2Title').value;
     const hard = document.getElementById('cv2HardSkills').value;
     const soft = document.getElementById('cv2SoftSkills').value;
+    
     const prompt = `Bertindaklah sebagai pembuat CV profesional. Buat ringkasan profil (maksimal 3-4 kalimat singkat) dalam Bahasa Indonesia untuk posisi "${title}". Gunakan kata-kata yang elegan, menjual, dan ATS friendly. Sertakan keterampilan ini: ${hard}, ${soft}. Jangan gunakan pengantar atau penutup, langsung berikan teks ringkasannya saja.`;
+    
     const button = document.querySelector('.form-section-title .btn-ai');
-    callGeminiAPI_LOCAL(prompt, button, 'cv2Summary');
+    callGeminiAPI_CV(prompt, button, 'cv2Summary');
 }
 
+// Generate Poin Pengalaman dengan AI
 function generateJob(jobIndex) {
     const title = document.getElementById(`cv2Job${jobIndex}Title`).value;
     const company = document.getElementById(`cv2Job${jobIndex}Company`).value;
+    
     const prompt = `Bertindaklah sebagai pembuat CV profesional. Buat 3 poin pencapaian/tugas kerja untuk posisi "${title}" di "${company}" dalam Bahasa Indonesia. Gunakan kalimat yang elegan, fokus pada hasil/impact, dan tambahkan angka/persentase fiktif jika perlu untuk membuatnya terlihat profesional. Format hasilnya hanya berupa teks 3 baris terpisah (tanpa angka urutan, tanpa format tebal markdown **). Jangan berikan teks pengantar, langsung poin-poinnya saja.`;
+    
     const button = document.querySelector(`.form-section-title:nth-of-type(${jobIndex + 3}) .btn-ai`);
-    callGeminiAPI_LOCAL(prompt, button, `cv2Job${jobIndex}Bullets`);
+    callGeminiAPI_CV(prompt, button, `cv2Job${jobIndex}Bullets`);
 }
 
 // ============================================
