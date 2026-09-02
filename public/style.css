@@ -1311,3 +1311,142 @@ select {
 .tab-content {
     animation: fadeIn 0.3s ease;
 }
+
+/* ==========================================
+   CV PROFESIONAL 1 KOLOM (RAMAH ATS)
+   ========================================== */
+
+.cv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+    .cv-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Paper Preview */
+.cv-preview {
+    background: #6b7280; /* Background gelap di luar kertas */
+    padding: 20px;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: auto;
+}
+
+.cv-paper {
+    background: #ffffff;
+    width: 210mm; /* Ukuran A4 */
+    min-height: 297mm;
+    padding: 20mm 18mm;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #333333;
+    line-height: 1.5;
+    flex-shrink: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* CV Styles (Sesuai dengan kode yang Anda kirim) */
+.cv-header { margin-bottom: 20px; }
+.cv-name { font-size: 22pt; font-weight: bold; color: #1a1a1a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.cv-title { font-size: 12pt; color: #4b5563; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 12px; }
+.cv-contact { font-size: 9.5pt; color: #555555; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 8px 0; display: flex; flex-wrap: wrap; gap: 15px; }
+.cv-section-heading { font-size: 11pt; font-weight: bold; color: #1e293b; border-bottom: 2px solid #1e293b; padding-bottom: 3px; margin-top: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.cv-text { font-size: 9.5pt; text-align: justify; color: #333333; }
+.job-item { margin-bottom: 14px; }
+.job-header { display: flex; justify-content: space-between; align-items: baseline; }
+.job-role { font-size: 10.5pt; font-weight: bold; color: #111827; }
+.job-company { font-size: 9.5pt; color: #4b5563; font-weight: 500; }
+.job-date { font-size: 9pt; color: #6b7280; font-style: italic; }
+.cv-bullets { margin-top: 4px; padding-left: 18px; font-size: 9.5pt; }
+.cv-bullets li { margin-bottom: 4px; text-align: justify; }
+.skill-group { font-size: 9.5pt; margin-bottom: 6px; }
+.skill-group strong { color: #111827; display: inline-block; width: 110px; }
+
+/* Form Section Titles */
+.form-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* AI Button Kecil */
+.btn-ai {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: 0.2s;
+}
+
+.btn-ai:hover {
+    background-color: #059669;
+}
+
+.btn-ai:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* API Key Box untuk CV */
+.api-key-box {
+    background-color: #fffbeb;
+    border: 1px solid #fcd34d;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.85rem;
+    color: #78350f;
+}
+
+.api-key-box input {
+    width: 100%;
+    padding: 6px;
+    margin-top: 5px;
+    border: 1px solid #fcd34d;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+}
+
+.api-key-box a {
+    color: #d97706;
+    font-weight: bold;
+}
+
+/* Responsive untuk CV */
+@media screen and (max-width: 900px) {
+    .cv-preview {
+        padding: 10px;
+    }
+    .cv-paper {
+        transform: scale(0.85);
+        transform-origin: top center;
+        margin-bottom: -15%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .cv-paper {
+        transform: scale(0.65);
+        margin-bottom: -35%;
+    }
+}
