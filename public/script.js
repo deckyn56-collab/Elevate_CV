@@ -16,8 +16,7 @@ const state = {
     isGenCv2: false,
     isEditingCv2: false,
     error: '',
-    copyStatus: null,
-    photoDataUrl: null
+    copyStatus: null
 };
 
 // ============================================
@@ -27,12 +26,10 @@ const translations = {
     id: {
         badge: "LamaranAI",
         tagline: "Platform untuk membuat Surat Lamaran dan CV Profesional.",
-        
         tabCoverTitle: "Surat Lamaran",
         tabCoverDesc: "Generator & Tanda Tangan",
         tabCVTitle: "CV Profesional",
         tabCVDesc: "Format Ramah ATS",
-        
         formTitle: "Informasi Pelamar & Pekerjaan",
         step1: "Langkah 1",
         fullName: "Nama Lengkap",
@@ -53,7 +50,6 @@ const translations = {
         signHere: "Tanda Tangan",
         signatureInfo: "Tanda tangan akan muncul di sebelah kiri dokumen.",
         generateBtn: "Buat Surat Lamaran",
-        
         resultTitle: "Hasil Surat Lamaran",
         preview: "Previu",
         edit: "Edit",
@@ -66,7 +62,6 @@ const translations = {
         noLetter: "Belum ada surat lamaran",
         noLetterDesc: "Isi formulir di sebelah kiri dan klik 'Buat Surat Lamaran' untuk memulai.",
         loading: "Sedang menyusun surat lamaran terbaik untuk Anda...",
-        
         cvTitle: "CV Profesional & Ramah ATS",
         generator: "Generator",
         editText: "Edit Teks",
@@ -83,7 +78,10 @@ const translations = {
         exp1: "Pengalaman Kerja 1",
         exp2: "Pengalaman Kerja 2",
         education: "Pendidikan",
-        
+        previewCv: "Lihat & Unduh CV",
+        previewPdf: "Preview & Unduh CV",
+        close: "Tutup",
+        downloadNow: "Unduh Sekarang",
         seoTitle: "LamaranAI - Solusi Karir Online",
         seoDesc: "LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.",
         seoFeature1Title: "Surat Lamaran Profesional",
@@ -95,7 +93,6 @@ const translations = {
         seoFeature4Title: "Export PDF",
         seoFeature4Desc: "Unduh hasil dalam format PDF siap kirim",
         popular: "Populer:",
-        
         errorRequired: "Posisi yang dilamar dan Nama Perusahaan wajib diisi.",
         errorNameRequired: "Nama wajib diisi.",
         errorApi: "Gagal menghubungi server.",
@@ -105,12 +102,10 @@ const translations = {
     en: {
         badge: "LamaranAI",
         tagline: "Platform to create Professional Cover Letters and CVs.",
-        
         tabCoverTitle: "Cover Letter",
         tabCoverDesc: "Generator & Signature",
         tabCVTitle: "Professional CV",
         tabCVDesc: "ATS-Friendly Format",
-        
         formTitle: "Applicant & Job Information",
         step1: "Step 1",
         fullName: "Full Name",
@@ -131,7 +126,6 @@ const translations = {
         signHere: "Signature",
         signatureInfo: "Signature will appear on the left side of the document.",
         generateBtn: "Generate Cover Letter",
-        
         resultTitle: "Cover Letter Result",
         preview: "Preview",
         edit: "Edit",
@@ -144,7 +138,6 @@ const translations = {
         noLetter: "No cover letter yet",
         noLetterDesc: "Fill the form on the left and click 'Generate Cover Letter' to start.",
         loading: "Crafting the best cover letter for you...",
-        
         cvTitle: "Professional ATS-Friendly CV",
         generator: "Generator",
         editText: "Edit Text",
@@ -161,7 +154,10 @@ const translations = {
         exp1: "Work Experience 1",
         exp2: "Work Experience 2",
         education: "Education",
-        
+        previewCv: "View & Download CV",
+        previewPdf: "Preview & Download CV",
+        close: "Close",
+        downloadNow: "Download Now",
         seoTitle: "LamaranAI - Online Career Solution",
         seoDesc: "LamaranAI is a free platform to help you create professional cover letters and attractive CVs. We help you stand out among thousands of other applicants.",
         seoFeature1Title: "Professional Cover Letter",
@@ -173,7 +169,6 @@ const translations = {
         seoFeature4Title: "PDF Export",
         seoFeature4Desc: "Download results in ready-to-send PDF format",
         popular: "Popular:",
-        
         errorRequired: "Target position and Company Name are required.",
         errorNameRequired: "Name is required.",
         errorApi: "Failed to connect to server.",
@@ -201,17 +196,6 @@ function setLanguage(lang) {
             element.textContent = translations[lang][key];
         }
     });
-    
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        if (translations[lang][key]) {
-            element.placeholder = translations[lang][key];
-        }
-    });
-    
-    document.title = lang === 'id' ? 
-        'LamaranAI - Buat Surat Lamaran & CV Profesional Gratis' : 
-        'LamaranAI - Create Professional Cover Letters & CVs Free';
     
     document.documentElement.lang = lang;
     localStorage.setItem('lamaranai_lang', lang);
@@ -647,24 +631,88 @@ function formatCVBullets(inputId, viewId) {
     });
 }
 
-function generateCV_PDF() {
-    const element = document.getElementById('cv2-paper');
-    const name = document.getElementById('cv2Name').value || 'CV';
-    const filename = 'CV_' + name.replace(/\s+/g, '_') + '.pdf';
-    const originalTransform = element.style.transform;
-    element.style.transform = 'none';
+// ============================================
+// PREVIEW & DOWNLOAD CV PDF (DIPERBAIKI)
+// ============================================
 
-    html2pdf().set({
-        margin: [0, 0, 0, 0],
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    }).from(element).save().then(() => {
-        element.style.transform = originalTransform;
-    });
+function openCvPreview() {
+    const cvElement = document.getElementById('cv2-paper');
+    const previewContainer = document.getElementById('cvPdfPreviewContainer');
+    
+    // Clone dan reset transform
+    const clone = cvElement.cloneNode(true);
+    clone.style.transform = 'none';
+    clone.style.margin = '0';
+    clone.style.boxShadow = 'none';
+    clone.style.width = '210mm';
+    clone.style.minHeight = '297mm';
+    
+    // Bersihkan container
+    previewContainer.innerHTML = '';
+    previewContainer.appendChild(clone);
+    
+    // Tampilkan modal
+    document.getElementById('cvPdfModal').style.display = 'flex';
+    
+    // Aktifkan tombol download
+    document.getElementById('btnDownloadCvPdf').disabled = false;
+    document.getElementById('btnDownloadCvPdf').innerHTML = '<i class="fas fa-file-arrow-down"></i> Unduh Sekarang';
 }
 
+function closeCvPreview() {
+    document.getElementById('cvPdfModal').style.display = 'none';
+    document.getElementById('cvPdfPreviewContainer').innerHTML = '';
+}
+
+async function downloadCvFromPreview() {
+    const element = document.getElementById('cvPdfPreviewContainer').firstElementChild;
+    if (!element) {
+        alert('CV tidak ditemukan.');
+        return;
+    }
+
+    const name = document.getElementById('cv2Name').value || 'CV';
+    const filename = 'CV_' + name.replace(/\s+/g, '_') + '.pdf';
+    
+    const downloadBtn = document.getElementById('btnDownloadCvPdf');
+    downloadBtn.disabled = true;
+    downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+    try {
+        // Pastikan library html2pdf dimuat
+        if (typeof html2pdf === 'undefined') {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
+        }
+
+        const opt = {
+            margin: [0, 0, 0, 0],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false,
+                letterRendering: true,
+                width: element.scrollWidth,
+                height: element.scrollHeight
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        await html2pdf().set(opt).from(element).save();
+        
+    } catch (error) {
+        console.error('PDF Error:', error);
+        alert('Gagal membuat PDF: ' + error.message);
+    } finally {
+        downloadBtn.disabled = false;
+        downloadBtn.innerHTML = '<i class="fas fa-file-arrow-down"></i> Unduh Sekarang';
+    }
+}
+
+// ============================================
+// FUNGSI AI UNTUK CV (SERVERLESS)
+// ============================================
 async function callGeminiAPI_CV(prompt, button, inputId) {
     const originalText = button.innerText;
     button.innerText = "⏳ Memproses...";
