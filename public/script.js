@@ -1,5 +1,5 @@
 // ============================================
-// LAMARANPRO - SCRIPT UTAMA
+// LAMARANAI - SCRIPT UTAMA
 // ============================================
 
 // STATE MANAGEMENT
@@ -25,7 +25,7 @@ const state = {
 // ============================================
 const translations = {
     id: {
-        badge: "LamaranPro",
+        badge: "LamaranAI",
         tagline: "Platform untuk membuat Surat Lamaran dan CV Profesional.",
         
         tabCoverTitle: "Surat Lamaran",
@@ -84,8 +84,8 @@ const translations = {
         exp2: "Pengalaman Kerja 2",
         education: "Pendidikan",
         
-        seoTitle: "LamaranPro - Solusi Karir Online",
-        seoDesc: "LamaranPro adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.",
+        seoTitle: "LamaranAI - Solusi Karir Online",
+        seoDesc: "LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.",
         seoFeature1Title: "Surat Lamaran Profesional",
         seoFeature1Desc: "Generator surat lamaran kerja yang profesional dan personal",
         seoFeature2Title: "CV Ramah ATS",
@@ -103,7 +103,7 @@ const translations = {
         errorPhotoSize: "Ukuran gambar harus kurang dari 5MB."
     },
     en: {
-        badge: "LamaranPro",
+        badge: "LamaranAI",
         tagline: "Platform to create Professional Cover Letters and CVs.",
         
         tabCoverTitle: "Cover Letter",
@@ -162,8 +162,8 @@ const translations = {
         exp2: "Work Experience 2",
         education: "Education",
         
-        seoTitle: "LamaranPro - Online Career Solution",
-        seoDesc: "LamaranPro is a free platform to help you create professional cover letters and attractive CVs. We help you stand out among thousands of other applicants.",
+        seoTitle: "LamaranAI - Online Career Solution",
+        seoDesc: "LamaranAI is a free platform to help you create professional cover letters and attractive CVs. We help you stand out among thousands of other applicants.",
         seoFeature1Title: "Professional Cover Letter",
         seoFeature1Desc: "Professional and personal cover letter generator",
         seoFeature2Title: "ATS-Friendly CV",
@@ -210,8 +210,8 @@ function setLanguage(lang) {
     });
     
     document.title = lang === 'id' ? 
-        'LamaranPro - Buat Surat Lamaran & CV Profesional Gratis' : 
-        'LamaranPro - Create Professional Cover Letters & CVs Free';
+        'LamaranAI - Buat Surat Lamaran & CV Profesional Gratis' : 
+        'LamaranAI - Create Professional Cover Letters & CVs Free';
     
     document.documentElement.lang = lang;
     localStorage.setItem('lamaranai_lang', lang);
@@ -608,14 +608,12 @@ async function exportPDF() {
 // CV PROFESIONAL 1 KOLOM (RAMAH ATS)
 // ============================================
 
-// Update CV Preview secara real-time
 function updateCVPreview() {
     document.getElementById('view-cv2-name').innerText = document.getElementById('cv2Name').value || 'Nama Anda';
     document.getElementById('view-cv2-title').innerText = document.getElementById('cv2Title').value || 'Posisi / Spesialisasi';
     document.getElementById('view-cv2-address').innerText = '📍 ' + document.getElementById('cv2Address').value;
     document.getElementById('view-cv2-phone').innerText = '📞 ' + document.getElementById('cv2Phone').value;
     document.getElementById('view-cv2-email').innerText = '✉️ ' + document.getElementById('cv2Email').value;
-    document.getElementById('view-cv2-linkedin').innerText = '🔗 ' + document.getElementById('cv2Linkedin').value;
     document.getElementById('view-cv2-summary').innerText = document.getElementById('cv2Summary').value;
     
     document.getElementById('view-cv2-job1-title').innerText = document.getElementById('cv2Job1Title').value;
@@ -637,7 +635,6 @@ function updateCVPreview() {
     document.getElementById('view-cv2-soft-skills').innerText = document.getElementById('cv2SoftSkills').value;
 }
 
-// Format bullet points untuk CV
 function formatCVBullets(inputId, viewId) {
     const text = document.getElementById(inputId).value;
     const ul = document.getElementById(viewId);
@@ -650,7 +647,6 @@ function formatCVBullets(inputId, viewId) {
     });
 }
 
-// Generate CV PDF
 function generateCV_PDF() {
     const element = document.getElementById('cv2-paper');
     const name = document.getElementById('cv2Name').value || 'CV';
@@ -669,14 +665,12 @@ function generateCV_PDF() {
     });
 }
 
-// Fungsi AI untuk CV (Serverless)
 async function callGeminiAPI_CV(prompt, button, inputId) {
     const originalText = button.innerText;
     button.innerText = "⏳ Memproses...";
     button.disabled = true;
 
     try {
-        // Panggil serverless function yang sama
         const response = await fetch('/api/gemini', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -693,8 +687,6 @@ async function callGeminiAPI_CV(prompt, button, inputId) {
 
         const data = await response.json();
         const aiResult = data.content;
-        
-        // Bersihkan hasil markdown dari AI
         const cleanedText = aiResult.replace(/\*\*/g, '').replace(/^#+\s*/gm, '');
 
         document.getElementById(inputId).value = cleanedText.trim();
@@ -708,7 +700,6 @@ async function callGeminiAPI_CV(prompt, button, inputId) {
     }
 }
 
-// Generate Ringkasan dengan AI
 function generateSummary() {
     const title = document.getElementById('cv2Title').value;
     const hard = document.getElementById('cv2HardSkills').value;
@@ -720,7 +711,6 @@ function generateSummary() {
     callGeminiAPI_CV(prompt, button, 'cv2Summary');
 }
 
-// Generate Poin Pengalaman dengan AI
 function generateJob(jobIndex) {
     const title = document.getElementById(`cv2Job${jobIndex}Title`).value;
     const company = document.getElementById(`cv2Job${jobIndex}Company`).value;
@@ -809,11 +799,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initLocalStorage();
     switchTab('cover-letter');
     
-    // Initialize CV Preview
     updateCVPreview();
     
-    // Add event listeners untuk real-time update CV
-    const cvInputs = ['cv2Name', 'cv2Title', 'cv2Address', 'cv2Phone', 'cv2Email', 'cv2Linkedin', 
+    const cvInputs = ['cv2Name', 'cv2Title', 'cv2Address', 'cv2Phone', 'cv2Email', 
                       'cv2HardSkills', 'cv2SoftSkills', 'cv2Summary', 
                       'cv2Job1Title', 'cv2Job1Company', 'cv2Job1Date', 'cv2Job1Bullets',
                       'cv2Job2Title', 'cv2Job2Company', 'cv2Job2Date', 'cv2Job2Bullets',

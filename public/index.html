@@ -10,35 +10,35 @@
     
     <!-- SEO Meta Tags -->
     <title>LamaranAI - Buat Surat Lamaran & CV Profesional Gratis</title>
-    <meta name="description" content="LamaranPro adalah platform gratis untuk membuat surat lamaran kerja profesional dan CV yang menarik. Tingkatkan peluang Anda mendapatkan pekerjaan impian!" />
+    <meta name="description" content="LamaranAI adalah platform gratis untuk membuat surat lamaran kerja profesional dan CV yang menarik. Tingkatkan peluang Anda mendapatkan pekerjaan impian!" />
     <meta name="keywords" content="surat lamaran kerja, cv profesional, generator cv, template cv, lamaran kerja online, cv maker, cover letter generator" />
-    <meta name="author" content="LamaranPro" />
+    <meta name="author" content="LamaranAI" />
     <meta name="robots" content="index, follow" />
     <meta name="googlebot" content="index, follow" />
     <meta name="bingbot" content="index, follow" />
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://lamaranpro.com/" />
-    <meta property="og:title" content="LamaranPro - Buat Surat Lamaran & CV Profesional" />
+    <meta property="og:url" content="https://lamaranai.com/" />
+    <meta property="og:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
     <meta property="og:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
-    <meta property="og:image" content="https://lamaranpro.com/og-image.jpg" />
+    <meta property="og:image" content="https://lamaranai.com/og-image.jpg" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://lamaranpro.com/" />
-    <meta name="twitter:title" content="LamaranPro - Buat Surat Lamaran & CV Profesional" />
+    <meta name="twitter:url" content="https://lamaranai.com/" />
+    <meta name="twitter:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
     <meta name="twitter:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
-    <meta name="twitter:image" content="https://lamaranpro.com/twitter-image.jpg" />
+    <meta name="twitter:image" content="https://lamaranai.com/twitter-image.jpg" />
     
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "LamaranPro",
+        "name": "LamaranAI",
         "description": "Platform untuk membuat surat lamaran kerja dan CV profesional",
-        "url": "https://lamaranpro.com",
+        "url": "https://lamaranai.com",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Web",
         "offers": {
@@ -89,15 +89,15 @@
 
             <div class="logo-container">
                 <img src="/favicon.png" 
-                     alt="LamaranPro Logo - Career Platform" 
+                     alt="LamaranAI Logo - AI Career Platform" 
                      class="logo-img"
                      width="80" 
                      height="80">
                 
                 <div class="header-badge">
-                    <i class="fas fa-sparkles"></i> <span data-i18n="badge">LamaranPro</span>
+                    <i class="fas fa-sparkles"></i> <span data-i18n="badge">LamaranAI</span>
                 </div>
-                <h1 class="font-serif">Lamaran<span class="text-yellow">Pro</span></h1>
+                <h1 class="font-serif">Lamaran<span class="text-yellow">AI</span></h1>
                 <p data-i18n="tagline">Platform untuk membuat Surat Lamaran dan CV Profesional.</p>
             </div>
         </header>
@@ -246,7 +246,7 @@
                                     <i class="fas fa-copy"></i> <span data-i18n="copy">Salin</span>
                                 </button>
                                 <button class="download-btn" onclick="exportPDF()">
-                                    <i class="fas fa-download"></i> <span data-i18n="download">PDF</span>
+                                    <i class="fas fa-file-pdf"></i> <span data-i18n="download">PDF</span>
                                 </button>
                             </div>
                         </div>
@@ -291,16 +291,20 @@
                     <span class="badge" data-i18n="generator">Generator</span>
                 </div>
 
-                <!-- Tombol Unduh PDF -->
+                <!-- Tombol Unduh PDF (Modern) -->
                 <button class="btn btn-green" style="margin-bottom: 1rem;" onclick="generateCV_PDF()">
-                    <i class="fas fa-download"></i> <span data-i18n="downloadCV">Unduh CV (PDF)</span>
+                    <i class="fas fa-file-pdf"></i> <span data-i18n="downloadCV">Unduh CV (PDF)</span>
                 </button>
 
-        <!-- Info Otomatis -->
-<div class="api-key-box">
-    <strong><i class="fas fa-info-circle"></i> <span>Fitur Otomatis:</span></strong>
-    <span>Klik tombol "Otomatis" untuk mengisi teks secara instan.</span>
-</div>      
+                <div class="cv-grid">
+                    <!-- Kolom Input -->
+                    <div class="form-group">
+                        <!-- Info Fitur Otomatis -->
+                        <div class="api-key-box">
+                            <strong><i class="fas fa-info-circle"></i> <span>Fitur Otomatis:</span></strong>
+                            <span>Klik tombol "Otomatis" untuk mengisi Ringkasan dan Tugas Kerja secara instan.</span>
+                        </div>
+
                         <!-- Informasi Kontak -->
                         <h3 class="form-section-title"><i class="fas fa-user"></i> <span data-i18n="contactInfo">Informasi Kontak</span></h3>
                         <div class="input-group">
@@ -323,10 +327,6 @@
                             <i class="fas fa-envelope icon-input"></i>
                             <input type="text" id="cv2Email" placeholder="Email">
                         </div>
-                        <div class="input-group">
-                            <i class="fas fa-linkedin icon-input"></i>
-                            <input type="text" id="cv2Linkedin" placeholder="Tautan LinkedIn">
-                        </div>
 
                         <!-- Keahlian -->
                         <h3 class="form-section-title"><i class="fas fa-star"></i> <span data-i18n="skills">Keahlian</span></h3>
@@ -339,36 +339,40 @@
                             <input type="text" id="cv2SoftSkills" placeholder="Soft Skills (pisahkan koma)">
                         </div>
 
-                        <!-- Ringkasan Profesional -->
+                        <!-- Ringkasan Profesional (AI Otomatis) -->
                         <h3 class="form-section-title">
                             <i class="fas fa-align-left"></i> <span data-i18n="summary">Ringkasan Profesional</span>
                             <button class="btn-ai" onclick="generateSummary()">✨ Otomatis</button>
                         </h3>
                         <div class="textarea-group">
                             <i class="fas fa-align-left icon-textarea"></i>
-                            <textarea id="cv2Summary" rows="3" placeholder="Tulis ringkasan atau gunakan tombol otomatis..."></textarea>
+                            <textarea id="cv2Summary" rows="3" placeholder="Tulis ringkasan atau klik Otomatis..."></textarea>
                         </div>
 
-                        <!-- Pengalaman Kerja 1 -->
-                        <h3 class="form-section-title"><i class="fas fa-briefcase"></i> <span data-i18n="exp1">Pengalaman Kerja 1</span></h3>
+                        <!-- Pengalaman Kerja 1 (AI Otomatis) -->
+                        <h3 class="form-section-title">
+                            <i class="fas fa-briefcase"></i> <span data-i18n="exp1">Pengalaman Kerja 1</span>
+                            <button class="btn-ai" onclick="generateJob(1)">✨ Otomatis</button>
+                        </h3>
                         <input type="text" id="cv2Job1Title" placeholder="Jabatan">
                         <input type="text" id="cv2Job1Company" placeholder="Perusahaan">
                         <input type="text" id="cv2Job1Date" placeholder="Periode (Jan 2022 - Sekarang)">
                         <div class="textarea-group">
                             <i class="fas fa-tasks icon-textarea"></i>
                             <textarea id="cv2Job1Bullets" rows="3" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
-                            <button class="btn-ai" onclick="generateJob(1)">✨ Buat Otomatis</button>
                         </div>
 
-                        <!-- Pengalaman Kerja 2 -->
-                        <h3 class="form-section-title"><i class="fas fa-briefcase"></i> <span data-i18n="exp2">Pengalaman Kerja 2</span></h3>
+                        <!-- Pengalaman Kerja 2 (AI Otomatis) -->
+                        <h3 class="form-section-title">
+                            <i class="fas fa-briefcase"></i> <span data-i18n="exp2">Pengalaman Kerja 2</span>
+                            <button class="btn-ai" onclick="generateJob(2)">✨ Otomatis</button>
+                        </h3>
                         <input type="text" id="cv2Job2Title" placeholder="Jabatan">
                         <input type="text" id="cv2Job2Company" placeholder="Perusahaan">
                         <input type="text" id="cv2Job2Date" placeholder="Periode">
                         <div class="textarea-group">
                             <i class="fas fa-tasks icon-textarea"></i>
                             <textarea id="cv2Job2Bullets" rows="3" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
-                            <button class="btn-ai" onclick="generateJob(2)">✨ Buat Otomatis</button>
                         </div>
 
                         <!-- Pendidikan -->
@@ -389,7 +393,6 @@
                                     <span id="view-cv2-address">📍 Alamat</span>
                                     <span id="view-cv2-phone">📞 Telepon</span>
                                     <span id="view-cv2-email">✉️ Email</span>
-                                    <span id="view-cv2-linkedin">🔗 LinkedIn</span>
                                 </div>
                             </div>
                             
@@ -438,8 +441,8 @@
     <footer class="seo-footer">
         <div class="container">
             <div class="seo-content">
-                <h3 data-i18n="seoTitle">LamaranPro - Solusi Karir Online</h3>
-                <p data-i18n="seoDesc">LamaranPro adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.</p>
+                <h3 data-i18n="seoTitle">LamaranAI - Solusi Karir Online</h3>
+                <p data-i18n="seoDesc">LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.</p>
                 
                 <div class="seo-features">
                     <div class="feature">
