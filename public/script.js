@@ -514,16 +514,41 @@ function generateSummary() {
     const hard = document.getElementById('cv2HardSkills').value;
     const soft = document.getElementById('cv2SoftSkills').value;
     
-    const prompt = `Buat ringkasan profil untuk posisi "${title}". Skill: ${hard}, ${soft}.`;
+    const prompt = `Buat ringkasan profil profesional untuk posisi "${title}" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.
+
+DATA:
+Posisi: ${title}
+Hard Skills: ${hard}
+Soft Skills: ${soft}
+
+FORMAT OUTPUT:
+- Maksimal 3-4 kalimat
+- Langsung ke poin, tanpa "Berikut adalah ringkasan..."
+- Fokus pada keahlian dan nilai tambah
+- Gunakan bahasa yang profesional dan menjual`;
+
     const button = document.querySelector('.form-section-title .btn-ai');
     callGeminiAPI_CV(prompt, button, 'cv2Summary');
 }
-
 function generateJob(jobIndex) {
     const title = document.getElementById(`cv2Job${jobIndex}Title`).value;
     const company = document.getElementById(`cv2Job${jobIndex}Company`).value;
+    const jobDesc = document.getElementById(`cv2Job${jobIndex}Bullets`).value;
     
-    const prompt = `Buat 3 poin pencapaian untuk ${title} di ${company}.`;
+    const prompt = `Buat 3 poin pencapaian kerja untuk posisi "${title}" di perusahaan "${company}" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.
+
+DATA:
+Jabatan: ${title}
+Perusahaan: ${company}
+Deskripsi Tugas: ${jobDesc || "Sesuaikan dengan standar industri"}
+
+FORMAT OUTPUT:
+- 3 poin terpisah (satu poin per baris)
+- Setiap poin fokus pada hasil (impact) dan pencapaian
+- Gunakan angka atau persentase untuk membuatnya lebih meyakinkan
+- Jangan gunakan format markdown (**), bullet (-), atau angka urutan
+- Contoh format: "Meningkatkan penjualan sebesar 30% dalam 6 bulan pertama"`;
+
     const button = document.querySelector(`.form-section-title:nth-of-type(${jobIndex + 3}) .btn-ai`);
     callGeminiAPI_CV(prompt, button, `cv2Job${jobIndex}Bullets`);
 }
