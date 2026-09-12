@@ -203,10 +203,23 @@ body {
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 0.75rem;
-    background: var(--bg-secondary);
+    background: var(--bg-input);
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+/* Warna icon saat tab TIDAK aktif */
+.tab-button .tab-icon {
+    color: var(--text-secondary);
+}
+
+/* Warna icon saat tab AKTIF */
+.tab-button.active .tab-icon {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
 }
 
 .tab-title { font-size: 0.875rem; font-weight: 600; }
