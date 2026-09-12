@@ -71,7 +71,6 @@ const translations = {
         auto: "Otomatis",
         autoFeature: "Fitur Otomatis:",
         autoFeatureDesc: "Klik tombol 'Otomatis' untuk mengisi Ringkasan dan Tugas.",
-        // Placeholder
         namePlaceholder: "Budi Santoso",
         cityPlaceholder: "Jakarta Selatan",
         phonePlaceholder: "081234567890",
@@ -97,7 +96,6 @@ const translations = {
         cvEduSchoolPlaceholder: "Universitas",
         cvEduDatePlaceholder: "Periode",
         cvEduDetailPlaceholder: "Detail (IPK, dll)",
-        // SEO
         seoTitle: "LamaranAI - Solusi Karir Online",
         seoDesc: "LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik.",
         seoFeature1Title: "Surat Lamaran Profesional",
@@ -162,7 +160,6 @@ const translations = {
         auto: "Auto",
         autoFeature: "Auto Feature:",
         autoFeatureDesc: "Click 'Auto' button to fill Summary and Tasks.",
-        // Placeholder
         namePlaceholder: "John Doe",
         cityPlaceholder: "New York",
         phonePlaceholder: "+1 234 567 890",
@@ -188,7 +185,6 @@ const translations = {
         cvEduSchoolPlaceholder: "University",
         cvEduDatePlaceholder: "Period",
         cvEduDetailPlaceholder: "Detail (GPA, etc)",
-        // SEO
         seoTitle: "LamaranAI - Online Career Solution",
         seoDesc: "LamaranAI is a free platform to help you create professional cover letters and attractive CVs.",
         seoFeature1Title: "Professional Cover Letter",
@@ -203,12 +199,11 @@ const translations = {
 };
 
 // ============================================
-// LANGUAGE SETTINGS (DIPERBAIKI)
+// LANGUAGE SETTINGS
 // ============================================
 function setLanguage(lang) {
     state.currentLang = lang;
     
-    // Update language buttons
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.textContent.includes(lang.toUpperCase())) {
@@ -216,7 +211,6 @@ function setLanguage(lang) {
         }
     });
     
-    // Update text content
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[lang][key]) {
@@ -224,7 +218,6 @@ function setLanguage(lang) {
         }
     });
     
-    // Update placeholders
     document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
         const key = element.getAttribute('data-i18n-placeholder');
         if (translations[lang][key]) {
@@ -232,7 +225,6 @@ function setLanguage(lang) {
         }
     });
     
-    // Update document title
     document.title = lang === 'id' ? 
         'LamaranAI - Buat Surat Lamaran & CV Profesional Gratis' : 
         'LamaranAI - Create Professional Cover Letters & CVs Free';
@@ -240,28 +232,6 @@ function setLanguage(lang) {
     document.documentElement.lang = lang;
     localStorage.setItem('lamaranai_lang', lang);
 }
-
-// ============================================
-// THEME SETTINGS
-// ============================================
-function toggleTheme() {
-    const html = document.documentElement;
-    const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', newTheme);
-    document.getElementById('themeIcon').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    localStorage.setItem('lamaranai_theme', newTheme);
-    state.currentTheme = newTheme;
-}
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('lamaranai_theme');
-    if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeIcon').className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-        state.currentTheme = savedTheme;
-    }
-}
-
 
 // ============================================
 // THEME SETTINGS
@@ -377,7 +347,22 @@ function draw(e) {
 }
 
 function stopDrawing() {
-    if (isDrawing && canvas) state.signatureDataUrl = canvas.toDataURL('image/png');
+    if (isDrawing && canvas) {
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        let hasContent = false;
+        
+        for (let i = 3; i < data.length; i += 4) {
+            if (data[i] > 0) {
+                hasContent = true;
+                break;
+            }
+        }
+        
+        if (hasContent) {
+            state.signatureDataUrl = canvas.toDataURL('image/png');
+        }
+    }
     isDrawing = false;
 }
 
@@ -483,7 +468,13 @@ Sincerely,
 ${name || "[Your Name]"}
 ${phone ? "Phone: " + phone : ""} | ${email ? "Email: " + email : ""}
 
-Return ONLY the complete cover letter text without markdown symbols (*), hashtags (#), or additional quotes.`;
+IMPORTANT RULES:
+- Return ONLY the cover letter text
+- Do NOT use markdown symbols (*), hashtags (#), or quotes
+- Do NOT add extra hyphens in compound words (write "hands on" not "hands- on")
+- Use proper spacing between words
+- Keep the formatting clean and professional
+- No extra characters or symbols`;
 
         const result = await callGeminiAPI(promptText, "You are a professional career consultant.");
         state.outputLetter = result;
@@ -503,7 +494,7 @@ Return ONLY the complete cover letter text without markdown symbols (*), hashtag
 }
 
 // ============================================
-// RENDER LETTER PREVIEW
+// RENDER LETTER PREVIEW (DIPERBAIKI)
 // ============================================
 function renderLetterPreview() {
     const previewContainer = document.getElementById('letterPreview');
@@ -518,28 +509,46 @@ function renderLetterPreview() {
 
 function formatLetterHTML(text) {
     if (!text) return '';
-    const lines = text.split('\n');
+    
+    // Bersihkan teks dari karakter aneh
+    const cleanText = text
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
+        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .replace(/\u00A0/g, ' ')
+        .replace(/ {2,}/g, ' ')
+        .trim();
+    
+    const lines = cleanText.split('\n');
     let html = '<div class="letter-content">';
     let i = 0;
+    
     while (i < lines.length) {
         const line = lines[i];
         const trimmed = line.trim();
-        if (trimmed.toLowerCase().includes('sincerely') || trimmed.toLowerCase().includes('hormat saya')) {
+        const lowerLine = trimmed.toLowerCase();
+        
+        if (lowerLine.includes('sincerely') || lowerLine.includes('hormat saya')) {
             html += `<div class="letter-signature"><p>${trimmed}</p>`;
+            
             if (state.hasSignature && state.signatureDataUrl) {
                 html += `<img src="${state.signatureDataUrl}" alt="Digital Signature" class="signature-image">`;
             } else {
                 html += `<div class="signature-placeholder-box">(Tanda Tangan)</div>`;
             }
+            
             html += `</div>`;
+            
             while (i + 1 < lines.length && lines[i + 1].trim() === '') i++;
         } else if (trimmed === '') {
             html += '<div class="blank-line"></div>';
         } else {
             html += `<p class="letter-paragraph">${trimmed}</p>`;
         }
+        
         i++;
     }
+    
     html += '</div>';
     return html;
 }
@@ -589,47 +598,102 @@ function copyToClipboard() {
 }
 
 // ============================================
-// EXPORT PDF SURAT
+// EXPORT PDF SURAT (DIPERBAIKI - BERSIH)
 // ============================================
 async function exportPDF() {
-    if (!state.outputLetter) return;
+    if (!state.outputLetter) {
+        alert('Belum ada surat lamaran untuk diunduh.');
+        return;
+    }
+    
     try {
-        if (!window.jspdf) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+        if (!window.jspdf) {
+            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+        }
+        
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: "mm", format: "a4" });
+        
         const marginLeft = 20;
-        let cursorY = 25;
+        const marginTop = 20;
         const pageHeight = 297;
+        const pageWidth = 210;
         const marginBottom = 20;
-        const maxLineWidth = 170;
+        const maxLineWidth = pageWidth - (marginLeft * 2);
+        
+        let cursorY = marginTop;
+        
         doc.setFont("times", "normal");
         doc.setFontSize(11);
-        const paragraphs = state.outputLetter.split("\n");
+        doc.setTextColor(0, 0, 0);
+        
+        // Bersihkan teks
+        let cleanText = state.outputLetter
+            .replace(/\r\n/g, '\n')
+            .replace(/\r/g, '\n')
+            .replace(/[\u200B-\u200D\uFEFF]/g, '')
+            .replace(/\u00A0/g, ' ')
+            .trim();
+        
+        const paragraphs = cleanText.split("\n");
+        
         for (let i = 0; i < paragraphs.length; i++) {
-            const line = paragraphs[i].trim();
-            if (line.toLowerCase().includes("sincerely") || line.toLowerCase().includes("hormat saya")) {
-                if (cursorY + 45 > pageHeight - marginBottom) { doc.addPage(); cursorY = 25; }
+            let line = paragraphs[i].trim();
+            const lowerLine = line.toLowerCase();
+            
+            if (lowerLine.includes("sincerely") || lowerLine.includes("hormat saya")) {
+                if (cursorY + 50 > pageHeight - marginBottom) {
+                    doc.addPage();
+                    cursorY = marginTop;
+                }
+                
                 doc.text(line, marginLeft, cursorY);
-                cursorY += 8;
+                cursorY += 10;
+                
                 if (state.hasSignature && state.signatureDataUrl) {
-                    doc.addImage(state.signatureDataUrl, "PNG", marginLeft, cursorY, 42, 18);
-                    cursorY += 21;
-                } else { cursorY += 16; }
+                    try {
+                        doc.addImage(state.signatureDataUrl, "PNG", marginLeft, cursorY, 45, 20);
+                        cursorY += 23;
+                    } catch (e) {
+                        console.error('Gagal menambahkan tanda tangan:', e);
+                        cursorY += 20;
+                    }
+                } else {
+                    cursorY += 20;
+                }
+                
                 while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") i++;
                 continue;
             }
-            if (line === "") { cursorY += 4; continue; }
+            
+            if (line === "") {
+                cursorY += 5;
+                continue;
+            }
+            
+            if (cursorY + 8 > pageHeight - marginBottom) {
+                doc.addPage();
+                cursorY = marginTop;
+            }
+            
             const splitText = doc.splitTextToSize(line, maxLineWidth);
+            
             for (let j = 0; j < splitText.length; j++) {
-                if (cursorY + 7 > pageHeight - marginBottom) { doc.addPage(); cursorY = 25; }
+                if (cursorY + 7 > pageHeight - marginBottom) {
+                    doc.addPage();
+                    cursorY = marginTop;
+                }
                 doc.text(splitText[j], marginLeft, cursorY);
                 cursorY += 6;
             }
         }
+        
         const company = document.getElementById('company').value || 'Lamaran';
         const safeFileName = company.replace(/[^a-zA-Z0-9]/g, "_");
         doc.save(`Surat_Lamaran_${safeFileName}.pdf`);
+        
     } catch (error) {
+        console.error('PDF Error:', error);
         showError('Gagal membuat PDF: ' + error.message);
     }
 }
@@ -639,8 +703,15 @@ async function exportPDF() {
 // ============================================
 
 function formatCVBullets(text) {
-    if (!text) return '<li>Belum diisi</li>';
-    const lines = text.split('\n').filter(line => line.trim() !== '');
+    if (!text || !text.trim()) return '';
+    const lines = text.split('\n')
+        .filter(line => {
+            const trimmed = line.trim();
+            return trimmed !== '' && 
+                   trimmed.toLowerCase() !== 'belum diisi' && 
+                   trimmed.toLowerCase() !== 'not filled yet';
+        });
+    if (lines.length === 0) return '';
     return lines.map(line => `<li>${line.replace(/^[\*\-]\s*/, '')}</li>`).join('');
 }
 
@@ -665,31 +736,88 @@ function applyPreviewScale() {
 }
 
 function openCvPreview() {
-    // Ambil data dari input form
-    const name = document.getElementById('cv2Name').value || 'Nama Anda';
-    const title = document.getElementById('cv2Title').value || 'Posisi / Spesialisasi';
-    const address = document.getElementById('cv2Address').value;
-    const phone = document.getElementById('cv2Phone').value;
-    const email = document.getElementById('cv2Email').value;
-    const summary = document.getElementById('cv2Summary').value || 'Ringkasan belum diisi';
+    const getValue = (id, fallback = '') => {
+        const val = document.getElementById(id).value.trim();
+        return val || fallback;
+    };
+
+    const name = getValue('cv2Name', 'Nama Anda');
+    const title = getValue('cv2Title', 'Posisi / Spesialisasi');
+    const address = getValue('cv2Address');
+    const phone = getValue('cv2Phone');
+    const email = getValue('cv2Email');
+    const summary = getValue('cv2Summary', 'Ringkasan belum diisi');
     
-    const job1Title = document.getElementById('cv2Job1Title').value;
-    const job1Company = document.getElementById('cv2Job1Company').value;
-    const job1Date = document.getElementById('cv2Job1Date').value;
-    const job1Bullets = formatCVBullets(document.getElementById('cv2Job1Bullets').value);
+    const job1Title = getValue('cv2Job1Title');
+    const job1Company = getValue('cv2Job1Company');
+    const job1Date = getValue('cv2Job1Date');
+    const job1BulletsRaw = getValue('cv2Job1Bullets');
+    const job1Bullets = formatCVBullets(job1BulletsRaw);
     
-    const job2Title = document.getElementById('cv2Job2Title').value;
-    const job2Company = document.getElementById('cv2Job2Company').value;
-    const job2Date = document.getElementById('cv2Job2Date').value;
-    const job2Bullets = formatCVBullets(document.getElementById('cv2Job2Bullets').value);
+    const job2Title = getValue('cv2Job2Title');
+    const job2Company = getValue('cv2Job2Company');
+    const job2Date = getValue('cv2Job2Date');
+    const job2BulletsRaw = getValue('cv2Job2Bullets');
+    const job2Bullets = formatCVBullets(job2BulletsRaw);
     
-    const eduDegree = document.getElementById('cv2EduDegree').value;
-    const eduSchool = document.getElementById('cv2EduSchool').value;
-    const eduDate = document.getElementById('cv2EduDate').value;
-    const eduDetail = document.getElementById('cv2EduDetail').value;
+    const eduDegree = getValue('cv2EduDegree');
+    const eduSchool = getValue('cv2EduSchool');
+    const eduDate = getValue('cv2EduDate');
+    const eduDetail = getValue('cv2EduDetail');
     
-    const hardSkills = document.getElementById('cv2HardSkills').value;
-    const softSkills = document.getElementById('cv2SoftSkills').value;
+    const hardSkills = getValue('cv2HardSkills');
+    const softSkills = getValue('cv2SoftSkills');
+
+    let experienceHTML = '';
+    if (job1Title || job2Title) {
+        experienceHTML = `
+            <div class="cv-section-heading">PENGALAMAN KERJA</div>
+            ${job1Title ? `
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-role">${job1Title}</span>
+                        <span class="job-date">${job1Date}</span>
+                    </div>
+                    ${job1Company ? `<div class="job-company">${job1Company}</div>` : ''}
+                    ${job1BulletsRaw ? `<ul class="cv-bullets">${job1Bullets}</ul>` : ''}
+                </div>
+            ` : ''}
+            ${job2Title ? `
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-role">${job2Title}</span>
+                        <span class="job-date">${job2Date}</span>
+                    </div>
+                    ${job2Company ? `<div class="job-company">${job2Company}</div>` : ''}
+                    ${job2BulletsRaw ? `<ul class="cv-bullets">${job2Bullets}</ul>` : ''}
+                </div>
+            ` : ''}
+        `;
+    }
+
+    let educationHTML = '';
+    if (eduDegree || eduSchool) {
+        educationHTML = `
+            <div class="cv-section-heading">PENDIDIKAN</div>
+            <div class="job-item">
+                <div class="job-header">
+                    <span class="job-role">${eduDegree}</span>
+                    <span class="job-date">${eduDate}</span>
+                </div>
+                ${eduSchool ? `<div class="job-company">${eduSchool}</div>` : ''}
+                ${eduDetail ? `<div class="cv-text" style="margin-top:4px;">${eduDetail}</div>` : ''}
+            </div>
+        `;
+    }
+
+    let skillsHTML = '';
+    if (hardSkills || softSkills) {
+        skillsHTML = `
+            <div class="cv-section-heading">KEAHLIAN</div>
+            ${hardSkills ? `<div class="skill-group"><strong>Hard Skills:</strong> ${hardSkills}</div>` : ''}
+            ${softSkills ? `<div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>` : ''}
+        `;
+    }
 
     const cvHTML = `
         <div class="cv-paper">
@@ -697,46 +825,20 @@ function openCvPreview() {
                 <div class="cv-name">${name}</div>
                 <div class="cv-title">${title}</div>
                 <div class="cv-contact">
-                    <span>📍 ${address}</span>
-                    <span>📞 ${phone}</span>
-                    <span>✉️ ${email}</span>
+                    ${address ? `<span>📍 ${address}</span>` : ''}
+                    ${phone ? `<span>📞 ${phone}</span>` : ''}
+                    ${email ? `<span>✉️ ${email}</span>` : ''}
                 </div>
             </div>
             
-            <div class="cv-section-heading">Ringkasan Profesional</div>
-            <p class="cv-text">${summary}</p>
+            ${summary ? `
+                <div class="cv-section-heading">RINGKASAN PROFESIONAL</div>
+                <p class="cv-text">${summary}</p>
+            ` : ''}
             
-            <div class="cv-section-heading">Pengalaman Kerja</div>
-            <div class="job-item">
-                <div class="job-header">
-                    <span class="job-role">${job1Title}</span>
-                    <span class="job-date">${job1Date}</span>
-                </div>
-                <div class="job-company">${job1Company}</div>
-                <ul class="cv-bullets">${job1Bullets}</ul>
-            </div>
-            <div class="job-item">
-                <div class="job-header">
-                    <span class="job-role">${job2Title}</span>
-                    <span class="job-date">${job2Date}</span>
-                </div>
-                <div class="job-company">${job2Company}</div>
-                <ul class="cv-bullets">${job2Bullets}</ul>
-            </div>
-            
-            <div class="cv-section-heading">Pendidikan</div>
-            <div class="job-item">
-                <div class="job-header">
-                    <span class="job-role">${eduDegree}</span>
-                    <span class="job-date">${eduDate}</span>
-                </div>
-                <div class="job-company">${eduSchool}</div>
-                <div class="cv-text" style="margin-top:4px;">${eduDetail}</div>
-            </div>
-            
-            <div class="cv-section-heading">Keahlian</div>
-            <div class="skill-group"><strong>Hard Skills:</strong> ${hardSkills}</div>
-            <div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>
+            ${experienceHTML}
+            ${educationHTML}
+            ${skillsHTML}
         </div>
     `;
 
@@ -748,7 +850,7 @@ function openCvPreview() {
     applyPreviewScale();
 
     document.getElementById('btnDownloadCvPdf').disabled = false;
-    document.getElementById('btnDownloadCvPdf').innerHTML = '<i class="fas fa-file-arrow-down"></i> Unduh Sekarang';
+    document.getElementById('btnDownloadCvPdf').innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Unduh Sekarang';
 }
 
 function closeCvPreview() {
@@ -772,13 +874,31 @@ async function downloadCvFromPreview() {
     downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
     try {
-        // Hapus transform agar html2pdf menangkap ukuran asli
+        const originalTransform = container.style.transform;
+        const originalMargin = container.style.marginBottom;
+        
         container.style.transform = 'none';
         container.style.marginBottom = '0';
         
         if (typeof html2pdf === 'undefined') {
             await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
         }
+
+        // Clone dan bersihkan
+        const clone = element.cloneNode(true);
+        clone.style.transform = 'none';
+        clone.style.margin = '0';
+        clone.style.boxShadow = 'none';
+        
+        // Container sementara di luar layar
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'fixed';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '210mm';
+        tempContainer.style.background = 'white';
+        tempContainer.appendChild(clone);
+        document.body.appendChild(tempContainer);
 
         const opt = {
             margin: 0,
@@ -789,14 +909,22 @@ async function downloadCvFromPreview() {
                 useCORS: true, 
                 logging: false,
                 letterRendering: true,
-                width: element.scrollWidth,
-                height: element.scrollHeight,
-                windowWidth: element.scrollWidth
+                width: 794,
+                height: clone.scrollHeight,
+                windowWidth: 794,
+                scrollX: 0,
+                scrollY: 0
             },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
-        await html2pdf().set(opt).from(element).save();
+        await html2pdf().set(opt).from(clone).save();
+        
+        document.body.removeChild(tempContainer);
+        
+        container.style.transform = originalTransform;
+        container.style.marginBottom = originalMargin;
         
     } catch (error) {
         console.error('PDF Error:', error);
@@ -804,11 +932,11 @@ async function downloadCvFromPreview() {
     } finally {
         applyPreviewScale();
         downloadBtn.disabled = false;
-        downloadBtn.innerHTML = '<i class="fas fa-file-arrow-down"></i> Unduh Sekarang';
+        downloadBtn.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Unduh Sekarang';
     }
 }
 
-// Resize listener untuk menyesuaikan preview
+// Resize listener
 window.addEventListener('resize', () => {
     const modal = document.getElementById('cvPdfModal');
     if (modal && modal.style.display === 'flex') {

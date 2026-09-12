@@ -424,15 +424,72 @@ textarea { resize: vertical; min-height: 80px; }
     pointer-events: none;
 }
 
-/* PREVIEW */
+/* ==========================================
+   LETTER CONTENT (DIPERBAIKI)
+   ========================================== */
+.letter-content {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #000;
+    max-width: 100%;
+}
+
+.letter-paragraph {
+    margin-bottom: 8px;
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.letter-signature {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+
+.letter-signature p {
+    margin-bottom: 5px;
+}
+
+.signature-image {
+    display: block;
+    height: 60px;
+    max-width: 200px;
+    object-fit: contain;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 3px;
+    margin: 8px 0;
+}
+
+.signature-placeholder-box {
+    height: 60px;
+    border-bottom: 1px dashed #999;
+    width: 200px;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9pt;
+    color: #999;
+    font-style: italic;
+}
+
+.blank-line {
+    height: 8px;
+}
+
+/* PREVIEW CONTAINER */
 .preview-container {
     background: #fff;
     border-radius: 0.75rem;
-    padding: 1.5rem 2rem;
+    padding: 30px 40px;
     color: #000;
     min-height: 500px;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
     overflow-y: auto;
+    font-family: 'Times New Roman', Times, Georgia, serif;
 }
 
 .preview-placeholder {
@@ -450,6 +507,19 @@ textarea { resize: vertical; min-height: 80px; }
     font-size: 3rem;
     margin-bottom: 1rem;
     color: #d4d4d4;
+}
+
+.preview-placeholder-title {
+    font-weight: 600;
+    color: #404040;
+    font-size: 1.125rem;
+}
+
+.preview-placeholder-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    max-width: 20rem;
+    margin-top: 0.5rem;
 }
 
 /* LOADING */
@@ -475,44 +545,15 @@ textarea { resize: vertical; min-height: 80px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* LETTER */
-.letter-content {
-    font-family: Georgia, serif;
-    font-size: 0.875rem;
-    line-height: 1.7;
-}
-
-.letter-paragraph { margin-bottom: 0.25rem; }
-.letter-signature { margin-top: 1.5rem; }
-.signature-image {
-    height: 4rem;
-    object-fit: contain;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    margin: 0.5rem 0;
-}
-
-.signature-placeholder-box {
-    height: 3.5rem;
-    border-bottom: 1px dashed #d4d4d4;
-    width: 12rem;
-    margin: 0.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.625rem;
-    color: #a3a3a3;
-}
-
-.blank-line { height: 0.75rem; }
-
+/* EDITOR */
 .editor-textarea {
     width: 100%;
     min-height: 480px;
     background: transparent;
     color: #000;
-    font-family: Georgia, serif;
-    font-size: 0.875rem;
-    line-height: 1.7;
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 11pt;
+    line-height: 1.6;
     border: none;
     outline: none;
     resize: none;
@@ -648,20 +689,7 @@ textarea { resize: vertical; min-height: 80px; }
     min-height: 400px;
 }
 
-.cv-preview-info .preview-placeholder {
-    text-align: center;
-    color: var(--text-secondary);
-}
-
-.cv-preview-info .preview-placeholder-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    color: var(--accent-color);
-}
-
-/* ==========================================
-   CV PAPER (A4)
-   ========================================== */
+/* CV PAPER (A4) */
 .cv-paper {
     width: 210mm;
     min-height: 297mm;
@@ -671,6 +699,13 @@ textarea { resize: vertical; min-height: 80px; }
     line-height: 1.5;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+.cv-paper * {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .cv-header { margin-bottom: 20px; }
@@ -770,9 +805,7 @@ textarea { resize: vertical; min-height: 80px; }
     width: 110px;
 }
 
-/* ==========================================
-   SEO FOOTER
-   ========================================== */
+/* SEO FOOTER */
 .seo-footer {
     margin-top: 4rem;
     padding: 3rem 0;
@@ -802,9 +835,7 @@ textarea { resize: vertical; min-height: 80px; }
     margin-bottom: 0.5rem;
 }
 
-/* ==========================================
-   MODAL PREVIEW PDF (FIXED - TIDAK TERPOTONG)
-   ========================================== */
+/* MODAL PREVIEW PDF */
 .modal-overlay {
     position: fixed;
     top: 0;
