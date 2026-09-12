@@ -825,6 +825,138 @@ function openCvPreview() {
             ${softSkills ? `<div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>` : ''}
         `;
     }
+function openCvPreview() {
+    const getValue = (id, fallback = '') => {
+        const val = document.getElementById(id).value.trim();
+        return val || fallback;
+    };
+
+    const name = getValue('cv2Name', 'Nama Anda');
+    const title = getValue('cv2Title', 'Posisi / Spesialisasi');
+    const address = getValue('cv2Address');
+    const phone = getValue('cv2Phone');
+    const email = getValue('cv2Email');
+    const summary = getValue('cv2Summary', 'Ringkasan belum diisi');
+    
+    const job1Title = getValue('cv2Job1Title');
+    const job1Company = getValue('cv2Job1Company');
+    const job1Date = getValue('cv2Job1Date');
+    const job1BulletsRaw = getValue('cv2Job1Bullets');
+    const job1Bullets = formatCVBullets(job1BulletsRaw);
+    
+    const job2Title = getValue('cv2Job2Title');
+    const job2Company = getValue('cv2Job2Company');
+    const job2Date = getValue('cv2Job2Date');
+    const job2BulletsRaw = getValue('cv2Job2Bullets');
+    const job2Bullets = formatCVBullets(job2BulletsRaw);
+    
+    const eduDegree = getValue('cv2EduDegree');
+    const eduSchool = getValue('cv2EduSchool');
+    const eduDate = getValue('cv2EduDate');
+    const eduDetail = getValue('cv2EduDetail');
+    
+    const hardSkills = getValue('cv2HardSkills');
+    const softSkills = getValue('cv2SoftSkills');
+
+    // ============================================
+// SVG ICON MODERN (Satu Warna - Slate Gray)
+// ============================================
+const ICON_COLOR = '#4b5563'; // Slate Gray - profesional & elegan
+
+// Icon Pin (Lokasi)
+const iconPin = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+    <circle cx="12" cy="10" r="3"></circle>
+</svg>`;
+
+// Icon Phone (Telepon)
+const iconPhone = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+</svg>`;
+
+// Icon Mail (Email)
+const iconMail = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+    <polyline points="22,6 12,13 2,6"></polyline>
+</svg>`;
+
+// Icon User (Ringkasan Profesional)
+const iconUser = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+    <circle cx="12" cy="7" r="4"></circle>
+</svg>`;
+
+// Icon Briefcase (Pengalaman)
+const iconBriefcase = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
+    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+</svg>`;
+
+// Icon Graduation Cap (Pendidikan)
+const iconGraduation = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
+    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+</svg>`;
+
+// Icon Star (Keahlian)
+const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+</svg>`;
+
+    // ============================================
+    // BANGUN HTML CV
+    // ============================================
+    
+    let experienceHTML = '';
+    if (job1Title || job2Title) {
+        experienceHTML = `
+            <div class="cv-section-heading">${iconBriefcase} PENGALAMAN KERJA</div>
+            ${job1Title ? `
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-role">${job1Title}</span>
+                        <span class="job-date">${job1Date}</span>
+                    </div>
+                    ${job1Company ? `<div class="job-company">${job1Company}</div>` : ''}
+                    ${job1BulletsRaw ? `<ul class="cv-bullets">${job1Bullets}</ul>` : ''}
+                </div>
+            ` : ''}
+            ${job2Title ? `
+                <div class="job-item">
+                    <div class="job-header">
+                        <span class="job-role">${job2Title}</span>
+                        <span class="job-date">${job2Date}</span>
+                    </div>
+                    ${job2Company ? `<div class="job-company">${job2Company}</div>` : ''}
+                    ${job2BulletsRaw ? `<ul class="cv-bullets">${job2Bullets}</ul>` : ''}
+                </div>
+            ` : ''}
+        `;
+    }
+
+    let educationHTML = '';
+    if (eduDegree || eduSchool) {
+        educationHTML = `
+            <div class="cv-section-heading">${iconGraduation} PENDIDIKAN</div>
+            <div class="job-item">
+                <div class="job-header">
+                    <span class="job-role">${eduDegree}</span>
+                    <span class="job-date">${eduDate}</span>
+                </div>
+                ${eduSchool ? `<div class="job-company">${eduSchool}</div>` : ''}
+                ${eduDetail ? `<div class="cv-text" style="margin-top:4px;">${eduDetail}</div>` : ''}
+            </div>
+        `;
+    }
+
+    let skillsHTML = '';
+    if (hardSkills || softSkills) {
+        skillsHTML = `
+            <div class="cv-section-heading">${iconStar} KEAHLIAN</div>
+            ${hardSkills ? `<div class="skill-group"><strong>Hard Skills:</strong> ${hardSkills}</div>` : ''}
+            ${softSkills ? `<div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>` : ''}
+        `;
+    }
 
     const cvHTML = `
         <div class="cv-paper">
@@ -832,14 +964,14 @@ function openCvPreview() {
                 <div class="cv-name">${name}</div>
                 <div class="cv-title">${title}</div>
                 <div class="cv-contact">
-                    ${address ? `<span>${svgPin} ${address}</span>` : ''}
-                    ${phone ? `<span>${svgPhone} ${phone}</span>` : ''}
-                    ${email ? `<span>${svgMail} ${email}</span>` : ''}
+                    ${address ? `<span>${iconPin} ${address}</span>` : ''}
+                    ${phone ? `<span>${iconPhone} ${phone}</span>` : ''}
+                    ${email ? `<span>${iconMail} ${email}</span>` : ''}
                 </div>
             </div>
             
             ${summary ? `
-                <div class="cv-section-heading">RINGKASAN PROFESIONAL</div>
+                <div class="cv-section-heading">${iconUser} RINGKASAN PROFESIONAL</div>
                 <p class="cv-text">${summary}</p>
             ` : ''}
             
