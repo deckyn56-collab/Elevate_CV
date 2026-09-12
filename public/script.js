@@ -825,9 +825,9 @@ function openCvPreview() {
                 <div class="cv-name">${name}</div>
                 <div class="cv-title">${title}</div>
                 <div class="cv-contact">
-                    ${address ? `<span>📍 ${address}</span>` : ''}
-                    ${phone ? `<span>📞 ${phone}</span>` : ''}
-                    ${email ? `<span>✉️ ${email}</span>` : ''}
+                    ${address ? `<span> ${address}</span>` : ''}
+                    ${phone ? `<span> ${phone}</span>` : ''}
+                    ${email ? `<span> ${email}</span>` : ''}
                 </div>
             </div>
             
