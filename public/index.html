@@ -4,73 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png">
     <link rel="apple-touch-icon" href="/favicon.png">
     
-    <!-- SEO Meta Tags -->
     <title>LamaranAI - Buat Surat Lamaran & CV Profesional Gratis</title>
-    <meta name="description" content="LamaranAI adalah platform gratis untuk membuat surat lamaran kerja profesional dan CV yang menarik. Tingkatkan peluang Anda mendapatkan pekerjaan impian!" />
-    <meta name="keywords" content="surat lamaran kerja, cv profesional, generator cv, template cv, lamaran kerja online, cv maker, cover letter generator" />
+    <meta name="description" content="LamaranAI adalah platform gratis untuk membuat surat lamaran kerja profesional dan CV yang menarik." />
+    <meta name="keywords" content="surat lamaran kerja, cv profesional, generator cv, template cv" />
     <meta name="author" content="LamaranAI" />
     <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="bingbot" content="index, follow" />
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://lamaranai.com/" />
-    <meta property="og:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
-    <meta property="og:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
-    <meta property="og:image" content="https://lamaranai.com/og-image.jpg" />
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://lamaranai.com/" />
-    <meta name="twitter:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
-    <meta name="twitter:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
-    <meta name="twitter:image" content="https://lamaranai.com/twitter-image.jpg" />
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "LamaranAI",
-        "description": "Platform untuk membuat surat lamaran kerja dan CV profesional",
-        "url": "https://lamaranai.com",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "IDR"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "1250"
-        }
-    }
-    </script>
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Library untuk PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- SEO Content for Google -->
-    <div style="display: none;">
-        <h1>LamaranAI - Generator Surat Lamaran Kerja dan CV Online</h1>
-        <p>Buat surat lamaran kerja profesional dan CV yang menarik. Platform gratis untuk pencari kerja Indonesia dan internasional.</p>
-        <p>Fitur: Surat lamaran, CV 1 kolom ramah ATS, tanda tangan digital, export PDF, dan banyak lagi.</p>
-    </div>
-
     <div class="bg-gradient"></div>
     
     <div class="container">
@@ -91,12 +38,7 @@
             </div>
 
             <div class="logo-container">
-                <img src="/favicon.png" 
-                     alt="LamaranAI Logo - AI Career Platform" 
-                     class="logo-img"
-                     width="80" 
-                     height="80">
-                
+                <img src="/favicon.png" alt="LamaranAI Logo" class="logo-img" width="80" height="80">
                 <div class="header-badge">
                     <i class="fas fa-sparkles"></i> <span data-i18n="badge">LamaranAI</span>
                 </div>
@@ -107,7 +49,7 @@
 
         <!-- ERROR MESSAGE -->
         <div id="errorBox" class="error-box hidden">
-            <span id="errorText"><i class="fas fa-exclamation-triangle"></i> Error message here</span>
+            <span id="errorText"><i class="fas fa-exclamation-triangle"></i> Error</span>
             <button onclick="closeError()"><i class="fas fa-times"></i></button>
         </div>
 
@@ -132,7 +74,6 @@
         <!-- TAB: SURAT LAMARAN -->
         <div id="cover-letter" class="tab-content">
             <div class="grid grid-cols-12">
-                <!-- FORM INPUT -->
                 <div class="col-span-5">
                     <div class="card">
                         <div class="card-header">
@@ -140,48 +81,42 @@
                             <span class="badge" data-i18n="step1">Langkah 1</span>
                         </div>
                         
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div>
-                                    <label><i class="fas fa-user"></i> <span data-i18n="fullName">Nama Lengkap</span></label>
-                                    <input type="text" id="name" placeholder="Budi Santoso">
-                                </div>
-                                <div>
-                                    <label><i class="fas fa-map-marker-alt"></i> <span data-i18n="city">Kota Domisili</span></label>
-                                    <input type="text" id="location" placeholder="Jakarta Selatan">
-                                </div>
+                        <div class="form-row">
+                            <div>
+                                <label><i class="fas fa-user"></i> <span data-i18n="fullName">Nama Lengkap</span></label>
+                                <input type="text" id="name" data-i18n-placeholder="namePlaceholder" placeholder="Budi Santoso">
+                            </div>
+                            <div>
+                                <label><i class="fas fa-map-marker-alt"></i> <span data-i18n="city">Kota Domisili</span></label>
+                                <input type="text" id="location" data-i18n-placeholder="cityPlaceholder" placeholder="Jakarta Selatan">
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <div class="form-row">
-                                <div>
-                                    <label><i class="fas fa-phone"></i> <span data-i18n="phone">No. HP</span></label>
-                                    <input type="text" id="phone" placeholder="081234567890">
-                                </div>
-                                <div>
-                                    <label><i class="fas fa-envelope"></i> <span data-i18n="email">Email</span></label>
-                                    <input type="email" id="email" placeholder="budi@email.com">
-                                </div>
+                        <div class="form-row">
+                            <div>
+                                <label><i class="fas fa-phone"></i> <span data-i18n="phone">No. HP</span></label>
+                                <input type="text" id="phone" data-i18n-placeholder="phonePlaceholder" placeholder="081234567890">
+                            </div>
+                            <div>
+                                <label><i class="fas fa-envelope"></i> <span data-i18n="email">Email</span></label>
+                                <input type="email" id="email" data-i18n-placeholder="emailPlaceholder" placeholder="budi@email.com">
                             </div>
                         </div>
 
-                        <div class="form-divider">
-                            <div class="form-row">
-                                <div>
-                                    <label><i class="fas fa-briefcase"></i> <span data-i18n="position">Posisi Target *</span></label>
-                                    <input type="text" id="jobTitle" placeholder="Senior Fullstack Dev">
-                                </div>
-                                <div>
-                                    <label><i class="fas fa-building"></i> <span data-i18n="company">Nama Perusahaan *</span></label>
-                                    <input type="text" id="company" placeholder="PT Tech Innovation">
-                                </div>
+                        <div class="form-row">
+                            <div>
+                                <label><i class="fas fa-briefcase"></i> <span data-i18n="position">Posisi Target *</span></label>
+                                <input type="text" id="jobTitle" data-i18n-placeholder="positionPlaceholder" placeholder="Senior Fullstack Dev">
+                            </div>
+                            <div>
+                                <label><i class="fas fa-building"></i> <span data-i18n="company">Nama Perusahaan *</span></label>
+                                <input type="text" id="company" data-i18n-placeholder="companyPlaceholder" placeholder="PT Tech Innovation">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label><i class="fas fa-map-pin"></i> <span data-i18n="companyAddress">Alamat Perusahaan</span></label>
-                            <input type="text" id="companyAddress" placeholder="Jl. Depati Hamzah, Semabung Lama, Pangkalpinang">
+                            <input type="text" id="companyAddress" data-i18n-placeholder="addressPlaceholder" placeholder="Jl. Depati Hamzah, Pangkalpinang">
                         </div>
 
                         <div class="form-group">
@@ -195,15 +130,14 @@
 
                         <div class="form-group">
                             <label><i class="fas fa-file-alt"></i> <span data-i18n="jobDesc">Deskripsi Pekerjaan</span></label>
-                            <textarea id="jobDescription" rows="3" placeholder="Tempel persyaratan pekerjaan di sini..."></textarea>
+                            <textarea id="jobDescription" rows="3" data-i18n-placeholder="jobDescPlaceholder" placeholder="Tempel persyaratan pekerjaan di sini..."></textarea>
                         </div>
 
                         <div class="form-group">
                             <label><i class="fas fa-award"></i> <span data-i18n="experience">Pengalaman / Poin CV</span></label>
-                            <textarea id="experience" rows="3" placeholder="Tempel ringkasan pengalaman utama Anda..."></textarea>
+                            <textarea id="experience" rows="3" data-i18n-placeholder="experiencePlaceholder" placeholder="Tempel ringkasan pengalaman utama Anda..."></textarea>
                         </div>
 
-                        <!-- SIGNATURE SECTION -->
                         <div class="signature-section">
                             <div class="signature-label">
                                 <label class="signature-title"><i class="fas fa-pen-nib"></i> <span data-i18n="signature">Tanda Tangan Digital</span></label>
@@ -218,9 +152,6 @@
                                     <span data-i18n="signHere">Tanda Tangan</span>
                                 </div>
                             </div>
-                            <p class="signature-info" data-i18n="signatureInfo">
-                                Tanda tangan akan muncul di sebelah kiri dokumen.
-                            </p>
                         </div>
 
                         <button class="btn btn-primary" id="generateLetterBtn" onclick="generateCoverLetter()">
@@ -229,7 +160,6 @@
                     </div>
                 </div>
 
-                <!-- OUTPUT PREVIEW -->
                 <div class="col-span-7">
                     <div class="card">
                         <div class="toolbar">
@@ -249,7 +179,7 @@
                                     <i class="fas fa-copy"></i> <span data-i18n="copy">Salin</span>
                                 </button>
                                 <button class="download-btn" onclick="exportPDF()">
-                                    <i class="fas fa-file-arrow-down"></i> <span data-i18n="download">PDF</span>
+                                    <i class="fas fa-file-circle-arrow-down"></i> <span data-i18n="download">PDF</span>
                                 </button>
                             </div>
                         </div>
@@ -269,9 +199,7 @@
 
                         <div id="letterPreview" class="preview-container">
                             <div class="preview-placeholder">
-                                <div class="preview-placeholder-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
+                                <div class="preview-placeholder-icon"><i class="fas fa-file-alt"></i></div>
                                 <p class="preview-placeholder-title" data-i18n="noLetter">Belum ada surat lamaran</p>
                                 <p class="preview-placeholder-desc" data-i18n="noLetterDesc">Isi formulir di sebelah kiri dan klik "Buat Surat Lamaran" untuk memulai.</p>
                             </div>
@@ -279,14 +207,14 @@
 
                         <div id="loadingScreen" class="loading-screen hidden">
                             <div class="spinner"></div>
-                            <p><i class="fas fa-spinner fa-spin"></i> <span data-i18n="loading">Sedang menyusun surat lamaran terbaik untuk Anda...</span></p>
+                            <p data-i18n="loading">Sedang menyusun surat lamaran terbaik untuk Anda...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB: CV PROFESIONAL 1 KOLOM -->
+        <!-- TAB: CV PROFESIONAL -->
         <div id="cv-2-column" class="tab-content hidden">
             <div class="card">
                 <div class="card-header">
@@ -294,189 +222,105 @@
                     <span class="badge" data-i18n="generator">Generator</span>
                 </div>
 
-                <!-- Tombol Lihat & Unduh -->
                 <button class="btn btn-green" style="margin-bottom: 1rem;" onclick="openCvPreview()">
-                    <i class="fas fa-eye"></i> <span data-i18n="previewCv">Lihat & Unduh CV</span>
+                    <i class="fas fa-file-circle-check"></i> <span data-i18n="previewCv">Lihat & Unduh CV</span>
                 </button>
 
-                <div class="cv-grid">
-                    <!-- Kolom Input -->
+                <div class="cv-grid" style="grid-template-columns: 1fr;">
                     <div class="form-group">
-                        <!-- Info Fitur Otomatis -->
                         <div class="api-key-box">
-                            <strong><i class="fas fa-info-circle"></i> <span>Fitur Otomatis:</span></strong>
-                            <span>Klik tombol "Otomatis" untuk mengisi Ringkasan dan Tugas Kerja secara instan.</span>
+                            <strong><i class="fas fa-info-circle"></i> <span data-i18n="autoFeature">Fitur Otomatis:</span></strong>
+                            <span data-i18n="autoFeatureDesc">Klik tombol "Otomatis" untuk mengisi Ringkasan dan Tugas.</span>
                         </div>
 
-                        <!-- Informasi Kontak -->
                         <h3 class="form-section-title"><i class="fas fa-user"></i> <span data-i18n="contactInfo">Informasi Kontak</span></h3>
                         <div class="input-group">
                             <i class="fas fa-user icon-input"></i>
-                            <input type="text" id="cv2Name" placeholder="Nama Lengkap">
+                            <input type="text" id="cv2Name" data-i18n-placeholder="cvNamePlaceholder" placeholder="Nama Lengkap">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-briefcase icon-input"></i>
-                            <input type="text" id="cv2Title" placeholder="Posisi / Spesialisasi">
+                            <input type="text" id="cv2Title" data-i18n-placeholder="cvTitlePlaceholder" placeholder="Posisi / Spesialisasi">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-map-marker-alt icon-input"></i>
-                            <input type="text" id="cv2Address" placeholder="Kota & Negara">
+                            <input type="text" id="cv2Address" data-i18n-placeholder="cvAddressPlaceholder" placeholder="Kota & Negara">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-phone icon-input"></i>
-                            <input type="text" id="cv2Phone" placeholder="No. Telepon">
+                            <input type="text" id="cv2Phone" data-i18n-placeholder="cvPhonePlaceholder" placeholder="No. Telepon">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-envelope icon-input"></i>
-                            <input type="text" id="cv2Email" placeholder="Email">
+                            <input type="text" id="cv2Email" data-i18n-placeholder="cvEmailPlaceholder" placeholder="Email">
                         </div>
 
-                        <!-- Keahlian -->
                         <h3 class="form-section-title"><i class="fas fa-star"></i> <span data-i18n="skills">Keahlian</span></h3>
                         <div class="input-group">
                             <i class="fas fa-cogs icon-input"></i>
-                            <input type="text" id="cv2HardSkills" placeholder="Hard Skills (pisahkan koma)">
+                            <input type="text" id="cv2HardSkills" data-i18n-placeholder="cvHardSkillsPlaceholder" placeholder="Hard Skills (pisahkan koma)">
                         </div>
                         <div class="input-group">
                             <i class="fas fa-handshake icon-input"></i>
-                            <input type="text" id="cv2SoftSkills" placeholder="Soft Skills (pisahkan koma)">
+                            <input type="text" id="cv2SoftSkills" data-i18n-placeholder="cvSoftSkillsPlaceholder" placeholder="Soft Skills (pisahkan koma)">
                         </div>
 
-                        <!-- Ringkasan Profesional (AI Otomatis) -->
                         <h3 class="form-section-title">
                             <i class="fas fa-align-left"></i> <span data-i18n="summary">Ringkasan Profesional</span>
-                            <button class="btn-ai" onclick="generateSummary()">✨ Otomatis</button>
+                            <button class="btn-ai" onclick="generateSummary()">✨ <span data-i18n="auto">Otomatis</span></button>
                         </h3>
                         <div class="textarea-group">
                             <i class="fas fa-align-left icon-textarea"></i>
-                            <textarea id="cv2Summary" rows="3" placeholder="Tulis ringkasan atau klik Otomatis..."></textarea>
+                            <textarea id="cv2Summary" rows="3" data-i18n-placeholder="cvSummaryPlaceholder" placeholder="Tulis ringkasan atau klik Otomatis..."></textarea>
                         </div>
 
-                        <!-- Pengalaman Kerja 1 (AI Otomatis) -->
                         <h3 class="form-section-title">
                             <i class="fas fa-briefcase"></i> <span data-i18n="exp1">Pengalaman Kerja 1</span>
-                            <button class="btn-ai" onclick="generateJob(1)">✨ Otomatis</button>
+                            <button class="btn-ai" onclick="generateJob(1)">✨ <span data-i18n="auto">Otomatis</span></button>
                         </h3>
-                        <input type="text" id="cv2Job1Title" placeholder="Jabatan">
-                        <input type="text" id="cv2Job1Company" placeholder="Perusahaan">
-                        <input type="text" id="cv2Job1Date" placeholder="Periode (Jan 2022 - Sekarang)">
+                        <input type="text" id="cv2Job1Title" data-i18n-placeholder="cvJobTitlePlaceholder" placeholder="Jabatan">
+                        <input type="text" id="cv2Job1Company" data-i18n-placeholder="cvJobCompanyPlaceholder" placeholder="Perusahaan">
+                        <input type="text" id="cv2Job1Date" data-i18n-placeholder="cvJobDatePlaceholder" placeholder="Periode (Jan 2022 - Sekarang)">
                         <div class="textarea-group">
                             <i class="fas fa-tasks icon-textarea"></i>
-                            <textarea id="cv2Job1Bullets" rows="3" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
+                            <textarea id="cv2Job1Bullets" rows="3" data-i18n-placeholder="cvJobBulletsPlaceholder" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
                         </div>
 
-                        <!-- Pengalaman Kerja 2 (AI Otomatis) -->
                         <h3 class="form-section-title">
                             <i class="fas fa-briefcase"></i> <span data-i18n="exp2">Pengalaman Kerja 2</span>
-                            <button class="btn-ai" onclick="generateJob(2)">✨ Otomatis</button>
+                            <button class="btn-ai" onclick="generateJob(2)">✨ <span data-i18n="auto">Otomatis</span></button>
                         </h3>
-                        <input type="text" id="cv2Job2Title" placeholder="Jabatan">
-                        <input type="text" id="cv2Job2Company" placeholder="Perusahaan">
-                        <input type="text" id="cv2Job2Date" placeholder="Periode">
+                        <input type="text" id="cv2Job2Title" data-i18n-placeholder="cvJobTitlePlaceholder" placeholder="Jabatan">
+                        <input type="text" id="cv2Job2Company" data-i18n-placeholder="cvJobCompanyPlaceholder" placeholder="Perusahaan">
+                        <input type="text" id="cv2Job2Date" data-i18n-placeholder="cvJobDatePlaceholder" placeholder="Periode">
                         <div class="textarea-group">
                             <i class="fas fa-tasks icon-textarea"></i>
-                            <textarea id="cv2Job2Bullets" rows="3" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
+                            <textarea id="cv2Job2Bullets" rows="3" data-i18n-placeholder="cvJobBulletsPlaceholder" placeholder="Pencapaian & Tugas (1 poin per baris)..."></textarea>
                         </div>
 
-                        <!-- Pendidikan -->
                         <h3 class="form-section-title"><i class="fas fa-graduation-cap"></i> <span data-i18n="education">Pendidikan</span></h3>
-                        <input type="text" id="cv2EduDegree" placeholder="Gelar & Jurusan">
-                        <input type="text" id="cv2EduSchool" placeholder="Universitas">
-                        <input type="text" id="cv2EduDate" placeholder="Periode">
-                        <input type="text" id="cv2EduDetail" placeholder="Detail (IPK, dll)">
-                    </div>
-
-                    <!-- Kolom Preview -->
-                    <div class="cv-preview" id="cv2Preview">
-                        <div class="cv-paper" id="cv2-paper">
-                            <div class="cv-header">
-                                <div class="cv-name" id="view-cv2-name">Nama Anda</div>
-                                <div class="cv-title" id="view-cv2-title">Posisi / Spesialisasi</div>
-                                <div class="cv-contact">
-                                    <span id="view-cv2-address">📍 Alamat</span>
-                                    <span id="view-cv2-phone">📞 Telepon</span>
-                                    <span id="view-cv2-email">✉️ Email</span>
-                                </div>
-                            </div>
-                            
-                            <div class="cv-section-heading">Ringkasan Profesional</div>
-                            <p class="cv-text" id="view-cv2-summary"></p>
-                            
-                            <div class="cv-section-heading">Pengalaman Kerja</div>
-                            <div class="job-item">
-                                <div class="job-header">
-                                    <span class="job-role" id="view-cv2-job1-title"></span>
-                                    <span class="job-date" id="view-cv2-job1-date"></span>
-                                </div>
-                                <div class="job-company" id="view-cv2-job1-company"></div>
-                                <ul class="cv-bullets" id="view-cv2-job1-bullets"></ul>
-                            </div>
-                            <div class="job-item">
-                                <div class="job-header">
-                                    <span class="job-role" id="view-cv2-job2-title"></span>
-                                    <span class="job-date" id="view-cv2-job2-date"></span>
-                                </div>
-                                <div class="job-company" id="view-cv2-job2-company"></div>
-                                <ul class="cv-bullets" id="view-cv2-job2-bullets"></ul>
-                            </div>
-                            
-                            <div class="cv-section-heading">Pendidikan</div>
-                            <div class="job-item">
-                                <div class="job-header">
-                                    <span class="job-role" id="view-cv2-edu-degree"></span>
-                                    <span class="job-date" id="view-cv2-edu-date"></span>
-                                </div>
-                                <div class="job-company" id="view-cv2-edu-school"></div>
-                                <div class="cv-text" style="margin-top: 4px;" id="view-cv2-edu-detail"></div>
-                            </div>
-                            
-                            <div class="cv-section-heading">Keahlian</div>
-                            <div class="skill-group"><strong>Hard Skills:</strong> <span id="view-cv2-hard-skills"></span></div>
-                            <div class="skill-group"><strong>Soft Skills:</strong> <span id="view-cv2-soft-skills"></span></div>
-                        </div>
+                        <input type="text" id="cv2EduDegree" data-i18n-placeholder="cvEduDegreePlaceholder" placeholder="Gelar & Jurusan">
+                        <input type="text" id="cv2EduSchool" data-i18n-placeholder="cvEduSchoolPlaceholder" placeholder="Universitas">
+                        <input type="text" id="cv2EduDate" data-i18n-placeholder="cvEduDatePlaceholder" placeholder="Periode">
+                        <input type="text" id="cv2EduDetail" data-i18n-placeholder="cvEduDetailPlaceholder" placeholder="Detail (IPK, dll)">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-  <!-- MODAL PREVIEW PDF -->
-<div id="cvPdfModal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-file-pdf"></i> <span data-i18n="previewPdf">Preview & Unduh CV</span></h3>
-            <button class="modal-close" onclick="closeCvPreview()">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body" style="display: flex; justify-content: center; align-items: flex-start; overflow-x: auto;">
-            <div id="cvPdfPreviewContainer" style="background: #fff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); flex-shrink: 0;">
-                <!-- CV akan di-render di sini -->
-            </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeCvPreview()">
-                <i class="fas fa-times"></i> <span data-i18n="close">Tutup</span>
-            </button>
-            <button class="btn btn-green" id="btnDownloadCvPdf" onclick="downloadCvFromPreview()">
-                <i class="fas fa-file-arrow-down"></i> <span data-i18n="downloadNow">Unduh Sekarang</span>
-            </button>
-        </div>
-    </div>
-</div>
-  
     <!-- SEO Footer -->
     <footer class="seo-footer">
         <div class="container">
             <div class="seo-content">
                 <h3 data-i18n="seoTitle">LamaranAI - Solusi Karir Online</h3>
-                <p data-i18n="seoDesc">LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.</p>
+                <p data-i18n="seoDesc">LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik.</p>
                 
                 <div class="seo-features">
                     <div class="feature">
                         <i class="fas fa-file-alt"></i>
                         <h4 data-i18n="seoFeature1Title">Surat Lamaran Profesional</h4>
-                        <p data-i18n="seoFeature1Desc">Generator surat lamaran kerja yang profesional dan personal</p>
+                        <p data-i18n="seoFeature1Desc">Generator surat lamaran kerja yang profesional</p>
                     </div>
                     <div class="feature">
                         <i class="fas fa-id-card"></i>
@@ -489,20 +333,10 @@
                         <p data-i18n="seoFeature3Desc">Tambahkan tanda tangan digital ke surat lamaran</p>
                     </div>
                     <div class="feature">
-                        <i class="fas fa-download"></i>
+                        <i class="fas fa-cloud-arrow-down"></i>
                         <h4 data-i18n="seoFeature4Title">Export PDF</h4>
                         <p data-i18n="seoFeature4Desc">Unduh hasil dalam format PDF siap kirim</p>
                     </div>
-                </div>
-                
-                <div class="seo-tags">
-                    <h4 data-i18n="popular">Populer:</h4>
-                    <span>#suratlamaran</span>
-                    <span>#cvonline</span>
-                    <span>#templatecv</span>
-                    <span>#resumebuilder</span>
-                    <span>#coverletter</span>
-                    <span>#lamarankerja</span>
                 </div>
             </div>
         </div>
@@ -512,7 +346,7 @@
     <div id="cvPdfModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-file-pdf"></i> <span data-i18n="previewPdf">Preview & Unduh CV</span></h3>
+                <h3><i class="fas fa-file-circle-check"></i> <span data-i18n="previewPdf">Preview & Unduh CV</span></h3>
                 <button class="modal-close" onclick="closeCvPreview()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -525,7 +359,7 @@
                     <i class="fas fa-times"></i> <span data-i18n="close">Tutup</span>
                 </button>
                 <button class="btn btn-green" id="btnDownloadCvPdf" onclick="downloadCvFromPreview()">
-                    <i class="fas fa-file-arrow-down"></i> <span data-i18n="downloadNow">Unduh Sekarang</span>
+                    <i class="fas fa-cloud-arrow-down"></i> <span data-i18n="downloadNow">Unduh Sekarang</span>
                 </button>
             </div>
         </div>
