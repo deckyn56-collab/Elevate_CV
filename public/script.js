@@ -429,41 +429,42 @@ async function generateCoverLetter() {
     
     try {
         const today = new Date().toLocaleDateString(state.currentLang === 'id' ? 'id-ID' : 'en-US', { 
-            day: 'numeric', month: 'long', year: 'numeric' 
-        });
-        
-        const langInstruction = state.currentLang === 'id' ? 'Tulis dalam Bahasa Indonesia' : 'Write in English';
-        
-        const promptText = 'You are a professional career consultant. Write an elegant, convincing cover letter. ' + langInstruction + '.\n\n' +
-            'APPLICANT DATA:\n' +
-            'Name: ' + (name || "[Your Name]") + '\n' +
-            'Location: ' + (location || "[Your City]") + '\n' +
-            'Phone: ' + (phone || "[Phone Number]") + '\n' +
-            'Email: ' + (email || "[Your Email]") + '\n\n' +
-            'COMPANY DATA:\n' +
-            'Company: ' + company + '\n' +
-            'Company Address: ' + (companyAddress || "[Company Address]") + '\n' +
-            'Position Applied: ' + jobTitle + '\n\n' +
-            'TONE: ' + tone + '\n' +
-            'JOB DESCRIPTION: ' + (jobDescription || "Highly relevant to standard qualifications for this position.") + '\n' +
-            'CV EXPERIENCE: ' + (experience || "Mention high motivation, enthusiasm, and quick adaptability.") + '\n\n' +
-            'FORMAT REQUIREMENTS:\n' +
-            (location || "[City]") + ', ' + today + '\n\n' +
-            'Subject: Job Application - ' + jobTitle + '\n\n' +
-            'Dear Hiring Manager / HRD Team\n' +
-            company + '\n' +
-            (companyAddress || "") + '\n\n' +
-            'Dear Sir/Madam,\n' +
-            '[Write cover letter in 3-4 persuasive paragraphs...]\n\n' +
-            'Sincerely,\n\n' +
-            (name || "[Your Name]") + '\n' +
-            (phone ? "Phone: " + phone : "") + ' | ' + (email ? "Email: " + email : "") + '\n\n' +
-            'IMPORTANT RULES:\n' +
-            '- Return ONLY the cover letter text\n' +
-            '- Do NOT use markdown symbols, hashtags, or quotes\n' +
-            '- Do NOT add extra hyphens in compound words\n' +
-            '- Use proper spacing between words\n' +
-            '- No extra characters or symbols';
+    day: 'numeric', month: 'long', year: 'numeric' 
+});
+
+const langInstruction = state.currentLang === 'id' ? 'Tulis dalam Bahasa Indonesia' : 'Write in English';
+const useIndonesian = state.currentLang === 'id';
+
+const promptText = 'You are a professional career consultant. Write an elegant, convincing cover letter. ' + langInstruction + '.\n\n' +
+    'APPLICANT DATA:\n' +
+    'Name: ' + (name || "[Your Name]") + '\n' +
+    'Location: ' + (location || "[Your City]") + '\n' +
+    'Phone: ' + (phone || "[Phone Number]") + '\n' +
+    'Email: ' + (email || "[Your Email]") + '\n\n' +
+    'COMPANY DATA:\n' +
+    'Company: ' + company + '\n' +
+    'Company Address: ' + (companyAddress || "[Company Address]") + '\n' +
+    'Position Applied: ' + jobTitle + '\n\n' +
+    'TONE: ' + tone + '\n' +
+    'JOB DESCRIPTION: ' + (jobDescription || "Highly relevant to standard qualifications for this position.") + '\n' +
+    'CV EXPERIENCE: ' + (experience || "Mention high motivation, enthusiasm, and quick adaptability.") + '\n\n' +
+    'FORMAT REQUIREMENTS:\n' +
+    (location || "[City]") + ', ' + today + '\n\n' +
+    (useIndonesian ? 'Hal: Lamaran Pekerjaan - ' : 'Subject: Job Application - ') + jobTitle + '\n\n' +
+    (useIndonesian ? 'Yth. Hiring Manager / HRD Team\n' : 'Dear Hiring Manager / HRD Team\n') +
+    company + '\n' +
+    (companyAddress || "") + '\n\n' +
+    (useIndonesian ? 'Dengan hormat,\n' : 'Dear Sir/Madam,\n') +
+    (useIndonesian ? '[Tulis surat lamaran dalam 3-4 paragraf persuasif...]\n\n' : '[Write cover letter in 3-4 persuasive paragraphs...]\n\n') +
+    (useIndonesian ? 'Hormat saya,\n\n' : 'Sincerely,\n\n') +
+    (name || "[Your Name]") + '\n' +
+    (phone ? "Phone: " + phone : "") + ' | ' + (email ? "Email: " + email : "") + '\n\n' +
+    'IMPORTANT RULES:\n' +
+    '- Return ONLY the cover letter text\n' +
+    '- Do NOT use markdown symbols, hashtags, or quotes\n' +
+    '- Do NOT add extra hyphens in compound words\n' +
+    '- Use proper spacing between words\n' +
+    '- No extra characters or symbols';
 
         const result = await callGeminiAPI(promptText, "You are a professional career consultant.");
         state.outputLetter = result;
