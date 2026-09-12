@@ -15,7 +15,7 @@ const state = {
 };
 
 // ============================================
-// TRANSLATIONS (LENGKAP DENGAN PLACEHOLDER)
+// TRANSLATIONS
 // ============================================
 const translations = {
     id: {
@@ -92,8 +92,8 @@ const translations = {
         cvJobCompanyPlaceholder: "Perusahaan",
         cvJobDatePlaceholder: "Periode (Jan 2022 - Sekarang)",
         cvJobBulletsPlaceholder: "Pencapaian & Tugas (1 poin per baris)...",
-        cvEduDegreePlaceholder: "Gelar & Jurusan",
-        cvEduSchoolPlaceholder: "Universitas",
+        cvEduDegreePlaceholder: "Jenjang / Jurusan (contoh: SMA IPA, D3 Akuntansi, S1 Teknik Informatika)",
+cvEduSchoolPlaceholder: "Institusi / Sekolah (contoh: SMK Negeri 1, Universitas Indonesia)",
         cvEduDatePlaceholder: "Periode",
         cvEduDetailPlaceholder: "Detail (IPK, dll)",
         seoTitle: "LamaranAI - Solusi Karir Online",
@@ -181,8 +181,8 @@ const translations = {
         cvJobCompanyPlaceholder: "Company",
         cvJobDatePlaceholder: "Period (Jan 2022 - Present)",
         cvJobBulletsPlaceholder: "Achievements & Tasks (1 point per line)...",
-        cvEduDegreePlaceholder: "Degree & Major",
-        cvEduSchoolPlaceholder: "University",
+        cvEduDegreePlaceholder: "Level / Major (e.g., High School, D3 Accounting, Bachelor of IT)",
+cvEduSchoolPlaceholder: "Institution / School (e.g., SMK Negeri 1, University of Indonesia)",
         cvEduDatePlaceholder: "Period",
         cvEduDetailPlaceholder: "Detail (GPA, etc)",
         seoTitle: "LamaranAI - Online Career Solution",
@@ -275,7 +275,7 @@ function showError(message) {
     state.error = message;
     const errorBox = document.getElementById('errorBox');
     const errorText = document.getElementById('errorText');
-    errorText.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+    errorText.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + message;
     errorBox.classList.remove('hidden');
     setTimeout(() => closeError(), 5000);
 }
@@ -376,7 +376,7 @@ function clearSignature() {
 }
 
 // ============================================
-// API CALL (Serverless Vercel)
+// API CALL
 // ============================================
 async function callGeminiAPI(prompt, systemPrompt = "") {
     try {
@@ -434,47 +434,36 @@ async function generateCoverLetter() {
         
         const langInstruction = state.currentLang === 'id' ? 'Tulis dalam Bahasa Indonesia' : 'Write in English';
         
-        const promptText = `You are a professional career consultant. Write an elegant, convincing cover letter. ${langInstruction}.
-
-APPLICANT DATA:
-Name: ${name || "[Your Name]"}
-Location: ${location || "[Your City]"}
-Phone: ${phone || "[Phone Number]"}
-Email: ${email || "[Your Email]"}
-
-COMPANY DATA:
-Company: ${company}
-Company Address: ${companyAddress || "[Company Address]"}
-Position Applied: ${jobTitle}
-
-TONE: ${tone}
-JOB DESCRIPTION: ${jobDescription || "Highly relevant to standard qualifications for this position."}
-CV EXPERIENCE: ${experience || "Mention high motivation, enthusiasm, and quick adaptability."}
-
-FORMAT REQUIREMENTS:
-${location || "[City]"}, ${today}
-
-Subject: Job Application - ${jobTitle}
-
-Dear Hiring Manager / HRD Team
-${company}
-${companyAddress || ""}
-
-Dear Sir/Madam,
-[Write cover letter in 3-4 persuasive paragraphs...]
-
-Sincerely,
-
-${name || "[Your Name]"}
-${phone ? "Phone: " + phone : ""} | ${email ? "Email: " + email : ""}
-
-IMPORTANT RULES:
-- Return ONLY the cover letter text
-- Do NOT use markdown symbols (*), hashtags (#), or quotes
-- Do NOT add extra hyphens in compound words (write "hands on" not "hands- on")
-- Use proper spacing between words
-- Keep the formatting clean and professional
-- No extra characters or symbols`;
+        const promptText = 'You are a professional career consultant. Write an elegant, convincing cover letter. ' + langInstruction + '.\n\n' +
+            'APPLICANT DATA:\n' +
+            'Name: ' + (name || "[Your Name]") + '\n' +
+            'Location: ' + (location || "[Your City]") + '\n' +
+            'Phone: ' + (phone || "[Phone Number]") + '\n' +
+            'Email: ' + (email || "[Your Email]") + '\n\n' +
+            'COMPANY DATA:\n' +
+            'Company: ' + company + '\n' +
+            'Company Address: ' + (companyAddress || "[Company Address]") + '\n' +
+            'Position Applied: ' + jobTitle + '\n\n' +
+            'TONE: ' + tone + '\n' +
+            'JOB DESCRIPTION: ' + (jobDescription || "Highly relevant to standard qualifications for this position.") + '\n' +
+            'CV EXPERIENCE: ' + (experience || "Mention high motivation, enthusiasm, and quick adaptability.") + '\n\n' +
+            'FORMAT REQUIREMENTS:\n' +
+            (location || "[City]") + ', ' + today + '\n\n' +
+            'Subject: Job Application - ' + jobTitle + '\n\n' +
+            'Dear Hiring Manager / HRD Team\n' +
+            company + '\n' +
+            (companyAddress || "") + '\n\n' +
+            'Dear Sir/Madam,\n' +
+            '[Write cover letter in 3-4 persuasive paragraphs...]\n\n' +
+            'Sincerely,\n\n' +
+            (name || "[Your Name]") + '\n' +
+            (phone ? "Phone: " + phone : "") + ' | ' + (email ? "Email: " + email : "") + '\n\n' +
+            'IMPORTANT RULES:\n' +
+            '- Return ONLY the cover letter text\n' +
+            '- Do NOT use markdown symbols, hashtags, or quotes\n' +
+            '- Do NOT add extra hyphens in compound words\n' +
+            '- Use proper spacing between words\n' +
+            '- No extra characters or symbols';
 
         const result = await callGeminiAPI(promptText, "You are a professional career consultant.");
         state.outputLetter = result;
@@ -494,14 +483,14 @@ IMPORTANT RULES:
 }
 
 // ============================================
-// RENDER LETTER PREVIEW (DIPERBAIKI)
+// RENDER LETTER PREVIEW
 // ============================================
 function renderLetterPreview() {
     const previewContainer = document.getElementById('letterPreview');
     if (state.viewMode === 'preview') {
         previewContainer.innerHTML = formatLetterHTML(state.outputLetter);
     } else {
-        previewContainer.innerHTML = `<textarea class="editor-textarea" id="letterEditor">${state.outputLetter}</textarea>`;
+        previewContainer.innerHTML = '<textarea class="editor-textarea" id="letterEditor">' + state.outputLetter + '</textarea>';
         const editor = document.getElementById('letterEditor');
         editor.addEventListener('input', (e) => { state.outputLetter = e.target.value; });
     }
@@ -510,7 +499,6 @@ function renderLetterPreview() {
 function formatLetterHTML(text) {
     if (!text) return '';
     
-    // Bersihkan teks dari karakter aneh
     const cleanText = text
         .replace(/\r\n/g, '\n')
         .replace(/\r/g, '\n')
@@ -529,21 +517,21 @@ function formatLetterHTML(text) {
         const lowerLine = trimmed.toLowerCase();
         
         if (lowerLine.includes('sincerely') || lowerLine.includes('hormat saya')) {
-            html += `<div class="letter-signature"><p>${trimmed}</p>`;
+            html += '<div class="letter-signature"><p>' + trimmed + '</p>';
             
             if (state.hasSignature && state.signatureDataUrl) {
-                html += `<img src="${state.signatureDataUrl}" alt="Digital Signature" class="signature-image">`;
+                html += '<img src="' + state.signatureDataUrl + '" alt="Digital Signature" class="signature-image">';
             } else {
-                html += `<div class="signature-placeholder-box">(Tanda Tangan)</div>`;
+                html += '<div class="signature-placeholder-box">(Tanda Tangan)</div>';
             }
             
-            html += `</div>`;
+            html += '</div>';
             
             while (i + 1 < lines.length && lines[i + 1].trim() === '') i++;
         } else if (trimmed === '') {
             html += '<div class="blank-line"></div>';
         } else {
-            html += `<p class="letter-paragraph">${trimmed}</p>`;
+            html += '<p class="letter-paragraph">' + trimmed + '</p>';
         }
         
         i++;
@@ -573,7 +561,7 @@ async function refineLetter(instruction) {
     state.isGeneratingLetter = true;
     showLoading(true);
     try {
-        const promptText = `Here is a draft cover letter:\n"""\n${state.outputLetter}\n"""\n\nRefinement instruction: "${instruction}".\nMaintain professional cover letter structure. Return only the refined letter text.`;
+        const promptText = 'Here is a draft cover letter:\n"""\n' + state.outputLetter + '\n"""\n\nRefinement instruction: "' + instruction + '".\nMaintain professional cover letter structure. Return only the refined letter text.';
         const result = await callGeminiAPI(promptText, "You are a professional editor.");
         state.outputLetter = result;
         renderLetterPreview();
@@ -598,7 +586,7 @@ function copyToClipboard() {
 }
 
 // ============================================
-// EXPORT PDF SURAT (DIPERBAIKI - BERSIH)
+// EXPORT PDF SURAT
 // ============================================
 async function exportPDF() {
     if (!state.outputLetter) {
@@ -627,7 +615,6 @@ async function exportPDF() {
         doc.setFontSize(11);
         doc.setTextColor(0, 0, 0);
         
-        // Bersihkan teks
         let cleanText = state.outputLetter
             .replace(/\r\n/g, '\n')
             .replace(/\r/g, '\n')
@@ -690,7 +677,7 @@ async function exportPDF() {
         
         const company = document.getElementById('company').value || 'Lamaran';
         const safeFileName = company.replace(/[^a-zA-Z0-9]/g, "_");
-        doc.save(`Surat_Lamaran_${safeFileName}.pdf`);
+        doc.save('Surat_Lamaran_' + safeFileName + '.pdf');
         
     } catch (error) {
         console.error('PDF Error:', error);
@@ -699,7 +686,7 @@ async function exportPDF() {
 }
 
 // ============================================
-// CV PREVIEW & DOWNLOAD (FIXED - TIDAK TERPOTONG)
+// CV PREVIEW & DOWNLOAD
 // ============================================
 
 function formatCVBullets(text) {
@@ -712,7 +699,7 @@ function formatCVBullets(text) {
                    trimmed.toLowerCase() !== 'not filled yet';
         });
     if (lines.length === 0) return '';
-    return lines.map(line => `<li>${line.replace(/^[\*\-]\s*/, '')}</li>`).join('');
+    return lines.map(line => '<li>' + line.replace(/^[\*\-]\s*/, '') + '</li>').join('');
 }
 
 function applyPreviewScale() {
@@ -730,9 +717,9 @@ function applyPreviewScale() {
         scale = 1;
     }
     
-    container.style.transform = `scale(${scale})`;
+    container.style.transform = 'scale(' + scale + ')';
     container.style.transformOrigin = 'top center';
-    container.style.marginBottom = `-${(1 - scale) * 50}%`;
+    container.style.marginBottom = '-' + ((1 - scale) * 50) + '%';
 }
 
 function openCvPreview() {
@@ -768,218 +755,62 @@ function openCvPreview() {
     const hardSkills = getValue('cv2HardSkills');
     const softSkills = getValue('cv2SoftSkills');
 
-    // SVG Icon Modern (bisa di-render oleh html2canvas)
-    const svgPin = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+    // SVG Icon - Satu warna (Slate Gray)
+    const ICON_COLOR = '#4b5563';
+
+    const iconPin = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
     
-    const svgPhone = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>`;
+    const iconPhone = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>';
     
-    const svgMail = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
+    const iconMail = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>';
+    
+    const iconUser = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+    
+    const iconBriefcase = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>';
+    
+    const iconGraduation = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>';
+    
+    const iconStar = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
 
     let experienceHTML = '';
     if (job1Title || job2Title) {
-        experienceHTML = `
-            <div class="cv-section-heading">PENGALAMAN KERJA</div>
-            ${job1Title ? `
-                <div class="job-item">
-                    <div class="job-header">
-                        <span class="job-role">${job1Title}</span>
-                        <span class="job-date">${job1Date}</span>
-                    </div>
-                    ${job1Company ? `<div class="job-company">${job1Company}</div>` : ''}
-                    ${job1BulletsRaw ? `<ul class="cv-bullets">${job1Bullets}</ul>` : ''}
-                </div>
-            ` : ''}
-            ${job2Title ? `
-                <div class="job-item">
-                    <div class="job-header">
-                        <span class="job-role">${job2Title}</span>
-                        <span class="job-date">${job2Date}</span>
-                    </div>
-                    ${job2Company ? `<div class="job-company">${job2Company}</div>` : ''}
-                    ${job2BulletsRaw ? `<ul class="cv-bullets">${job2Bullets}</ul>` : ''}
-                </div>
-            ` : ''}
-        `;
+        experienceHTML = '<div class="cv-section-heading">' + iconBriefcase + ' PENGALAMAN KERJA</div>';
+        if (job1Title) {
+            experienceHTML += '<div class="job-item"><div class="job-header"><span class="job-role">' + job1Title + '</span><span class="job-date">' + job1Date + '</span></div>' + (job1Company ? '<div class="job-company">' + job1Company + '</div>' : '') + (job1BulletsRaw ? '<ul class="cv-bullets">' + job1Bullets + '</ul>' : '') + '</div>';
+        }
+        if (job2Title) {
+            experienceHTML += '<div class="job-item"><div class="job-header"><span class="job-role">' + job2Title + '</span><span class="job-date">' + job2Date + '</span></div>' + (job2Company ? '<div class="job-company">' + job2Company + '</div>' : '') + (job2BulletsRaw ? '<ul class="cv-bullets">' + job2Bullets + '</ul>' : '') + '</div>';
+        }
     }
 
     let educationHTML = '';
     if (eduDegree || eduSchool) {
-        educationHTML = `
-            <div class="cv-section-heading">PENDIDIKAN</div>
-            <div class="job-item">
-                <div class="job-header">
-                    <span class="job-role">${eduDegree}</span>
-                    <span class="job-date">${eduDate}</span>
-                </div>
-                ${eduSchool ? `<div class="job-company">${eduSchool}</div>` : ''}
-                ${eduDetail ? `<div class="cv-text" style="margin-top:4px;">${eduDetail}</div>` : ''}
-            </div>
-        `;
+        educationHTML = '<div class="cv-section-heading">' + iconGraduation + ' PENDIDIKAN</div>' +
+            '<div class="job-item"><div class="job-header"><span class="job-role">' + eduDegree + '</span><span class="job-date">' + eduDate + '</span></div>' + (eduSchool ? '<div class="job-company">' + eduSchool + '</div>' : '') + (eduDetail ? '<div class="cv-text" style="margin-top:4px;">' + eduDetail + '</div>' : '') + '</div>';
     }
 
     let skillsHTML = '';
     if (hardSkills || softSkills) {
-        skillsHTML = `
-            <div class="cv-section-heading">KEAHLIAN</div>
-            ${hardSkills ? `<div class="skill-group"><strong>Hard Skills:</strong> ${hardSkills}</div>` : ''}
-            ${softSkills ? `<div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>` : ''}
-        `;
-    }
-function openCvPreview() {
-    const getValue = (id, fallback = '') => {
-        const val = document.getElementById(id).value.trim();
-        return val || fallback;
-    };
-
-    const name = getValue('cv2Name', 'Nama Anda');
-    const title = getValue('cv2Title', 'Posisi / Spesialisasi');
-    const address = getValue('cv2Address');
-    const phone = getValue('cv2Phone');
-    const email = getValue('cv2Email');
-    const summary = getValue('cv2Summary', 'Ringkasan belum diisi');
-    
-    const job1Title = getValue('cv2Job1Title');
-    const job1Company = getValue('cv2Job1Company');
-    const job1Date = getValue('cv2Job1Date');
-    const job1BulletsRaw = getValue('cv2Job1Bullets');
-    const job1Bullets = formatCVBullets(job1BulletsRaw);
-    
-    const job2Title = getValue('cv2Job2Title');
-    const job2Company = getValue('cv2Job2Company');
-    const job2Date = getValue('cv2Job2Date');
-    const job2BulletsRaw = getValue('cv2Job2Bullets');
-    const job2Bullets = formatCVBullets(job2BulletsRaw);
-    
-    const eduDegree = getValue('cv2EduDegree');
-    const eduSchool = getValue('cv2EduSchool');
-    const eduDate = getValue('cv2EduDate');
-    const eduDetail = getValue('cv2EduDetail');
-    
-    const hardSkills = getValue('cv2HardSkills');
-    const softSkills = getValue('cv2SoftSkills');
-
-    // ============================================
-// SVG ICON MODERN (Satu Warna - Slate Gray)
-// ============================================
-const ICON_COLOR = '#4b5563'; // Slate Gray - profesional & elegan
-
-// Icon Pin (Lokasi)
-const iconPin = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
-    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-    <circle cx="12" cy="10" r="3"></circle>
-</svg>`;
-
-// Icon Phone (Telepon)
-const iconPhone = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
-    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-</svg>`;
-
-// Icon Mail (Email)
-const iconMail = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;">
-    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-    <polyline points="22,6 12,13 2,6"></polyline>
-</svg>`;
-
-// Icon User (Ringkasan Profesional)
-const iconUser = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
-</svg>`;
-
-// Icon Briefcase (Pengalaman)
-const iconBriefcase = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
-    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-</svg>`;
-
-// Icon Graduation Cap (Pendidikan)
-const iconGraduation = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
-    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-</svg>`;
-
-// Icon Star (Keahlian)
-const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${ICON_COLOR}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-</svg>`;
-
-    // ============================================
-    // BANGUN HTML CV
-    // ============================================
-    
-    let experienceHTML = '';
-    if (job1Title || job2Title) {
-        experienceHTML = `
-            <div class="cv-section-heading">${iconBriefcase} PENGALAMAN KERJA</div>
-            ${job1Title ? `
-                <div class="job-item">
-                    <div class="job-header">
-                        <span class="job-role">${job1Title}</span>
-                        <span class="job-date">${job1Date}</span>
-                    </div>
-                    ${job1Company ? `<div class="job-company">${job1Company}</div>` : ''}
-                    ${job1BulletsRaw ? `<ul class="cv-bullets">${job1Bullets}</ul>` : ''}
-                </div>
-            ` : ''}
-            ${job2Title ? `
-                <div class="job-item">
-                    <div class="job-header">
-                        <span class="job-role">${job2Title}</span>
-                        <span class="job-date">${job2Date}</span>
-                    </div>
-                    ${job2Company ? `<div class="job-company">${job2Company}</div>` : ''}
-                    ${job2BulletsRaw ? `<ul class="cv-bullets">${job2Bullets}</ul>` : ''}
-                </div>
-            ` : ''}
-        `;
+        skillsHTML = '<div class="cv-section-heading">' + iconStar + ' KEAHLIAN</div>';
+        if (hardSkills) skillsHTML += '<div class="skill-group"><strong>Hard Skills:</strong> ' + hardSkills + '</div>';
+        if (softSkills) skillsHTML += '<div class="skill-group"><strong>Soft Skills:</strong> ' + softSkills + '</div>';
     }
 
-    let educationHTML = '';
-    if (eduDegree || eduSchool) {
-        educationHTML = `
-            <div class="cv-section-heading">${iconGraduation} PENDIDIKAN</div>
-            <div class="job-item">
-                <div class="job-header">
-                    <span class="job-role">${eduDegree}</span>
-                    <span class="job-date">${eduDate}</span>
-                </div>
-                ${eduSchool ? `<div class="job-company">${eduSchool}</div>` : ''}
-                ${eduDetail ? `<div class="cv-text" style="margin-top:4px;">${eduDetail}</div>` : ''}
-            </div>
-        `;
-    }
-
-    let skillsHTML = '';
-    if (hardSkills || softSkills) {
-        skillsHTML = `
-            <div class="cv-section-heading">${iconStar} KEAHLIAN</div>
-            ${hardSkills ? `<div class="skill-group"><strong>Hard Skills:</strong> ${hardSkills}</div>` : ''}
-            ${softSkills ? `<div class="skill-group"><strong>Soft Skills:</strong> ${softSkills}</div>` : ''}
-        `;
-    }
-
-    const cvHTML = `
-        <div class="cv-paper">
-            <div class="cv-header">
-                <div class="cv-name">${name}</div>
-                <div class="cv-title">${title}</div>
-                <div class="cv-contact">
-                    ${address ? `<span>${iconPin} ${address}</span>` : ''}
-                    ${phone ? `<span>${iconPhone} ${phone}</span>` : ''}
-                    ${email ? `<span>${iconMail} ${email}</span>` : ''}
-                </div>
-            </div>
-            
-            ${summary ? `
-                <div class="cv-section-heading">${iconUser} RINGKASAN PROFESIONAL</div>
-                <p class="cv-text">${summary}</p>
-            ` : ''}
-            
-            ${experienceHTML}
-            ${educationHTML}
-            ${skillsHTML}
-        </div>
-    `;
+    const cvHTML = '<div class="cv-paper">' +
+        '<div class="cv-header">' +
+            '<div class="cv-name">' + name + '</div>' +
+            '<div class="cv-title">' + title + '</div>' +
+            '<div class="cv-contact">' +
+                (address ? '<span>' + iconPin + ' ' + address + '</span>' : '') +
+                (phone ? '<span>' + iconPhone + ' ' + phone + '</span>' : '') +
+                (email ? '<span>' + iconMail + ' ' + email + '</span>' : '') +
+            '</div>' +
+        '</div>' +
+        (summary ? '<div class="cv-section-heading">' + iconUser + ' RINGKASAN PROFESIONAL</div><p class="cv-text">' + summary + '</p>' : '') +
+        experienceHTML +
+        educationHTML +
+        skillsHTML +
+        '</div>';
 
     const previewContainer = document.getElementById('cvPdfPreviewContainer');
     previewContainer.innerHTML = cvHTML;
@@ -1023,13 +854,11 @@ async function downloadCvFromPreview() {
             await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js');
         }
 
-        // Clone dan bersihkan
         const clone = element.cloneNode(true);
         clone.style.transform = 'none';
         clone.style.margin = '0';
         clone.style.boxShadow = 'none';
         
-        // Container sementara di luar layar
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'fixed';
         tempContainer.style.left = '-9999px';
@@ -1075,7 +904,6 @@ async function downloadCvFromPreview() {
     }
 }
 
-// Resize listener
 window.addEventListener('resize', () => {
     const modal = document.getElementById('cvPdfModal');
     if (modal && modal.style.display === 'flex') {
@@ -1120,42 +948,24 @@ function generateSummary() {
     const hard = document.getElementById('cv2HardSkills').value;
     const soft = document.getElementById('cv2SoftSkills').value;
     
-    const prompt = `Buat ringkasan profil profesional untuk posisi "${title}" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.
-
-DATA:
-Posisi: ${title}
-Hard Skills: ${hard}
-Soft Skills: ${soft}
-
-FORMAT OUTPUT:
-- Maksimal 3-4 kalimat
-- Langsung ke poin
-- Fokus pada keahlian dan nilai tambah
-- Gunakan bahasa yang profesional dan menjual`;
+    const prompt = 'Buat ringkasan profil profesional untuk posisi "' + title + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\n' +
+        'DATA:\nPosisi: ' + title + '\nHard Skills: ' + hard + '\nSoft Skills: ' + soft + '\n\n' +
+        'FORMAT OUTPUT:\n- Maksimal 3-4 kalimat\n- Langsung ke poin\n- Fokus pada keahlian dan nilai tambah\n- Gunakan bahasa yang profesional dan menjual';
     
     const button = document.querySelector('.form-section-title .btn-ai');
     callGeminiAPI_CV(prompt, button, 'cv2Summary');
 }
 
 function generateJob(jobIndex) {
-    const title = document.getElementById(`cv2Job${jobIndex}Title`).value;
-    const company = document.getElementById(`cv2Job${jobIndex}Company`).value;
+    const title = document.getElementById('cv2Job' + jobIndex + 'Title').value;
+    const company = document.getElementById('cv2Job' + jobIndex + 'Company').value;
     
-    const prompt = `Buat 3 poin pencapaian kerja untuk posisi "${title}" di perusahaan "${company}" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.
-
-DATA:
-Jabatan: ${title}
-Perusahaan: ${company}
-
-FORMAT OUTPUT:
-- 3 poin terpisah (satu poin per baris)
-- Setiap poin fokus pada hasil (impact) dan pencapaian
-- Gunakan angka atau persentase untuk membuatnya lebih meyakinkan
-- Jangan gunakan format markdown (**), bullet (-), atau angka urutan
-- Contoh format: "Meningkatkan penjualan sebesar 30% dalam 6 bulan pertama"`;
+    const prompt = 'Buat 3 poin pencapaian kerja untuk posisi "' + title + '" di perusahaan "' + company + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\n' +
+        'DATA:\nJabatan: ' + title + '\nPerusahaan: ' + company + '\n\n' +
+        'FORMAT OUTPUT:\n- 3 poin terpisah (satu poin per baris)\n- Setiap poin fokus pada hasil (impact) dan pencapaian\n- Gunakan angka atau persentase\n- Jangan gunakan format markdown, bullet, atau angka urutan';
     
-    const button = document.querySelector(`.form-section-title:nth-of-type(${jobIndex + 3}) .btn-ai`);
-    callGeminiAPI_CV(prompt, button, `cv2Job${jobIndex}Bullets`);
+    const button = document.querySelector('.form-section-title:nth-of-type(' + (jobIndex + 3) + ') .btn-ai');
+    callGeminiAPI_CV(prompt, button, 'cv2Job' + jobIndex + 'Bullets');
 }
 
 // ============================================
