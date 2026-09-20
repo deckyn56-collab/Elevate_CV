@@ -4,7 +4,7 @@
 // ============================================
 
 // ============================================
-// SUPABASE CONFIG (SAMA dengan auth.js)
+// SUPABASE CONFIG
 // ============================================
 const SUPABASE_URL = 'https://fukndugvobbwdhtensso.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ1a25kdWd2b2Jid2RodGVuc3NvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MzA2NDksImV4cCI6MjEwNTQwNjY0OX0.gXXHWSnyBsTHaephTyws03TT9m1NU__0MhcvSfN50ck';
@@ -72,30 +72,159 @@ function showScreen(screen) {
     
     if (screen === 'login') {
         document.getElementById('adminLoginScreen').classList.remove('hidden');
+        renderGuestHeader();
     } else if (screen === 'denied') {
         document.getElementById('accessDenied').classList.remove('hidden');
+        renderGuestHeader();
     } else {
         document.getElementById('adminDashboard').classList.remove('hidden');
     }
 }
 
-function renderAdminInfo() {
-    const info = document.getElementById('adminInfo');
-    if (!info || !userProfile) return;
+// ============================================
+// ADMIN LOGIN
+// ============================================
+async function handleAdminLogin(e) {
+    e.preventDefault();
     
-    info.innerHTML = `
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value;
+    const btn = document.getElementById('btnAdminLogin');
+    const errorBox = document.getElementById('adminLoginError');
+    
+    // Reset error
+    errorBox.classList.add('hidden');
+    errorBox.textContent = '';
+    
+    // Disable button
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+    
+    try {
+        // Step 1: Login dengan Supabase Auth
+        const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
+        
+        if (authError) {
+            throw new Error(
+                authError.message.includes('Invalid login credentials') 
+                    ? 'Email atau password salah'
+                    : authError.message
+            );
+        }
+        
+        // Step 2: Load user profile
+        const { data: profile, error: profileError } = await supabaseClient
+            .from('users')
+            .select('*')
+            .eq('id', authData.user.id)
+            .single();
+        
+        if (profileError || !profile) {
+            await supabaseClient.auth.signOut();
+            throw new Error('Profil user tidak ditemukan');
+        }
+        
+        // Step 3: Cek apakah admin
+        if (!profile.is_admin) {
+            await supabaseClient.auth.signOut();
+            throw new Error('Akun ini bukan admin');
+        }
+        
+        // Step 4: Success
+        currentUser = authData.user;
+        userProfile = profile;
+        
+        showScreen('dashboard');
+        renderAdminInfo();
+        await loadTransactions();
+        
+    } catch (err) {
+        console.error('Admin login error:', err);
+        
+        // Tampilkan error
+        errorBox.textContent = err.message;
+        errorBox.classList.remove('hidden');
+        
+        // Reset button
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk sebagai Admin';
+    }
+}
+
+// Toggle password visibility
+function toggleAdminPassword() {
+    const input = document.getElementById('adminPassword');
+    const icon = document.getElementById('togglePasswordIcon');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fas fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fas fa-eye';
+    }
+}
+
+// Logout admin
+async function adminLogout() {
+    if (!confirm('Yakin ingin logout dari Admin Panel?')) return;
+    
+    try {
+        await supabaseClient.auth.signOut();
+        currentUser = null;
+        userProfile = null;
+        
+        // Reset form
+        document.getElementById('adminLoginForm').reset();
+        document.getElementById('adminLoginError').classList.add('hidden');
+        document.getElementById('btnAdminLogin').disabled = false;
+        document.getElementById('btnAdminLogin').innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk sebagai Admin';
+        
+        showScreen('login');
+    } catch (err) {
+        alert('Gagal logout: ' + err.message);
+    }
+}
+
+// ============================================
+// HEADER
+// ============================================
+function renderAdminInfo() {
+    const headerRight = document.getElementById('adminHeaderRight');
+    if (!headerRight || !userProfile) return;
+    
+    headerRight.innerHTML = `
         <div class="admin-user-info">
             <i class="fas fa-user-shield"></i>
             <div>
                 <div class="admin-name">${userProfile.full_name || 'Admin'}</div>
                 <div class="admin-email">${userProfile.email}</div>
             </div>
+            <button class="btn-admin-logout" onclick="adminLogout()" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
+        <button class="btn-refresh" onclick="loadTransactions()">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+        <a href="/" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Kembali ke App
+        </a>
     `;
 }
 
-function goToLogin() {
-    window.location.href = '/';
+function renderGuestHeader() {
+    const headerRight = document.getElementById('adminHeaderRight');
+    if (!headerRight) return;
+    
+    headerRight.innerHTML = `
+        <a href="/" class="btn-back">
+            <i class="fas fa-arrow-left"></i> Kembali ke App
+        </a>
+    `;
 }
 
 // ============================================
