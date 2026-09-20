@@ -680,17 +680,7 @@ function openAdminPanel() {
     window.location.href = '/admin.html';
 }
     
-    alert(
-        '🛡️ ADMIN PANEL\n\n' +
-        'Dashboard admin akan segera hadir!\n\n' +
-        'Sementara, verifikasi transaksi via Supabase Dashboard:\n' +
-        '1. Buka Supabase → Table Editor → transactions\n' +
-        '2. Lihat baris dengan status "pending"\n' +
-        '3. Jalankan function verify_transaction\n\n' +
-        'Atau tunggu update berikutnya.'
-    );
-}
-
+    
 // ============================================
 // INIT ON DOM READY
 // ============================================
