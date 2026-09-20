@@ -165,7 +165,14 @@ async function signUpWithEmail(email, password, fullName) {
 }
 
 async function signOut() {
-    if (!confirm('Yakin ingin logout?')) return;
+    const confirmed = await showConfirm({
+        title: 'Logout',
+        message: 'Yakin ingin keluar dari akun?',
+        yesLabel: 'Logout',
+        noLabel: 'Batal'
+    });
+    
+    if (!confirmed) return;
     
     try {
         await supabaseClient.auth.signOut();
@@ -174,7 +181,7 @@ async function signOut() {
         updateAuthUI();
         location.reload();
     } catch (err) {
-        alert('Gagal logout: ' + err.message);
+        toastError('Gagal logout', err.message);
     }
 }
 
@@ -365,7 +372,7 @@ async function handleLogin(e) {
         } else if (msg.includes('Email not confirmed')) {
             msg = 'Email belum diverifikasi. Cek inbox email Anda.';
         }
-        alert('❌ Login gagal: ' + msg);
+        toastError('Login gagal', msg);
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
@@ -389,11 +396,11 @@ async function handleRegister(e) {
     
     try {
         await signUpWithEmail(email, password, fullName);
-        alert(
-            '✅ Pendaftaran berhasil!\n\n' +
-            '📧 Cek email Anda untuk verifikasi.\n' +
-            '🎁 Anda akan mendapat 5 kredit gratis setelah login.'
-        );
+        toastSuccess(
+    'Pendaftaran berhasil!',
+    '📧 Cek email Anda untuk verifikasi. Setelah login, Anda dapat 5 kredit gratis.',
+    { duration: 6000 }
+);
         closeLoginModal();
         e.target.reset();
     } catch (error) {
@@ -418,15 +425,15 @@ async function handleRegister(e) {
 function showCreditsInfo() {
     if (!userProfile) return;
     
-    alert(
-        `💎 KREDIT ANDA: ${userProfile.credits}\n\n` +
-        `Setiap aksi memakai kredit:\n` +
-        `• Buat Surat Lamaran = 1 kredit\n` +
-        `• Buat CV = 1 kredit\n` +
-        `• Perbaiki Surat = 0.5 kredit\n` +
-        `• Gabung PDF = 0.5 kredit\n` +
-        `• Auto Summary/Tugas = 0.5 kredit\n\n` +
-        `Klik "Beli Kredit" untuk menambah kredit.`
+    toastInfo(
+        `Kredit Anda: ${userProfile.credits}`,
+        'Setiap aksi memakai kredit:\n' +
+        '• Buat Surat Lamaran = 1 kredit\n' +
+        '• Buat CV = 1 kredit\n' +
+        '• Perbaiki Surat = 0.5 kredit\n' +
+        '• Gabung PDF = 0.5 kredit\n' +
+        '• Auto Summary/Tugas = 0.5 kredit',
+        { duration: 8000 }
     );
 }
 
@@ -611,14 +618,11 @@ async function submitPayment() {
         
         if (insertError) throw insertError;
         
-        alert(
-            '✅ Bukti transfer berhasil dikirim!\n\n' +
-            '📦 Paket: ' + selectedPackage.name + '\n' +
-            '💰 Total: Rp ' + selectedPackage.price.toLocaleString('id-ID') + '\n' +
-            '🪙 Kredit: ' + selectedPackage.credits + '\n\n' +
-            '⏰ Admin akan verifikasi maks. 1x24 jam.\n' +
-            'Kredit otomatis masuk setelah diverifikasi.'
-        );
+        toastSuccess(
+    'Bukti transfer terkirim!',
+    `Paket ${selectedPackage.name} · Rp ${selectedPackage.price.toLocaleString('id-ID')} · ${selectedPackage.credits} kredit\n\nAdmin akan verifikasi maks. 1x24 jam.`,
+    { duration: 7000 }
+);
         
         closePaymentModal();
         
@@ -648,9 +652,9 @@ async function showTransactionHistory() {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            alert('📭 Belum ada transaksi.\n\nKlik "Beli Kredit" untuk memulai.');
-            return;
-        }
+    toastInfo('Belum ada transaksi', 'Klik "Beli Kredit" untuk memulai.');
+    return;
+}
         
         let list = '📋 RIWAYAT TRANSAKSI (20 terakhir)\n\n';
         data.forEach((t, i) => {

@@ -526,7 +526,7 @@ if (typeof saveDocument === 'function' && typeof isLoggedIn === 'function' && is
         }
         
     } catch (error) {
-        showError(error.message || 'Gagal menghubungi server.');
+        toastError('Gagal', error.message || 'Terjadi kesalahan. Coba lagi.');
     } finally {
         state.isGeneratingLetter = false;
         loadingScreen.classList.add('hidden');
@@ -1201,9 +1201,21 @@ function getImageDimensions(dataUrl) {
 async function mergeAllFiles() {
     if (state.mergeFiles.length === 0) { showError('Belum ada file untuk digabungkan.'); return; }
     if (typeof isLoggedIn === 'function' && !isLoggedIn()) { showLoginModal(); return; }
-    if (typeof getCredits === 'function' && getCredits() < 0.5) {
-        alert('❌ Kredit tidak cukup! Silakan beli kredit.'); return;
-    }
+    if (typeof getCredits === 'function' && getCredits() < 1) {
+    toastWarning(
+        'Kredit tidak cukup',
+        `Kredit Anda: ${getCredits()}. Beli kredit untuk lanjut.`,
+        {
+            duration: 6000,
+            action: {
+                label: 'Beli Kredit',
+                icon: 'fa-coins',
+                onClick: () => showBuyCredits()
+            }
+        }
+    );
+    return;
+}
     
     const btn = document.getElementById('btnMergePdf');
     const originalHTML = btn.innerHTML;
@@ -1310,7 +1322,7 @@ async function mergeAllFiles() {
         if (error.message.includes('penyimpanan HP') || error.message.includes('Android')) {
             if (typeof showAndroidGuide === 'function') showAndroidGuide();
         }
-        alert(error.message);
+        toastError('Gagal gabung PDF', error.message);
     } finally {
         btn.disabled = false;
         btn.innerHTML = originalHTML;
