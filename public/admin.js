@@ -66,17 +66,20 @@ async function initAdmin() {
 }
 
 function showScreen(screen) {
+    document.getElementById('adminLoadingScreen').classList.add('hidden');
     document.getElementById('adminLoginScreen').classList.add('hidden');
     document.getElementById('accessDenied').classList.add('hidden');
     document.getElementById('adminDashboard').classList.add('hidden');
     
-    if (screen === 'login') {
+    if (screen === 'loading') {
+        document.getElementById('adminLoadingScreen').classList.remove('hidden');
+    } else if (screen === 'login') {
         document.getElementById('adminLoginScreen').classList.remove('hidden');
         renderGuestHeader();
     } else if (screen === 'denied') {
         document.getElementById('accessDenied').classList.remove('hidden');
         renderGuestHeader();
-    } else {
+    } else if (screen === 'dashboard') {
         document.getElementById('adminDashboard').classList.remove('hidden');
     }
 }
