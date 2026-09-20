@@ -9,73 +9,44 @@
     <link rel="apple-touch-icon" href="/favicon.png">
     
     <!-- SEO Meta Tags -->
-    <title>LamaranAI - Buat Surat Lamaran & CV Profesional Gratis</title>
+    <title>LamaranAI - Buat Surat Lamaran & CV dalam 30 Detik</title>
     <meta name="description" content="Buat surat lamaran kerja, CV profesional, dan gabung PDF hanya dalam 30 detik! Platform gratis dengan tanda tangan digital, format ramah ATS, dan export PDF siap kirim." />
-    <meta name="keywords" content="surat lamaran kerja, cv profesional, generator cv, template cv, lamaran kerja online, cv maker, cover letter generator" />
+    <meta name="keywords" content="surat lamaran kerja, cv profesional, generator cv, template cv, lamaran kerja online, cv maker, cover letter generator, merge pdf" />
     <meta name="author" content="LamaranAI" />
     <meta name="robots" content="index, follow" />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="bingbot" content="index, follow" />
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://lamaranai.com/" />
-    <meta property="og:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
-    <meta property="og:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
+    <meta property="og:title" content="LamaranAI - Buat Surat Lamaran & CV dalam 30 Detik" />
+    <meta property="og:description" content="Buat surat lamaran kerja, CV profesional, dan gabung PDF hanya dalam 30 detik!" />
     <meta property="og:image" content="https://lamaranai.com/og-image.jpg" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://lamaranai.com/" />
-    <meta name="twitter:title" content="LamaranAI - Buat Surat Lamaran & CV Profesional" />
-    <meta name="twitter:description" content="Platform gratis untuk membuat surat lamaran kerja dan CV profesional." />
-    <meta name="twitter:image" content="https://lamaranai.com/twitter-image.jpg" />
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "LamaranAI",
-        "description": "Platform untuk membuat surat lamaran kerja dan CV profesional",
-        "url": "https://lamaranai.com",
-        "applicationCategory": "BusinessApplication",
-        "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "IDR"
-        },
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.8",
-            "ratingCount": "1250"
-        }
-    }
-    </script>
+    <meta name="twitter:title" content="LamaranAI - Buat Surat Lamaran & CV dalam 30 Detik" />
+    <meta name="twitter:description" content="Buat surat lamaran kerja, CV profesional, dan gabung PDF hanya dalam 30 detik!" />
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Library untuk PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     
-    <!-- Library untuk Merge PDF -->
-    <!-- PDF.js untuk baca PDF apa pun -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- SEO Content for Google -->
+    <!-- SEO Content -->
     <div style="display: none;">
-    <h1>LamaranAI - Buat Surat Lamaran & CV Profesional dalam 30 Detik</h1>
-    <p>Buat surat lamaran kerja profesional, CV ramah ATS, dan gabungkan PDF & gambar jadi satu file — semua hanya dalam 30 detik! Platform gratis untuk pencari kerja Indonesia dan internasional.</p>
-    <p>Fitur: Surat lamaran dengan tanda tangan digital, CV 1 kolom ramah ATS, merge PDF & gambar, export PDF siap kirim, dan banyak lagi.</p>
-</div>
+        <h1>LamaranAI - Buat Surat Lamaran & CV Profesional dalam 30 Detik</h1>
+        <p>Buat surat lamaran kerja profesional, CV ramah ATS, dan gabungkan PDF & gambar jadi satu file — semua hanya dalam 30 detik!</p>
+    </div>
 
     <div class="bg-gradient"></div>
     
@@ -94,17 +65,15 @@
                 <button class="theme-toggle" onclick="toggleTheme()">
                     <i class="fas fa-moon" id="themeIcon"></i>
                 </button>
+                
+                <!-- AREA AUTH -->
+                <div id="authArea"></div>
             </div>
 
             <div class="logo-container">
-                <img src="/favicon.png" 
-                     alt="LamaranAI Logo - AI Career Platform" 
-                     class="logo-img"
-                     width="80" 
-                     height="80">
-                
+                <img src="/favicon.png" alt="LamaranAI Logo" class="logo-img" width="80" height="80">
                 <div class="header-badge">
-                    <i class="fas fa-sparkles"></i> <span data-i18n="badge">LamaranAI</span>
+                    <i class="fas fa-bolt"></i> <span data-i18n="badge">Selesai dalam 30 Detik</span>
                 </div>
                 <h1 class="font-serif">Lamaran<span class="text-yellow">AI</span></h1>
                 <p data-i18n="tagline">30 Detik Jadi! Surat Lamaran, CV Profesional & Merge PDF di Satu Platform.</p>
@@ -113,105 +82,29 @@
 
         <!-- ERROR MESSAGE -->
         <div id="errorBox" class="error-box hidden">
-            <span id="errorText"><i class="fas fa-exclamation-triangle"></i> Error message here</span>
+            <span id="errorText"><i class="fas fa-exclamation-triangle"></i> Error</span>
             <button onclick="closeError()"><i class="fas fa-times"></i></button>
         </div>
 
-        <!-- NAVIGATION TABS - INLINE STYLE (ANTI-BENTROK) -->
-<nav id="mainTabs" style="
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    padding: 6px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    margin-bottom: 1.5rem;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
-">
-    <button class="tab-button active" data-tab="cover-letter" onclick="switchTab('cover-letter')" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 10px 4px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background: linear-gradient(135deg, #ca8a04, #d97706);
-        color: #ffffff;
-        font-family: inherit;
-        font-weight: 700;
-        width: 100%;
-        min-width: 0;
-        overflow: hidden;
-        transition: all 0.2s;
-    ">
-        <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; background: rgba(255,255,255,0.25); color: #fff; font-size: 13px;">
-            <i class="fas fa-file-signature"></i>
-        </span>
-        <span style="display: block; font-size: 11px; font-weight: 600; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;" data-i18n="tabCoverTitle">Lamaran</span>
-    </button>
-    
-    <button class="tab-button" data-tab="cv-2-column" onclick="switchTab('cv-2-column')" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 10px 4px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text-secondary);
-        font-family: inherit;
-        font-weight: 600;
-        width: 100%;
-        min-width: 0;
-        overflow: hidden;
-        transition: all 0.2s;
-    ">
-        <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; background: var(--bg-secondary); color: var(--text-secondary); font-size: 13px;">
-            <i class="fas fa-id-card"></i>
-        </span>
-        <span style="display: block; font-size: 11px; font-weight: 600; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;" data-i18n="tabCVTitle">CV</span>
-    </button>
-    
-    <button class="tab-button" data-tab="merge-pdf" onclick="switchTab('merge-pdf')" style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        padding: 10px 4px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        background: transparent;
-        color: var(--text-secondary);
-        font-family: inherit;
-        font-weight: 600;
-        width: 100%;
-        min-width: 0;
-        overflow: hidden;
-        transition: all 0.2s;
-    ">
-        <span style="display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 7px; background: var(--bg-secondary); color: var(--text-secondary); font-size: 13px;">
-            <i class="fas fa-object-group"></i>
-        </span>
-        <span style="display: block; font-size: 11px; font-weight: 600; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;" data-i18n="tabMergeTitle">Gabung</span>
-    </button>
-</nav>
-      
+        <!-- NAVIGATION TABS - 3 KOLOM GRID -->
+        <nav class="tabs-container">
+            <button class="tab-button active" data-tab="cover-letter" onclick="switchTab('cover-letter')">
+                <span class="tab-icon"><i class="fas fa-file-signature"></i></span>
+                <span class="tab-title" data-i18n="tabCoverTitle">Lamaran</span>
+            </button>
+            <button class="tab-button" data-tab="cv-2-column" onclick="switchTab('cv-2-column')">
+                <span class="tab-icon"><i class="fas fa-id-card"></i></span>
+                <span class="tab-title" data-i18n="tabCVTitle">CV</span>
+            </button>
+            <button class="tab-button" data-tab="merge-pdf" onclick="switchTab('merge-pdf')">
+                <span class="tab-icon"><i class="fas fa-object-group"></i></span>
+                <span class="tab-title" data-i18n="tabMergeTitle">Gabung</span>
+            </button>
+        </nav>
 
         <!-- TAB: SURAT LAMARAN -->
         <div id="cover-letter" class="tab-content">
             <div class="grid grid-cols-12">
-                <!-- FORM INPUT -->
                 <div class="col-span-5">
                     <div class="card">
                         <div class="card-header">
@@ -276,7 +169,7 @@
                             <textarea id="experience" rows="3" data-i18n-placeholder="experiencePlaceholder" placeholder="Tempel ringkasan pengalaman utama Anda..."></textarea>
                         </div>
 
-                        <!-- SIGNATURE SECTION -->
+                        <!-- SIGNATURE -->
                         <div class="signature-section">
                             <div class="signature-label">
                                 <label class="signature-title"><i class="fas fa-pen-nib"></i> <span data-i18n="signature">Tanda Tangan Digital</span></label>
@@ -299,7 +192,7 @@
                     </div>
                 </div>
 
-                <!-- OUTPUT PREVIEW -->
+                <!-- PREVIEW -->
                 <div class="col-span-7">
                     <div class="card">
                         <div class="toolbar">
@@ -336,15 +229,13 @@
 
                         <div id="letterPreview" class="preview-container">
                             <div class="preview-placeholder">
-                                <div class="preview-placeholder-icon">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
+                                <div class="preview-placeholder-icon"><i class="fas fa-file-alt"></i></div>
                                 <p class="preview-placeholder-title" data-i18n="noLetter">Belum ada surat lamaran</p>
                                 <p class="preview-placeholder-desc" data-i18n="noLetterDesc">Isi formulir di sebelah kiri dan klik "Buat Surat Lamaran" untuk memulai.</p>
                             </div>
                         </div>
 
-                        <!-- TOMBOL UNDUH PDF DI BAWAH PREVIEW -->
+                        <!-- TOMBOL UNDUH PDF -->
                         <div id="letterDownloadSection" class="download-section" style="display: none;">
                             <button class="btn btn-download-pdf" onclick="exportPDF()">
                                 <i class="fas fa-cloud-arrow-down"></i> <span data-i18n="downloadPdf">Unduh PDF</span>
@@ -463,33 +354,30 @@
                 </div>
 
                 <div class="merge-info">
-    <i class="fas fa-info-circle"></i>
-    <span data-i18n="mergeInfo">Upload beberapa file PDF atau gambar, atur urutannya, lalu gabungkan menjadi satu file PDF.</span>
-</div>
+                    <i class="fas fa-info-circle"></i>
+                    <span data-i18n="mergeInfo">Upload beberapa file PDF atau gambar, atur urutannya, lalu gabungkan menjadi satu file PDF.</span>
+                </div>
 
-<!-- PANDUAN KHUSUS HP ANDROID -->
-<div class="merge-info-android" id="androidGuideBox" style="display: none;">
-    <i class="fas fa-mobile-alt"></i>
-    <div>
-        <strong>📱 PENTING untuk Pengguna HP Android!</strong>
-        <p style="margin: 8px 0;">
-            File PDF dari <b>Downloads</b> mungkin tidak bisa dibaca karena sistem Android membatasi akses ke browser. 
-        </p>
-        <p style="margin: 8px 0;">
-            <b>✅ SOLUSI:</b> Upload PDF ke <b>Google Drive</b> dulu, lalu pilih file dari Drive saat upload di sini.
-        </p>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
-            <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="btn-drive">
-                <i class="fab fa-google-drive"></i> Buka Google Drive
-            </a>
-            <a href="https://files.google.com" target="_blank" rel="noopener noreferrer" class="btn-drive" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <i class="fas fa-folder-open"></i> Files by Google
-            </a>
-        </div>
-    </div>
-</div>
+                <!-- PANDUAN ANDROID -->
+                <div class="merge-info-android" id="androidGuideBox" style="display: none;">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div>
+                        <strong>📱 PENTING untuk Pengguna HP Android!</strong>
+                        <p style="margin: 8px 0;">
+                            File PDF dari <b>Downloads</b> mungkin tidak bisa dibaca karena sistem Android membatasi akses ke browser.
+                        </p>
+                        <p style="margin: 8px 0;">
+                            <b>✅ SOLUSI:</b> Upload PDF ke <b>Google Drive</b> dulu, lalu pilih file dari Drive saat upload di sini.
+                        </p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+                            <a href="https://drive.google.com" target="_blank" rel="noopener noreferrer" class="btn-drive">
+                                <i class="fab fa-google-drive"></i> Buka Google Drive
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Area Upload -->
+                <!-- Upload Zone -->
                 <div class="merge-upload-zone" id="mergeUploadZone" onclick="document.getElementById('mergeFileInput').click()">
                     <div class="merge-upload-icon">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -499,12 +387,11 @@
                 </div>
                 <input type="file" id="mergeFileInput" accept=".pdf,image/*" multiple hidden onchange="handleMergeFiles(event)">
 
-                <!-- Tombol Tambah File -->
                 <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="document.getElementById('mergeFileInput').click()">
                     <i class="fas fa-plus-circle"></i> <span data-i18n="addMoreFiles">Tambah File</span>
                 </button>
 
-                <!-- Daftar File -->
+                <!-- File List -->
                 <div id="mergeFileList" class="merge-file-list hidden">
                     <h3 class="form-section-title">
                         <i class="fas fa-list-ol"></i> <span data-i18n="fileList">Daftar File</span>
@@ -514,7 +401,7 @@
                     <div id="mergeFilesContainer"></div>
                 </div>
 
-                <!-- Tombol Gabung -->
+                <!-- Action -->
                 <div id="mergeActionSection" class="hidden" style="margin-top: 1rem;">
                     <button class="btn btn-primary" id="btnMergePdf" onclick="mergeAllFiles()">
                         <i class="fas fa-object-group"></i> <span data-i18n="mergeBtn">Gabungkan Jadi PDF</span>
@@ -532,13 +419,13 @@
         <div class="container">
             <div class="seo-content">
                 <h3 data-i18n="seoTitle">LamaranAI - Solusi Karir Online</h3>
-                <p data-i18n="seoDesc">LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik. Kami membantu Anda menonjol di antara ribuan pelamar lainnya.</p>
+                <p data-i18n="seoDesc">LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik.</p>
                 
                 <div class="seo-features">
                     <div class="feature">
                         <i class="fas fa-file-alt"></i>
                         <h4 data-i18n="seoFeature1Title">Surat Lamaran Profesional</h4>
-                        <p data-i18n="seoFeature1Desc">Generator surat lamaran kerja yang profesional dan personal</p>
+                        <p data-i18n="seoFeature1Desc">Generator surat lamaran kerja yang profesional</p>
                     </div>
                     <div class="feature">
                         <i class="fas fa-id-card"></i>
@@ -555,17 +442,6 @@
                         <h4 data-i18n="seoFeature4Title">Export PDF</h4>
                         <p data-i18n="seoFeature4Desc">Unduh hasil dalam format PDF siap kirim</p>
                     </div>
-                </div>
-
-                <div class="seo-tags">
-                    <h4 data-i18n="popular">Populer:</h4>
-                    <span>#suratlamaran</span>
-                    <span>#cvonline</span>
-                    <span>#templatecv</span>
-                    <span>#resumebuilder</span>
-                    <span>#coverletter</span>
-                    <span>#lamarankerja</span>
-                    <span>#mergepdf</span>
                 </div>
             </div>
         </div>
@@ -594,6 +470,305 @@
         </div>
     </div>
 
+    <!-- MODAL LOGIN / REGISTER -->
+    <div id="loginModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-login">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-circle"></i> Masuk / Daftar</h3>
+                <button class="modal-close" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body-login">
+                <!-- Tabs -->
+                <div class="login-tabs">
+                    <button class="login-tab active" data-tab="login" onclick="switchLoginTab('login')">
+                        <i class="fas fa-sign-in-alt"></i> Masuk
+                    </button>
+                    <button class="login-tab" data-tab="register" onclick="switchLoginTab('register')">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </button>
+                </div>
+                
+                <!-- Form Login -->
+                <form id="loginForm" class="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="loginEmail" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Masuk
+                    </button>
+                </form>
+                
+                <!-- Form Register -->
+                <form id="registerForm" class="login-form hidden" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nama Lengkap</label>
+                        <input type="text" id="registerName" required placeholder="Budi Santoso">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="registerEmail" required placeholder="email@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="registerPassword" required placeholder="Minimal 6 karakter" minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Daftar
+                    </button>
+                    <p class="register-info">
+                        <i class="fas fa-gift"></i> Dapatkan <b>5 kredit gratis</b> saat daftar!
+                    </p>
+                </form>
+                
+                <!-- Divider -->
+                <div class="login-divider">
+                    <span>atau</span>
+                </div>
+                
+                <!-- Google Login -->
+                <button class="btn-google" onclick="signInWithGoogle()">
+                    <i class="fab fa-google"></i> Lanjutkan dengan Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+<!-- ============================================
+     MODAL BELI KREDIT
+     ============================================ -->
+<div id="pricingModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content modal-pricing">
+        <div class="modal-header">
+            <h3><i class="fas fa-coins"></i> Beli Kredit</h3>
+            <button class="modal-close" onclick="closePricingModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-pricing">
+            <!-- Kredit saat ini -->
+            <div class="current-credits">
+                <span><i class="fas fa-wallet"></i> Kredit Anda saat ini:</span>
+                <strong id="currentCreditsDisplay">0</strong>
+            </div>
+            
+            <!-- Paket Kredit -->
+            <div class="pricing-grid">
+                <!-- Paket Starter -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <span class="pricing-name">Starter</span>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">Rp</span>
+                        <span class="amount">15.000</span>
+                    </div>
+                    <div class="pricing-credits">
+                        <i class="fas fa-coins"></i> 10 Kredit
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 10x buat surat lamaran</li>
+                        <li><i class="fas fa-check"></i> 10x buat CV</li>
+                        <li><i class="fas fa-check"></i> 20x merge PDF</li>
+                    </ul>
+                    <button class="btn-buy" onclick="buyPackage('starter')">
+                        Pilih Paket
+                    </button>
+                </div>
+                
+                <!-- Paket Populer -->
+                <div class="pricing-card popular">
+                    <div class="popular-badge">⭐ TERPOPULER</div>
+                    <div class="pricing-header">
+                        <span class="pricing-name">Populer</span>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">Rp</span>
+                        <span class="amount">50.000</span>
+                    </div>
+                    <div class="pricing-credits">
+                        <i class="fas fa-coins"></i> 40 Kredit
+                        <span class="bonus">+ bonus 5</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 40x buat surat lamaran</li>
+                        <li><i class="fas fa-check"></i> 40x buat CV</li>
+                        <li><i class="fas fa-check"></i> 80x merge PDF</li>
+                        <li><i class="fas fa-check"></i> Hemat 10%</li>
+                    </ul>
+                    <button class="btn-buy popular-btn" onclick="buyPackage('populer')">
+                        Pilih Paket
+                    </button>
+                </div>
+                
+                <!-- Paket Hemat -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <span class="pricing-name">Hemat</span>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">Rp</span>
+                        <span class="amount">100.000</span>
+                    </div>
+                    <div class="pricing-credits">
+                        <i class="fas fa-coins"></i> 95 Kredit
+                        <span class="bonus">+ bonus 15</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 95x buat surat lamaran</li>
+                        <li><i class="fas fa-check"></i> 95x buat CV</li>
+                        <li><i class="fas fa-check"></i> 190x merge PDF</li>
+                        <li><i class="fas fa-check"></i> Hemat 17%</li>
+                    </ul>
+                    <button class="btn-buy" onclick="buyPackage('hemat')">
+                        Pilih Paket
+                    </button>
+                </div>
+                
+                <!-- Paket Jumbo -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <span class="pricing-name">Jumbo</span>
+                    </div>
+                    <div class="pricing-price">
+                        <span class="currency">Rp</span>
+                        <span class="amount">250.000</span>
+                    </div>
+                    <div class="pricing-credits">
+                        <i class="fas fa-coins"></i> 300 Kredit
+                        <span class="bonus">+ bonus 50</span>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="fas fa-check"></i> 300x buat surat lamaran</li>
+                        <li><i class="fas fa-check"></i> 300x buat CV</li>
+                        <li><i class="fas fa-check"></i> 600x merge PDF</li>
+                        <li><i class="fas fa-check"></i> Hemat 33%</li>
+                        <li><i class="fas fa-check"></i> Priority support</li>
+                    </ul>
+                    <button class="btn-buy" onclick="buyPackage('jumbo')">
+                        Pilih Paket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL INSTRUKSI PEMBAYARAN
+     ============================================ -->
+<div id="paymentModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content modal-payment">
+        <div class="modal-header">
+            <h3><i class="fas fa-receipt"></i> Instruksi Pembayaran</h3>
+            <button class="modal-close" onclick="closePaymentModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-payment">
+            <!-- Info Pesanan -->
+            <div class="payment-info">
+                <div class="payment-row">
+                    <span>Paket:</span>
+                    <strong id="paymentPackage">-</strong>
+                </div>
+                <div class="payment-row">
+                    <span>Kredit:</span>
+                    <strong id="paymentCredits">-</strong>
+                </div>
+                <div class="payment-row total">
+                    <span>Total Bayar:</span>
+                    <strong id="paymentAmount">-</strong>
+                </div>
+            </div>
+            
+            <!-- Metode Pembayaran -->
+            <div class="payment-methods">
+                <h4><i class="fas fa-wallet"></i> Metode Pembayaran</h4>
+                
+                <!-- Transfer Bank -->
+                <div class="payment-method">
+                    <div class="method-header">
+                        <i class="fas fa-university"></i>
+                        <span>Transfer Bank (BCA)</span>
+                    </div>
+                    <div class="method-detail">
+                        <div class="bank-row">
+                            <span>No. Rekening:</span>
+                            <strong id="bankAccount">006301102445500</strong>
+                            <button class="copy-small" onclick="copyText('006301102445500')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="bank-row">
+                            <span>Atas Nama:</span>
+                            <strong>Deki Sukarnain</strong>
+                        </div>
+                        <div class="bank-row">
+                            <span>Nominal:</span>
+                            <strong id="paymentAmountCopy">-</strong>
+                            <button class="copy-small" onclick="copyAmount()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QRIS -->
+                <div class="payment-method">
+                    <div class="method-header">
+                        <i class="fas fa-qrcode"></i>
+                        <span>QRIS (Semua E-Wallet)</span>
+                    </div>
+                    <div class="method-detail qris-detail">
+                        <img src="/qris.png" alt="QRIS" class="qris-image" onerror="this.parentElement.innerHTML='<p style=&quot;color:#999;font-size:0.8rem;padding:20px;text-align:center;&quot;>📱 QRIS belum tersedia.<br>Silakan gunakan Transfer Bank.</p>'">
+                        <p class="qris-note">Scan QR code dengan GoPay, OVO, Dana, ShopeePay, atau m-banking</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upload Bukti -->
+            <div class="upload-proof">
+                <h4><i class="fas fa-upload"></i> Upload Bukti Transfer</h4>
+                <p class="upload-desc">Setelah transfer, upload screenshot/foto bukti transfer:</p>
+                
+                <div class="upload-zone" onclick="document.getElementById('proofFile').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Klik untuk upload bukti</span>
+                    <small>Format: JPG, PNG (maks 5MB)</small>
+                </div>
+                <input type="file" id="proofFile" accept="image/*" hidden onchange="handleProofUpload(event)">
+                
+                <div id="proofPreview" class="proof-preview hidden">
+                    <img id="proofImage" src="" alt="Bukti Transfer">
+                    <button class="remove-proof" onclick="removeProof()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" id="btnSubmitPayment" onclick="submitPayment()">
+                <i class="fas fa-paper-plane"></i> Kirim Bukti Transfer
+            </button>
+            
+            <p class="payment-note">
+                <i class="fas fa-info-circle"></i>
+                Kredit akan ditambahkan oleh admin setelah verifikasi (maks. 1x24 jam).
+            </p>
+        </div>
+    </div>
+</div>
+  
     <script src="script.js"></script>
 </body>
 </html>

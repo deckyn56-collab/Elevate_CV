@@ -24,8 +24,8 @@ const translations = {
         badge: "Selesai dalam 30 Detik",
         tagline: "30 Detik Jadi! Surat Lamaran, CV Profesional & Merge PDF di Satu Platform.",
         tabCoverTitle: "Lamaran",
-tabCVTitle: "CV",
-tabMergeTitle: "Gabung PDF",
+        tabCVTitle: "CV",
+        tabMergeTitle: "Gabung",
         formTitle: "Informasi Pelamar & Pekerjaan",
         step1: "Langkah 1",
         fullName: "Nama Lengkap",
@@ -83,9 +83,6 @@ tabMergeTitle: "Gabung PDF",
         mergeHint: "💡 Drag untuk mengubah urutan file",
         mergeBtn: "Gabungkan Jadi PDF",
         clearAll: "Hapus Semua",
-        mergeProcessing: "Sedang menggabungkan...",
-        mergeSuccess: "Berhasil! PDF telah diunduh.",
-        mergeError: "Gagal menggabungkan file.",
         namePlaceholder: "Budi Santoso",
         cityPlaceholder: "Jakarta Selatan",
         phonePlaceholder: "081234567890",
@@ -107,28 +104,27 @@ tabMergeTitle: "Gabung PDF",
         cvJobCompanyPlaceholder: "Perusahaan",
         cvJobDatePlaceholder: "Periode (Jan 2022 - Sekarang)",
         cvJobBulletsPlaceholder: "Pencapaian & Tugas (1 poin per baris)...",
-        cvEduDegreePlaceholder: "Jenjang / Jurusan (contoh: SMA IPA, D3 Akuntansi, S1 Teknik Informatika)",
+        cvEduDegreePlaceholder: "Jenjang / Jurusan (contoh: SMA IPA, S1 Teknik Informatika)",
         cvEduSchoolPlaceholder: "Institusi / Sekolah (contoh: SMK Negeri 1, Universitas Indonesia)",
         cvEduDatePlaceholder: "Periode",
         cvEduDetailPlaceholder: "Detail (IPK, dll)",
         seoTitle: "LamaranAI - Solusi Karir Online",
         seoDesc: "LamaranAI adalah platform gratis untuk membantu Anda membuat surat lamaran kerja yang profesional dan CV yang menarik.",
         seoFeature1Title: "Surat Lamaran Profesional",
-        seoFeature1Desc: "Generator surat lamaran kerja yang profesional dan personal",
+        seoFeature1Desc: "Generator surat lamaran kerja yang profesional",
         seoFeature2Title: "CV Ramah ATS",
         seoFeature2Desc: "Template CV modern yang mudah dibaca mesin ATS",
         seoFeature3Title: "Gabung PDF",
         seoFeature3Desc: "Gabungkan PDF dan gambar jadi satu file",
         seoFeature4Title: "Export PDF",
-        seoFeature4Desc: "Unduh hasil dalam format PDF siap kirim",
-        popular: "Populer:"
+        seoFeature4Desc: "Unduh hasil dalam format PDF siap kirim"
     },
     en: {
         badge: "Ready in 30 Seconds",
         tagline: "Ready in 30 Seconds! Cover Letters, Professional CVs & PDF Merge in One Platform.",
-        tabCoverTitle: "Cover Letter",
-tabCVTitle: "Professional CV",
-tabMergeTitle: "Merge PDF",
+        tabCoverTitle: "Letter",
+        tabCVTitle: "CV",
+        tabMergeTitle: "Merge",
         formTitle: "Applicant & Job Information",
         step1: "Step 1",
         fullName: "Full Name",
@@ -186,9 +182,6 @@ tabMergeTitle: "Merge PDF",
         mergeHint: "💡 Drag to reorder files",
         mergeBtn: "Merge into PDF",
         clearAll: "Clear All",
-        mergeProcessing: "Merging...",
-        mergeSuccess: "Success! PDF downloaded.",
-        mergeError: "Failed to merge files.",
         namePlaceholder: "John Doe",
         cityPlaceholder: "New York",
         phonePlaceholder: "+1 234 567 890",
@@ -210,21 +203,20 @@ tabMergeTitle: "Merge PDF",
         cvJobCompanyPlaceholder: "Company",
         cvJobDatePlaceholder: "Period (Jan 2022 - Present)",
         cvJobBulletsPlaceholder: "Achievements & Tasks (1 point per line)...",
-        cvEduDegreePlaceholder: "Level / Major (e.g., High School, D3 Accounting, Bachelor of IT)",
+        cvEduDegreePlaceholder: "Level / Major (e.g., High School, Bachelor of IT)",
         cvEduSchoolPlaceholder: "Institution / School (e.g., SMK Negeri 1, University of Indonesia)",
         cvEduDatePlaceholder: "Period",
         cvEduDetailPlaceholder: "Detail (GPA, etc)",
         seoTitle: "LamaranAI - Online Career Solution",
         seoDesc: "LamaranAI is a free platform to help you create professional cover letters and attractive CVs.",
         seoFeature1Title: "Professional Cover Letter",
-        seoFeature1Desc: "Professional and personal cover letter generator",
+        seoFeature1Desc: "Professional cover letter generator",
         seoFeature2Title: "ATS-Friendly CV",
         seoFeature2Desc: "Modern CV template that is easy for ATS to read",
         seoFeature3Title: "Merge PDF",
         seoFeature3Desc: "Combine PDF and images into one file",
         seoFeature4Title: "PDF Export",
-        seoFeature4Desc: "Download results in ready-to-send PDF format",
-        popular: "Popular:"
+        seoFeature4Desc: "Download results in ready-to-send PDF format"
     }
 };
 
@@ -233,32 +225,19 @@ tabMergeTitle: "Merge PDF",
 // ============================================
 function setLanguage(lang) {
     state.currentLang = lang;
-    
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.textContent.includes(lang.toUpperCase())) {
-            btn.classList.add('active');
-        }
+        if (btn.textContent.includes(lang.toUpperCase())) btn.classList.add('active');
     });
-    
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
-        if (translations[lang][key]) {
-            element.textContent = translations[lang][key];
-        }
+        if (translations[lang][key]) element.textContent = translations[lang][key];
     });
-    
     document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
         const key = element.getAttribute('data-i18n-placeholder');
-        if (translations[lang][key]) {
-            element.placeholder = translations[lang][key];
-        }
+        if (translations[lang][key]) element.placeholder = translations[lang][key];
     });
-    
-    document.title = lang === 'id' ? 
-        'LamaranAI - Buat Surat Lamaran & CV Profesional Gratis' : 
-        'LamaranAI - Create Professional Cover Letters & CVs Free';
-    
+    document.title = lang === 'id' ? 'LamaranAI - Buat Surat Lamaran & CV dalam 30 Detik' : 'LamaranAI - Create Professional Cover Letters & CVs in 30 Seconds';
     document.documentElement.lang = lang;
     localStorage.setItem('lamaranai_lang', lang);
 }
@@ -289,40 +268,14 @@ function initTheme() {
 // ============================================
 function switchTab(tabId) {
     state.activeTab = tabId;
-    
     document.querySelectorAll('.tab-button').forEach(btn => {
-        const isActive = btn.dataset.tab === tabId;
-        const iconSpan = btn.querySelector('span:first-child');
-        const titleSpan = btn.querySelector('span:last-child');
-        
-        if (isActive) {
-            // Style tab AKTIF
-            btn.style.background = 'linear-gradient(135deg, #ca8a04, #d97706)';
-            btn.style.color = '#ffffff';
-            btn.style.fontWeight = '700';
-            if (iconSpan) {
-                iconSpan.style.background = 'rgba(255,255,255,0.25)';
-                iconSpan.style.color = '#ffffff';
-            }
-            btn.classList.add('active');
-        } else {
-            // Style tab TIDAK AKTIF
-            btn.style.background = 'transparent';
-            btn.style.color = 'var(--text-secondary)';
-            btn.style.fontWeight = '600';
-            if (iconSpan) {
-                iconSpan.style.background = 'var(--bg-secondary)';
-                iconSpan.style.color = 'var(--text-secondary)';
-            }
-            btn.classList.remove('active');
-        }
+        btn.classList.remove('active');
+        if (btn.dataset.tab === tabId) btn.classList.add('active');
     });
-    
     document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
     const tabContent = document.getElementById(tabId);
     if (tabContent) tabContent.classList.remove('hidden');
-    
-    if (tabId === 'merge-pdf') {
+    if (tabId === 'merge-pdf' && typeof detectAndroidAndShowGuide === 'function') {
         detectAndroidAndShowGuide();
     }
 }
@@ -357,7 +310,6 @@ function initSignature() {
     ctx = canvas.getContext('2d');
     canvas.width = 400;
     canvas.height = 120;
-    
     canvas.addEventListener('mousedown', startDrawing);
     canvas.addEventListener('mousemove', draw);
     canvas.addEventListener('mouseup', stopDrawing);
@@ -413,9 +365,7 @@ function stopDrawing() {
         for (let i = 3; i < data.length; i += 4) {
             if (data[i] > 0) { hasContent = true; break; }
         }
-        if (hasContent) {
-            state.signatureDataUrl = canvas.toDataURL('image/png');
-        }
+        if (hasContent) state.signatureDataUrl = canvas.toDataURL('image/png');
     }
     isDrawing = false;
 }
@@ -455,6 +405,17 @@ async function callGeminiAPI(prompt, systemPrompt = "") {
 // GENERATE COVER LETTER
 // ============================================
 async function generateCoverLetter() {
+    // CEK LOGIN & KREDIT
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+        if (typeof showLoginModal === 'function') showLoginModal();
+        return;
+    }
+    
+    if (typeof getCredits === 'function' && getCredits() < 1) {
+        alert('❌ Kredit tidak cukup!\n\nKredit Anda: ' + getCredits() + '\n\nSilakan beli kredit untuk lanjut.');
+        return;
+    }
+    
     const name = document.getElementById('name').value;
     const location = document.getElementById('location').value;
     const phone = document.getElementById('phone').value;
@@ -518,6 +479,10 @@ async function generateCoverLetter() {
             '- Do NOT use markdown symbols, hashtags, or quotes\n' +
             '- Do NOT add extra hyphens in compound words\n' +
             '- Use proper spacing between words\n' +
+            '- PERIKSA EJAAN: Pastikan tidak ada typo\n' +
+            '- GUNAKAN kata "Dengan hormat" (bukan "homat")\n' +
+            '- GUNAKAN kata "Hormat saya" (bukan "Homat saya")\n' +
+            '- Ejaan nama, email, dan telepon HARUS PERSIS seperti data pelamar\n' +
             '- No extra characters or symbols';
 
         const result = await callGeminiAPI(promptText, "You are a professional career consultant.");
@@ -526,6 +491,13 @@ async function generateCoverLetter() {
         document.getElementById('quickActions').classList.remove('hidden');
         document.getElementById('letterActions').style.display = 'flex';
         document.getElementById('letterDownloadSection').style.display = 'block';
+        
+        // POTONG KREDIT
+        if (typeof deductCredits === 'function') {
+            try {
+                await deductCredits(1, 'generate_letter', { job_title: jobTitle, company: company });
+            } catch (err) { console.error('Gagal potong kredit:', err); }
+        }
         
     } catch (error) {
         showError(error.message || 'Gagal menghubungi server.');
@@ -554,7 +526,6 @@ function renderLetterPreview() {
 
 function formatLetterHTML(text) {
     if (!text) return '';
-    
     const cleanText = text
         .replace(/\r\n/g, '\n')
         .replace(/\r/g, '\n')
@@ -588,7 +559,6 @@ function formatLetterHTML(text) {
         }
         i++;
     }
-    
     html += '</div>';
     return html;
 }
@@ -610,6 +580,9 @@ function setViewMode(mode) {
 // ============================================
 async function refineLetter(instruction) {
     if (!state.outputLetter) return;
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+        showLoginModal(); return;
+    }
     state.isGeneratingLetter = true;
     showLoading(true);
     try {
@@ -617,6 +590,9 @@ async function refineLetter(instruction) {
         const result = await callGeminiAPI(promptText, "You are a professional editor.");
         state.outputLetter = result;
         renderLetterPreview();
+        if (typeof deductCredits === 'function') {
+            try { await deductCredits(0.5, 'refine_letter'); } catch (e) { console.error(e); }
+        }
     } catch (error) {
         showError(error.message || 'Gagal memperbarui surat.');
     } finally {
@@ -660,7 +636,6 @@ async function exportPDF() {
         const pageWidth = 210;
         const marginBottom = 20;
         const maxLineWidth = pageWidth - (marginLeft * 2);
-        
         let cursorY = marginTop;
         
         doc.setFont("times", "normal");
@@ -668,11 +643,9 @@ async function exportPDF() {
         doc.setTextColor(0, 0, 0);
         
         let cleanText = state.outputLetter
-            .replace(/\r\n/g, '\n')
-            .replace(/\r/g, '\n')
+            .replace(/\r\n/g, '\n').replace(/\r/g, '\n')
             .replace(/[\u200B-\u200D\uFEFF]/g, '')
-            .replace(/\u00A0/g, ' ')
-            .trim();
+            .replace(/\u00A0/g, ' ').trim();
         
         const paragraphs = cleanText.split("\n");
         
@@ -681,45 +654,23 @@ async function exportPDF() {
             const lowerLine = line.toLowerCase();
             
             if (lowerLine.includes("sincerely") || lowerLine.includes("hormat saya")) {
-                if (cursorY + 50 > pageHeight - marginBottom) {
-                    doc.addPage();
-                    cursorY = marginTop;
-                }
+                if (cursorY + 50 > pageHeight - marginBottom) { doc.addPage(); cursorY = marginTop; }
                 doc.text(line, marginLeft, cursorY);
                 cursorY += 10;
-                
                 if (state.hasSignature && state.signatureDataUrl) {
                     try {
                         doc.addImage(state.signatureDataUrl, "PNG", marginLeft, cursorY, 45, 20);
                         cursorY += 23;
-                    } catch (e) {
-                        console.error('Gagal menambahkan tanda tangan:', e);
-                        cursorY += 20;
-                    }
-                } else {
-                    cursorY += 20;
-                }
-                
+                    } catch (e) { cursorY += 20; }
+                } else { cursorY += 20; }
                 while (i + 1 < paragraphs.length && paragraphs[i + 1].trim() === "") i++;
                 continue;
             }
-            
-            if (line === "") {
-                cursorY += 5;
-                continue;
-            }
-            
-            if (cursorY + 8 > pageHeight - marginBottom) {
-                doc.addPage();
-                cursorY = marginTop;
-            }
-            
+            if (line === "") { cursorY += 5; continue; }
+            if (cursorY + 8 > pageHeight - marginBottom) { doc.addPage(); cursorY = marginTop; }
             const splitText = doc.splitTextToSize(line, maxLineWidth);
             for (let j = 0; j < splitText.length; j++) {
-                if (cursorY + 7 > pageHeight - marginBottom) {
-                    doc.addPage();
-                    cursorY = marginTop;
-                }
+                if (cursorY + 7 > pageHeight - marginBottom) { doc.addPage(); cursorY = marginTop; }
                 doc.text(splitText[j], marginLeft, cursorY);
                 cursorY += 6;
             }
@@ -738,16 +689,12 @@ async function exportPDF() {
 // ============================================
 // CV PREVIEW & DOWNLOAD
 // ============================================
-
 function formatCVBullets(text) {
     if (!text || !text.trim()) return '';
-    const lines = text.split('\n')
-        .filter(line => {
-            const trimmed = line.trim();
-            return trimmed !== '' && 
-                   trimmed.toLowerCase() !== 'belum diisi' && 
-                   trimmed.toLowerCase() !== 'not filled yet';
-        });
+    const lines = text.split('\n').filter(line => {
+        const trimmed = line.trim();
+        return trimmed !== '' && trimmed.toLowerCase() !== 'belum diisi' && trimmed.toLowerCase() !== 'not filled yet';
+    });
     if (lines.length === 0) return '';
     return lines.map(line => '<li>' + line.replace(/^[\*\-]\s*/, '') + '</li>').join('');
 }
@@ -755,20 +702,20 @@ function formatCVBullets(text) {
 function applyPreviewScale() {
     const container = document.getElementById('cvPdfPreviewContainer');
     if (!container) return;
-    
     const windowWidth = window.innerWidth;
     let scale = 1;
-    
     if (windowWidth < 500) scale = 0.42;
     else if (windowWidth < 900) scale = 0.65;
-    else scale = 1;
-    
     container.style.transform = 'scale(' + scale + ')';
     container.style.transformOrigin = 'top center';
     container.style.marginBottom = '-' + ((1 - scale) * 50) + '%';
 }
 
 function openCvPreview() {
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
+        showLoginModal(); return;
+    }
+    
     const getValue = (id, fallback = '') => {
         const val = document.getElementById(id).value.trim();
         return val || fallback;
@@ -802,21 +749,13 @@ function openCvPreview() {
     const softSkills = getValue('cv2SoftSkills');
 
     const ICON_COLOR = '#4b5563';
-
     const iconPin = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>';
-    
     const iconPhone = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>';
-    
     const iconMail = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px;display:inline-block;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>';
-    
     const iconBadge = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>';
-    
     const iconUser = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-    
     const iconBriefcase = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>';
-    
     const iconGraduation = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>';
-    
     const iconStar = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="' + ICON_COLOR + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;display:inline-block;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
 
     let experienceHTML = '';
@@ -854,18 +793,13 @@ function openCvPreview() {
             '</div>' +
         '</div>' +
         (summary ? '<div class="cv-section-heading">' + iconUser + ' RINGKASAN PROFESIONAL</div><p class="cv-text">' + summary + '</p>' : '') +
-        experienceHTML +
-        educationHTML +
-        skillsHTML +
+        experienceHTML + educationHTML + skillsHTML +
         '</div>';
 
     const previewContainer = document.getElementById('cvPdfPreviewContainer');
     previewContainer.innerHTML = cvHTML;
-
     document.getElementById('cvPdfModal').style.display = 'flex';
-    
     applyPreviewScale();
-
     document.getElementById('btnDownloadCvPdf').disabled = false;
     document.getElementById('btnDownloadCvPdf').innerHTML = '<i class="fas fa-cloud-arrow-down"></i> ' + translations[state.currentLang].downloadNow;
 }
@@ -878,14 +812,11 @@ function closeCvPreview() {
 async function downloadCvFromPreview() {
     const container = document.getElementById('cvPdfPreviewContainer');
     const element = container.firstElementChild;
-    if (!element) {
-        alert('CV tidak ditemukan.');
-        return;
-    }
+    if (!element) { alert('CV tidak ditemukan.'); return; }
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) { showLoginModal(); return; }
 
     const name = document.getElementById('cv2Name').value || 'CV';
     const filename = 'CV_' + name.replace(/\s+/g, '_') + '.pdf';
-    
     const downloadBtn = document.getElementById('btnDownloadCvPdf');
     downloadBtn.disabled = true;
     downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
@@ -893,7 +824,6 @@ async function downloadCvFromPreview() {
     try {
         const originalTransform = container.style.transform;
         const originalMargin = container.style.marginBottom;
-        
         container.style.transform = 'none';
         container.style.marginBottom = '0';
         
@@ -916,30 +846,22 @@ async function downloadCvFromPreview() {
         document.body.appendChild(tempContainer);
 
         const opt = {
-            margin: 0,
-            filename: filename,
+            margin: 0, filename: filename,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
-                logging: false,
-                letterRendering: true,
-                width: 794,
-                height: clone.scrollHeight,
-                windowWidth: 794,
-                scrollX: 0,
-                scrollY: 0
-            },
+            html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true, width: 794, height: clone.scrollHeight, windowWidth: 794, scrollX: 0, scrollY: 0 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
         await html2pdf().set(opt).from(clone).save();
-        
         document.body.removeChild(tempContainer);
-        
         container.style.transform = originalTransform;
         container.style.marginBottom = originalMargin;
+        
+        // POTONG KREDIT
+        if (typeof deductCredits === 'function') {
+            try { await deductCredits(1, 'generate_cv'); } catch (e) { console.error(e); }
+        }
         
     } catch (error) {
         console.error('PDF Error:', error);
@@ -953,15 +875,19 @@ async function downloadCvFromPreview() {
 
 window.addEventListener('resize', () => {
     const modal = document.getElementById('cvPdfModal');
-    if (modal && modal.style.display === 'flex') {
-        applyPreviewScale();
-    }
+    if (modal && modal.style.display === 'flex') applyPreviewScale();
 });
 
 // ============================================
-// FUNGSI AI UNTUK CV
+// AI UNTUK CV
 // ============================================
 async function callGeminiAPI_CV(prompt, button, inputId) {
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) { showLoginModal(); return; }
+    if (typeof getCredits === 'function' && getCredits() < 0.5) {
+        alert('❌ Kredit tidak cukup! Silakan beli kredit.');
+        return;
+    }
+    
     const originalText = button.innerText;
     button.innerText = "⏳ Memproses...";
     button.disabled = true;
@@ -975,13 +901,14 @@ async function callGeminiAPI_CV(prompt, button, inputId) {
                 systemPrompt: "Anda adalah penulis CV profesional. Tugas Anda HANYA menulis teks hasil akhir sesuai permintaan. JANGAN memberikan tips, saran, pengantar, atau penjelasan. Langsung tulis hasilnya tanpa basa-basi."
             })
         });
-
         if (!response.ok) throw new Error('API Error');
         const data = await response.json();
         const cleanedText = data.content.replace(/\*\*/g, '').replace(/^#+\s*/gm, '');
-
         document.getElementById(inputId).value = cleanedText.trim();
-
+        
+        if (typeof deductCredits === 'function') {
+            try { await deductCredits(0.5, 'generate_' + inputId); } catch (e) { console.error(e); }
+        }
     } catch (error) {
         alert("Terjadi kesalahan: " + error.message);
     } finally {
@@ -994,11 +921,7 @@ function generateSummary() {
     const title = document.getElementById('cv2Title').value;
     const hard = document.getElementById('cv2HardSkills').value;
     const soft = document.getElementById('cv2SoftSkills').value;
-    
-    const prompt = 'Buat ringkasan profil profesional untuk posisi "' + title + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\n' +
-        'DATA:\nPosisi: ' + title + '\nHard Skills: ' + hard + '\nSoft Skills: ' + soft + '\n\n' +
-        'FORMAT OUTPUT:\n- Maksimal 3-4 kalimat\n- Langsung ke poin\n- Fokus pada keahlian dan nilai tambah\n- Gunakan bahasa yang profesional dan menjual';
-    
+    const prompt = 'Buat ringkasan profil profesional untuk posisi "' + title + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\nDATA:\nPosisi: ' + title + '\nHard Skills: ' + hard + '\nSoft Skills: ' + soft + '\n\nFORMAT OUTPUT:\n- Maksimal 3-4 kalimat\n- Langsung ke poin\n- Fokus pada keahlian dan nilai tambah\n- Gunakan bahasa yang profesional dan menjual';
     const button = document.querySelector('.form-section-title .btn-ai');
     callGeminiAPI_CV(prompt, button, 'cv2Summary');
 }
@@ -1006,11 +929,7 @@ function generateSummary() {
 function generateJob(jobIndex) {
     const title = document.getElementById('cv2Job' + jobIndex + 'Title').value;
     const company = document.getElementById('cv2Job' + jobIndex + 'Company').value;
-    
-    const prompt = 'Buat 3 poin pencapaian kerja untuk posisi "' + title + '" di perusahaan "' + company + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\n' +
-        'DATA:\nJabatan: ' + title + '\nPerusahaan: ' + company + '\n\n' +
-        'FORMAT OUTPUT:\n- 3 poin terpisah (satu poin per baris)\n- Setiap poin fokus pada hasil (impact) dan pencapaian\n- Gunakan angka atau persentase\n- Jangan gunakan format markdown, bullet, atau angka urutan';
-    
+    const prompt = 'Buat 3 poin pencapaian kerja untuk posisi "' + title + '" di perusahaan "' + company + '" dalam Bahasa Indonesia. Langsung tulis hasilnya saja, JANGAN berikan tips, pengantar, atau penjelasan.\n\nDATA:\nJabatan: ' + title + '\nPerusahaan: ' + company + '\n\nFORMAT OUTPUT:\n- 3 poin terpisah (satu poin per baris)\n- Setiap poin fokus pada hasil (impact) dan pencapaian\n- Gunakan angka atau persentase\n- Jangan gunakan format markdown, bullet, atau angka urutan';
     const button = document.querySelector('.form-section-title:nth-of-type(' + (jobIndex + 3) + ') .btn-ai');
     callGeminiAPI_CV(prompt, button, 'cv2Job' + jobIndex + 'Bullets');
 }
@@ -1018,7 +937,6 @@ function generateJob(jobIndex) {
 // ============================================
 // MERGE PDF & GAMBAR
 // ============================================
-
 function handleMergeFiles(event) {
     const files = Array.from(event.target.files);
     const maxSize = 10 * 1024 * 1024;
@@ -1026,30 +944,13 @@ function handleMergeFiles(event) {
     files.forEach(file => {
         const fileName = file.name.toLowerCase();
         const isPDF = file.type === 'application/pdf' || fileName.endsWith('.pdf');
-        const isImage = file.type.startsWith('image/') || 
-                        fileName.endsWith('.jpg') || 
-                        fileName.endsWith('.jpeg') || 
-                        fileName.endsWith('.png') || 
-                        fileName.endsWith('.webp') ||
-                        fileName.endsWith('.gif');
+        const isImage = file.type.startsWith('image/') || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg') || fileName.endsWith('.png') || fileName.endsWith('.webp') || fileName.endsWith('.gif');
         
-        if (!isPDF && !isImage) {
-            showError('Format file tidak didukung: ' + file.name + '. Hanya PDF, JPG, PNG.');
-            return;
-        }
+        if (!isPDF && !isImage) { showError('Format file tidak didukung: ' + file.name); return; }
+        if (file.size > maxSize) { showError('File terlalu besar: ' + file.name); return; }
         
-        if (file.size > maxSize) {
-            showError('File terlalu besar: ' + file.name + ' (maks 10MB)');
-            return;
-        }
-        
-        const isDuplicate = state.mergeFiles.some(f => 
-            f.file.name === file.name && f.file.size === file.size
-        );
-        if (isDuplicate) {
-            showError('File sudah ada: ' + file.name);
-            return;
-        }
+        const isDuplicate = state.mergeFiles.some(f => f.file.name === file.name && f.file.size === file.size);
+        if (isDuplicate) { showError('File sudah ada: ' + file.name); return; }
         
         state.mergeFiles.push({
             file: file,
@@ -1057,7 +958,6 @@ function handleMergeFiles(event) {
             type: isPDF ? 'pdf' : 'image'
         });
     });
-    
     renderMergeFiles();
     event.target.value = '';
 }
@@ -1078,7 +978,6 @@ function renderMergeFiles() {
     fileList.classList.remove('hidden');
     actionSection.classList.remove('hidden');
     fileCount.textContent = state.mergeFiles.length;
-    
     container.innerHTML = '';
     
     state.mergeFiles.forEach((item, index) => {
@@ -1086,28 +985,19 @@ function renderMergeFiles() {
         fileDiv.className = 'merge-file-item';
         fileDiv.draggable = true;
         fileDiv.dataset.index = index;
-        
         const icon = item.type === 'pdf' ? 'fa-file-pdf' : 'fa-file-image';
         const iconColor = item.type === 'pdf' ? '#ef4444' : '#3b82f6';
         const size = (item.file.size / 1024).toFixed(0);
-        
         fileDiv.innerHTML = 
             '<div class="merge-file-drag"><i class="fas fa-grip-vertical"></i></div>' +
             '<div class="merge-file-number">' + (index + 1) + '</div>' +
             '<div class="merge-file-icon" style="color: ' + iconColor + ';"><i class="fas ' + icon + '"></i></div>' +
-            '<div class="merge-file-info">' +
-                '<div class="merge-file-name">' + item.file.name + '</div>' +
-                '<div class="merge-file-size">' + size + ' KB · ' + item.type.toUpperCase() + '</div>' +
-            '</div>' +
-            '<button class="merge-file-remove" onclick="removeMergeFile(\'' + item.id + '\')" title="Hapus">' +
-                '<i class="fas fa-times"></i>' +
-            '</button>';
-        
+            '<div class="merge-file-info"><div class="merge-file-name">' + item.file.name + '</div><div class="merge-file-size">' + size + ' KB · ' + item.type.toUpperCase() + '</div></div>' +
+            '<button class="merge-file-remove" onclick="removeMergeFile(\'' + item.id + '\')" title="Hapus"><i class="fas fa-times"></i></button>';
         fileDiv.addEventListener('dragstart', handleDragStart);
         fileDiv.addEventListener('dragover', handleDragOver);
         fileDiv.addEventListener('drop', handleDrop);
         fileDiv.addEventListener('dragend', handleDragEnd);
-        
         container.appendChild(fileDiv);
     });
 }
@@ -1125,42 +1015,20 @@ function clearMergeFiles() {
 }
 
 let dragSrcIndex = null;
-
-function handleDragStart(e) {
-    dragSrcIndex = parseInt(e.currentTarget.dataset.index);
-    e.currentTarget.classList.add('dragging');
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragOver(e) {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-}
-
+function handleDragStart(e) { dragSrcIndex = parseInt(e.currentTarget.dataset.index); e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; }
+function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; return false; }
 function handleDrop(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    
+    e.preventDefault(); e.stopPropagation();
     const dropIndex = parseInt(e.currentTarget.dataset.index);
     if (dragSrcIndex === null || dragSrcIndex === dropIndex) return;
-    
     const movedItem = state.mergeFiles.splice(dragSrcIndex, 1)[0];
     state.mergeFiles.splice(dropIndex, 0, movedItem);
-    
     dragSrcIndex = null;
     renderMergeFiles();
 }
+function handleDragEnd(e) { e.currentTarget.classList.remove('dragging'); }
 
-function handleDragEnd(e) {
-    e.currentTarget.classList.remove('dragging');
-}
-
-// ============================================
-// FUNGSI BACA FILE — MULTI-FALLBACK UNTUK HP ANDROID
-// ============================================
 async function readFileAsArrayBufferRobust(file) {
-    // Metode 1: FileReader.readAsArrayBuffer()
     try {
         const result = await new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1168,14 +1036,9 @@ async function readFileAsArrayBufferRobust(file) {
             reader.onerror = () => reject(new Error('readAsArrayBuffer gagal'));
             reader.readAsArrayBuffer(file);
         });
-        if (result && result.byteLength > 0) {
-            return result;
-        }
-    } catch (e) {
-        console.warn('⚠️ Metode 1 gagal:', e.message);
-    }
+        if (result && result.byteLength > 0) return result;
+    } catch (e) { console.warn('Metode 1 gagal:', e.message); }
 
-    // Metode 2: FileReader.readAsDataURL() → konversi base64
     try {
         const dataUrl = await new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -1183,49 +1046,31 @@ async function readFileAsArrayBufferRobust(file) {
             reader.onerror = () => reject(new Error('readAsDataURL gagal'));
             reader.readAsDataURL(file);
         });
-        
         const base64 = dataUrl.split(',')[1];
         const binaryString = atob(base64);
         const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-        }
-        if (bytes.byteLength > 0) {
-            return bytes.buffer;
-        }
-    } catch (e) {
-        console.warn('⚠️ Metode 2 gagal:', e.message);
-    }
+        for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+        if (bytes.byteLength > 0) return bytes.buffer;
+    } catch (e) { console.warn('Metode 2 gagal:', e.message); }
 
-    // Metode 3: File.stream()
     try {
         if (file.stream) {
             const reader = file.stream().getReader();
             const chunks = [];
             let totalLength = 0;
-            
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
-                chunks.push(value);
-                totalLength += value.length;
+                chunks.push(value); totalLength += value.length;
             }
-            
             const combined = new Uint8Array(totalLength);
             let offset = 0;
-            for (const chunk of chunks) {
-                combined.set(chunk, offset);
-                offset += chunk.length;
-            }
-            if (combined.byteLength > 0) {
-                return combined.buffer;
-            }
+            for (const chunk of chunks) { combined.set(chunk, offset); offset += chunk.length; }
+            if (combined.byteLength > 0) return combined.buffer;
         }
-    } catch (e) {
-        console.warn('⚠️ Metode 3 gagal:', e.message);
-    }
+    } catch (e) { console.warn('Metode 3 gagal:', e.message); }
 
-    throw new Error('Semua metode baca file gagal. Coba pindahkan file ke folder Documents atau gunakan browser lain.');
+    throw new Error('Semua metode baca file gagal.');
 }
 
 function readFileAsDataUrl(file) {
@@ -1246,13 +1091,11 @@ function getImageDimensions(dataUrl) {
     });
 }
 
-// ============================================
-// MERGE UTAMA
-// ============================================
 async function mergeAllFiles() {
-    if (state.mergeFiles.length === 0) {
-        showError('Belum ada file untuk digabungkan.');
-        return;
+    if (state.mergeFiles.length === 0) { showError('Belum ada file untuk digabungkan.'); return; }
+    if (typeof isLoggedIn === 'function' && !isLoggedIn()) { showLoginModal(); return; }
+    if (typeof getCredits === 'function' && getCredits() < 0.5) {
+        alert('❌ Kredit tidak cukup! Silakan beli kredit.'); return;
     }
     
     const btn = document.getElementById('btnMergePdf');
@@ -1261,178 +1104,105 @@ async function mergeAllFiles() {
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menggabungkan...';
     
     try {
-        // Load jsPDF
-        if (!window.jspdf) {
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat jsPDF...';
-            await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
-        }
-        
-        // Load PDF.js (dengan fallback CDN)
+        if (!window.jspdf) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
         if (typeof pdfjsLib === 'undefined') {
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memuat PDF.js...';
-            try {
-                await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-            } catch (e) {
-                await loadScript('https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js');
-            }
+            try { await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'); }
+            catch (e) { await loadScript('https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js'); }
         }
-        
         if (typeof pdfjsLib !== 'undefined') {
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         }
         
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
-        
-        const pageWidth = 210;
-        const pageHeight = 297;
-        const margin = 10;
-        
-        let isFirstPage = true;
-        let successCount = 0;
-        let failedFiles = [];
-        let readErrors = 0;
+        const pageWidth = 210, pageHeight = 297, margin = 10;
+        let isFirstPage = true, successCount = 0;
+        let failedFiles = [], readErrors = 0;
         
         for (let i = 0; i < state.mergeFiles.length; i++) {
             const item = state.mergeFiles[i];
-            
             try {
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses ' + (i + 1) + '/' + state.mergeFiles.length + '...';
-                
                 if (item.type === 'pdf') {
                     const arrayBuffer = await readFileAsArrayBufferRobust(item.file);
-                    
-                    if (arrayBuffer.byteLength < 10) {
-                        throw new Error('File kosong atau tidak lengkap');
-                    }
-                    
+                    if (arrayBuffer.byteLength < 10) throw new Error('File kosong atau tidak lengkap');
                     const headerBytes = new Uint8Array(arrayBuffer.slice(0, 5));
                     const header = String.fromCharCode.apply(null, headerBytes);
-                    
-                    if (!header.startsWith('%PDF-')) {
-                        throw new Error('Bukan file PDF valid');
-                    }
-                    
+                    if (!header.startsWith('%PDF-')) throw new Error('Bukan file PDF valid');
                     const uint8Array = new Uint8Array(arrayBuffer);
-                    
-                    const loadingTask = pdfjsLib.getDocument({
-                        data: uint8Array,
-                        disableAutoFetch: true,
-                        disableStream: true,
-                        disableRange: true,
-                        useWorkerFetch: false,
-                        isEvalSupported: false
-                    });
-                    
+                    const loadingTask = pdfjsLib.getDocument({ data: uint8Array, disableAutoFetch: true, disableStream: true, disableRange: true, useWorkerFetch: false, isEvalSupported: false });
                     const pdf = await loadingTask.promise;
                     const numPages = pdf.numPages;
-                    
                     for (let pageNum = 1; pageNum <= numPages; pageNum++) {
                         const page = await pdf.getPage(pageNum);
                         const viewport = page.getViewport({ scale: 2 });
-                        
                         const canvas = document.createElement('canvas');
-                        canvas.width = viewport.width;
-                        canvas.height = viewport.height;
+                        canvas.width = viewport.width; canvas.height = viewport.height;
                         const context = canvas.getContext('2d');
-                        
-                        context.fillStyle = '#ffffff';
-                        context.fillRect(0, 0, canvas.width, canvas.height);
-                        
-                        await page.render({
-                            canvasContext: context,
-                            viewport: viewport
-                        }).promise;
-                        
+                        context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height);
+                        await page.render({ canvasContext: context, viewport: viewport }).promise;
                         const imgData = canvas.toDataURL('image/jpeg', 0.92);
-                        
                         const imgWidth = pageWidth - (margin * 2);
                         const imgHeight = (viewport.height / viewport.width) * imgWidth;
-                        
                         if (!isFirstPage) doc.addPage();
                         isFirstPage = false;
-                        
                         if (imgHeight > pageHeight - (margin * 2)) {
                             const ratio = (pageHeight - (margin * 2)) / imgHeight;
-                            const scaledWidth = imgWidth * ratio;
-                            const scaledHeight = imgHeight * ratio;
-                            const x = (pageWidth - scaledWidth) / 2;
-                            doc.addImage(imgData, 'JPEG', x, margin, scaledWidth, scaledHeight);
+                            const scaledWidth = imgWidth * ratio, scaledHeight = imgHeight * ratio;
+                            doc.addImage(imgData, 'JPEG', (pageWidth - scaledWidth) / 2, margin, scaledWidth, scaledHeight);
                         } else {
                             doc.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
                         }
                     }
-                    
                     successCount++;
-                    
                 } else {
                     const imgData = await readFileAsDataUrl(item.file);
                     const dims = await getImageDimensions(imgData);
-                    
                     const imgWidth = pageWidth - (margin * 2);
                     const imgHeight = (dims.height / dims.width) * imgWidth;
-                    
                     if (!isFirstPage) doc.addPage();
                     isFirstPage = false;
-                    
                     if (imgHeight > pageHeight - (margin * 2)) {
                         const ratio = (pageHeight - (margin * 2)) / imgHeight;
-                        const scaledWidth = imgWidth * ratio;
-                        const scaledHeight = imgHeight * ratio;
-                        const x = (pageWidth - scaledWidth) / 2;
-                        doc.addImage(imgData, 'JPEG', x, margin, scaledWidth, scaledHeight);
+                        const scaledWidth = imgWidth * ratio, scaledHeight = imgHeight * ratio;
+                        doc.addImage(imgData, 'JPEG', (pageWidth - scaledWidth) / 2, margin, scaledWidth, scaledHeight);
                     } else {
                         doc.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight);
                     }
-                    
                     successCount++;
                 }
-                
             } catch (fileError) {
                 console.error('❌ Error:', item.file.name, fileError);
                 const errMsg = fileError.message || 'Unknown error';
                 failedFiles.push(item.file.name + ' → ' + errMsg);
-                
-                if (errMsg.includes('baca file') || errMsg.includes('baca gagal')) {
-                    readErrors++;
-                }
+                if (errMsg.includes('baca file') || errMsg.includes('baca gagal')) readErrors++;
             }
         }
         
-        // ====== JIKA SEMUA FILE GAGAL ======
         if (successCount === 0) {
             if (readErrors > 0) {
-                showAndroidGuide();
-                throw new Error(
-                    '❌ File tidak bisa dibaca dari penyimpanan HP.\n\n' +
-                    '⚠️ INI BUKAN BUG APLIKASI.\n' +
-                    'Sistem Android membatasi akses file ke browser.\n\n' +
-                    '✅ SOLUSI:\n' +
-                    '1. Upload file ke Google Drive\n' +
-                    '2. Upload dari Google Drive (bukan Downloads)\n' +
-                    '3. Atau gunakan laptop/PC'
-                );
+                if (typeof showAndroidGuide === 'function') showAndroidGuide();
+                throw new Error('❌ File tidak bisa dibaca dari penyimpanan HP.\n\n⚠️ INI BUKAN BUG APLIKASI.\nSistem Android membatasi akses file ke browser.\n\n✅ SOLUSI:\n1. Upload file ke Google Drive\n2. Upload dari Google Drive (bukan Downloads)\n3. Atau gunakan laptop/PC');
             }
-            
             throw new Error('Tidak ada file yang berhasil diproses.\n\n⚠️ Detail:\n' + failedFiles.join('\n'));
         }
         
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
         doc.save('Gabungan_' + new Date().getTime() + '.pdf');
         
-        let successMsg = '✅ Berhasil! ' + successCount + ' file digabungkan.';
-        if (failedFiles.length > 0) {
-            successMsg += '\n\n⚠️ ' + failedFiles.length + ' file gagal:\n' + failedFiles.join('\n');
+        if (typeof deductCredits === 'function') {
+            try { await deductCredits(0.5, 'merge_pdf', { file_count: successCount }); } catch (e) { console.error(e); }
         }
+        
+        let successMsg = '✅ Berhasil! ' + successCount + ' file digabungkan.';
+        if (failedFiles.length > 0) successMsg += '\n\n⚠️ ' + failedFiles.length + ' file gagal:\n' + failedFiles.join('\n');
         alert(successMsg);
         
     } catch (error) {
         console.error('Merge Error:', error);
-        
         if (error.message.includes('penyimpanan HP') || error.message.includes('Android')) {
-            showAndroidGuide();
+            if (typeof showAndroidGuide === 'function') showAndroidGuide();
         }
-        
         alert(error.message);
     } finally {
         btn.disabled = false;
@@ -1440,22 +1210,15 @@ async function mergeAllFiles() {
     }
 }
 
-// ============================================
-// DETEKSI ANDROID & PANDUAN
-// ============================================
 function detectAndroidAndShowGuide() {
     const isAndroid = /Android/i.test(navigator.userAgent);
     const guideBox = document.getElementById('androidGuideBox');
-    
-    if (isAndroid && guideBox) {
-        guideBox.style.display = 'flex';
-    }
+    if (isAndroid && guideBox) guideBox.style.display = 'flex';
 }
 
 function showAndroidGuide() {
     const isAndroid = /Android/i.test(navigator.userAgent);
     if (!isAndroid) return;
-    
     setTimeout(() => {
         const goToDrive = confirm(
             '📱 PANDUAN UNTUK HP ANDROID\n\n' +
@@ -1467,10 +1230,7 @@ function showAndroidGuide() {
             '4. Pilih PDF dari Google Drive\n\n' +
             'Klik OK untuk membuka Google Drive sekarang.'
         );
-        
-        if (goToDrive) {
-            window.open('https://drive.google.com', '_blank');
-        }
+        if (goToDrive) window.open('https://drive.google.com', '_blank');
     }, 500);
 }
 
@@ -1490,17 +1250,12 @@ function loadScript(src) {
 function showLoading(show) {
     const loadingScreen = document.getElementById('loadingScreen');
     const previewContainer = document.getElementById('letterPreview');
-    if (show) {
-        loadingScreen.classList.remove('hidden');
-        previewContainer.classList.add('hidden');
-    } else {
-        loadingScreen.classList.add('hidden');
-        previewContainer.classList.remove('hidden');
-    }
+    if (show) { loadingScreen.classList.remove('hidden'); previewContainer.classList.add('hidden'); }
+    else { loadingScreen.classList.add('hidden'); previewContainer.classList.remove('hidden'); }
 }
 
 // ============================================
-// AUTO-SAVE LOCALSTORAGE
+// AUTO-SAVE
 // ============================================
 function initLocalStorage() {
     const savedData = localStorage.getItem('elevatecv_data_v2');
@@ -1551,4 +1306,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initSignature();
     initLocalStorage();
     switchTab('cover-letter');
+    
+    // Init auth UI kalau ada
+    setTimeout(() => {
+        if (typeof updateAuthUI === 'function') updateAuthUI();
+    }, 500);
 });

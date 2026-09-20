@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - LamaranAI</title>
+    
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Custom Admin CSS -->
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- HEADER -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <img src="/favicon.png" alt="LamaranAI" class="admin-logo">
+                <div>
+                    <h1>Admin Panel</h1>
+                    <p>LamaranAI Dashboard</p>
+                </div>
+            </div>
+            <div class="admin-header-right">
+                <div id="adminInfo"></div>
+                <button class="btn-refresh" onclick="loadTransactions()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <a href="/" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Kembali ke App
+                </a>
+            </div>
+        </header>
+
+        <!-- LOGIN SCREEN (kalau belum login) -->
+        <div id="adminLoginScreen" class="admin-login-screen hidden">
+            <div class="login-box">
+                <i class="fas fa-shield-alt login-icon"></i>
+                <h2>Akses Admin Diperlukan</h2>
+                <p>Login dengan akun admin untuk mengakses dashboard ini</p>
+                <button class="btn-login-admin" onclick="goToLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Login di Aplikasi Utama
+                </button>
+            </div>
+        </div>
+
+        <!-- ACCESS DENIED -->
+        <div id="accessDenied" class="admin-login-screen hidden">
+            <div class="login-box">
+                <i class="fas fa-ban login-icon" style="color: #ef4444;"></i>
+                <h2>Akses Ditolak</h2>
+                <p>Akun Anda bukan admin. Hubungi pemilik aplikasi untuk akses admin.</p>
+                <a href="/" class="btn-login-admin">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Aplikasi
+                </a>
+            </div>
+        </div>
+
+        <!-- DASHBOARD (kalau admin) -->
+        <div id="adminDashboard" class="admin-dashboard hidden">
+            <!-- STATISTIK -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Pending</span>
+                        <span class="stat-value" id="statPending">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon verified">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Terverifikasi</span>
+                        <span class="stat-value" id="statVerified">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon rejected">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Ditolak</span>
+                        <span class="stat-value" id="statRejected">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon revenue">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Revenue</span>
+                        <span class="stat-value" id="statRevenue">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FILTER TABS -->
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="pending" onclick="filterTransactions('pending')">
+                    <i class="fas fa-clock"></i> Pending
+                </button>
+                <button class="filter-tab" data-filter="verified" onclick="filterTransactions('verified')">
+                    <i class="fas fa-check-circle"></i> Terverifikasi
+                </button>
+                <button class="filter-tab" data-filter="rejected" onclick="filterTransactions('rejected')">
+                    <i class="fas fa-times-circle"></i> Ditolak
+                </button>
+                <button class="filter-tab" data-filter="all" onclick="filterTransactions('all')">
+                    <i class="fas fa-list"></i> Semua
+                </button>
+            </div>
+
+            <!-- LIST TRANSAKSI -->
+            <div id="transactionsList" class="transactions-list">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Memuat transaksi...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VERIFIKASI -->
+    <div id="verifyModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-verify">
+            <div class="modal-header">
+                <h3><i class="fas fa-receipt"></i> Detail Transaksi</h3>
+                <button class="modal-close" onclick="closeVerifyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-verify">
+                <div id="verifyDetail"></div>
+                <div class="verify-actions">
+                    <button class="btn btn-reject" onclick="rejectTransaction()">
+                        <i class="fas fa-times"></i> Tolak
+                    </button>
+                    <button class="btn btn-verify" onclick="approveTransaction()">
+                        <i class="fas fa-check"></i> Verifikasi & Tambah Kredit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL LIHAT BUKTI -->
+    <div id="proofModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content modal-proof">
+            <div class="modal-header">
+                <h3><i class="fas fa-image"></i> Bukti Transfer</h3>
+                <button class="modal-close" onclick="closeProofModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-proof">
+                <img id="proofFullImage" src="" alt="Bukti Transfer">
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
