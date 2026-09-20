@@ -767,6 +767,75 @@
         </div>
     </div>
 </div>
+
+<!-- ============================================
+     MODAL RIWAYAT DOKUMEN
+     ============================================ -->
+<div id="historyModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content modal-history">
+        <div class="modal-header">
+            <h3><i class="fas fa-history"></i> Riwayat Dokumen</h3>
+            <button class="modal-close" onclick="closeHistoryModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-history">
+            <!-- Filter Tabs -->
+            <div class="history-tabs">
+                <button class="history-tab active" data-filter="all" onclick="filterHistory('all')">
+                    <i class="fas fa-list"></i> Semua
+                </button>
+                <button class="history-tab" data-filter="cover_letter" onclick="filterHistory('cover_letter')">
+                    <i class="fas fa-file-signature"></i> Surat
+                </button>
+                <button class="history-tab" data-filter="cv" onclick="filterHistory('cv')">
+                    <i class="fas fa-id-card"></i> CV
+                </button>
+            </div>
+            
+            <!-- List Dokumen -->
+            <div id="historyList" class="history-list">
+                <div class="loading-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Memuat riwayat...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     MODAL DETAIL DOKUMEN
+     ============================================ -->
+<div id="documentDetailModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content modal-document-detail">
+        <div class="modal-header">
+            <h3><i class="fas fa-file-alt"></i> <span id="detailTitle">Dokumen</span></h3>
+            <button class="modal-close" onclick="closeDocumentDetail()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="modal-body-document">
+            <div class="document-meta">
+                <span><i class="fas fa-calendar"></i> <span id="detailDate">-</span></span>
+                <span id="detailTypeBadge" class="doc-type-badge">-</span>
+            </div>
+            
+            <div id="detailContent" class="document-content"></div>
+            
+            <div class="document-actions">
+                <button class="btn btn-secondary" onclick="deleteCurrentDocument()">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+                <button class="btn btn-primary" onclick="downloadCurrentDocument()">
+                    <i class="fas fa-cloud-arrow-down"></i> Unduh PDF
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
   
 <script src="auth.js"></script>
 <script src="script.js"></script>

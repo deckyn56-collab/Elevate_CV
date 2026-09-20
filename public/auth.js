@@ -74,7 +74,6 @@ async function loadUserProfile() {
         
         if (error) {
             console.error('Load profile error:', error);
-            // Kalau user baru & trigger belum jalan, buat manual
             if (error.code === 'PGRST116') {
                 await createUserProfile();
             }
@@ -82,6 +81,10 @@ async function loadUserProfile() {
         }
         
         userProfile = data;
+        
+        // Cek premium status
+        await updatePremiumStatus();
+        
     } catch (err) {
         console.error('Load profile error:', err);
     }
@@ -243,6 +246,11 @@ function updateAuthUI() {
                </button>` 
             : '';
         
+        // Badge premium
+        const premiumBadge = isPremium() 
+            ? `<div class="premium-badge"><i class="fas fa-crown"></i> Premium</div>` 
+            : '';
+        
         authArea.innerHTML = `
             <div class="user-menu">
                 <div class="credit-badge" onclick="showCreditsInfo()" title="Klik untuk info kredit">
@@ -254,7 +262,7 @@ function updateAuthUI() {
                 </div>
                 <div class="user-dropdown hidden" id="userDropdown">
                     <div class="user-info">
-                        <div class="user-name">${userProfile.full_name || 'User'}</div>
+                        <div class="user-name">${userProfile.full_name || 'User'} ${premiumBadge}</div>
                         <div class="user-email">${userProfile.email}</div>
                     </div>
                     <div class="dropdown-divider"></div>
@@ -264,9 +272,12 @@ function updateAuthUI() {
                     <button onclick="showBuyCredits()">
                         <i class="fas fa-plus-circle"></i> Beli Kredit
                     </button>
-                    <button onclick="showTransactionHistory()">
-                        <i class="fas fa-history"></i> Riwayat Transaksi
-                    </button>
+                    <button onclick="showDocumentHistory()">
+    <i class="fas fa-file-alt"></i> Riwayat Dokumen
+</button>
+<button onclick="showTransactionHistory()">
+    <i class="fas fa-receipt"></i> Riwayat Transaksi
+</button>
                     ${adminMenu}
                     <div class="dropdown-divider"></div>
                     <button onclick="signOut()" class="logout-btn">
@@ -680,7 +691,385 @@ function openAdminPanel() {
     window.location.href = '/admin.html';
 }
     
+// ============================================
+// CEK PREMIUM STATUS
+// ============================================
+async function checkPremiumStatus() {
+    if (!currentUser) return false;
     
+    try {
+        const { data, error } = await supabaseClient
+            .from('transactions')
+            .select('id')
+            .eq('user_id', currentUser.id)
+            .eq('status', 'verified')
+            .limit(1);
+        
+        if (error) throw error;
+        
+        return data && data.length > 0;
+    } catch (err) {
+        console.error('Check premium error:', err);
+        return false;
+    }
+}
+
+// Cache premium status
+let isPremiumUser = false;
+
+async function updatePremiumStatus() {
+    isPremiumUser = await checkPremiumStatus();
+    return isPremiumUser;
+}
+
+function isPremium() {
+    return isPremiumUser;
+}
+
+// ============================================
+// RIWAYAT DOKUMEN
+// ============================================
+let allDocuments = [];
+let currentFilter = 'all';
+let currentDocument = null;
+
+// Simpan dokumen ke database
+async function saveDocument(type, title, content, data) {
+    if (!currentUser) return null;
+    
+    try {
+        const { data: result, error } = await supabaseClient
+            .from('documents')
+            .insert({
+                user_id: currentUser.id,
+                type: type,
+                title: title,
+                content: content || null,
+                data: data || null
+            })
+            .select()
+            .single();
+        
+        if (error) throw error;
+        
+        return result;
+    } catch (err) {
+        console.error('Save document error:', err);
+        return null;
+    }
+}
+
+// Buka modal riwayat
+async function showDocumentHistory() {
+    if (!currentUser) { showLoginModal(); return; }
+    
+    const modal = document.getElementById('historyModal');
+    if (modal) modal.style.display = 'flex';
+    
+    await loadDocuments();
+}
+
+function closeHistoryModal() {
+    const modal = document.getElementById('historyModal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Load dokumen dari database
+async function loadDocuments() {
+    const container = document.getElementById('historyList');
+    container.innerHTML = `
+        <div class="loading-state">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Memuat riwayat...</p>
+        </div>
+    `;
+    
+    try {
+        let query = supabaseClient
+            .from('documents')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(100);
+        
+        if (currentFilter !== 'all') {
+            query = query.eq('type', currentFilter);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        
+        allDocuments = data || [];
+        renderDocuments();
+        
+    } catch (err) {
+        console.error('Load documents error:', err);
+        container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Gagal memuat riwayat: ${err.message}</p>
+            </div>
+        `;
+    }
+}
+
+function filterHistory(filter) {
+    currentFilter = filter;
+    
+    document.querySelectorAll('.history-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.filter === filter) tab.classList.add('active');
+    });
+    
+    loadDocuments();
+}
+
+function renderDocuments() {
+    const container = document.getElementById('historyList');
+    
+    if (allDocuments.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>Belum ada dokumen tersimpan</p>
+                <small style="color: var(--text-muted); font-size: 0.75rem;">
+                    Setiap surat lamaran & CV yang Anda buat akan otomatis tersimpan di sini.
+                </small>
+            </div>
+        `;
+        return;
+    }
+    
+    const html = allDocuments.map(doc => {
+        const isLetter = doc.type === 'cover_letter';
+        const icon = isLetter ? 'fa-file-signature' : 'fa-id-card';
+        const label = isLetter ? 'Surat Lamaran' : 'CV';
+        const color = isLetter ? '#3b82f6' : '#8b5cf6';
+        
+        const date = new Date(doc.created_at).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+        
+        return `
+            <div class="history-item" onclick="openDocumentDetail(${doc.id})">
+                <div class="history-icon" style="background: ${color}20; color: ${color};">
+                    <i class="fas ${icon}"></i>
+                </div>
+                <div class="history-info">
+                    <div class="history-title">${doc.title || 'Dokumen'}</div>
+                    <div class="history-meta">
+                        <span class="history-type" style="color: ${color};">${label}</span>
+                        <span class="history-date">${date}</span>
+                    </div>
+                </div>
+                <div class="history-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = html;
+}
+
+function openDocumentDetail(docId) {
+    const doc = allDocuments.find(d => d.id === docId);
+    if (!doc) return;
+    
+    currentDocument = doc;
+    
+    const isLetter = doc.type === 'cover_letter';
+    const label = isLetter ? 'Surat Lamaran' : 'CV';
+    const color = isLetter ? '#3b82f6' : '#8b5cf6';
+    
+    const date = new Date(doc.created_at).toLocaleDateString('id-ID', {
+        day: 'numeric', month: 'long', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+    
+    document.getElementById('detailTitle').textContent = doc.title || 'Dokumen';
+    document.getElementById('detailDate').textContent = date;
+    
+    const badge = document.getElementById('detailTypeBadge');
+    badge.textContent = label;
+    badge.style.background = color + '20';
+    badge.style.color = color;
+    
+    const content = document.getElementById('detailContent');
+    
+    if (isLetter && doc.content) {
+        content.innerHTML = `<div class="letter-content">${doc.content.replace(/\n/g, '<br>')}</div>`;
+    } else if (!isLetter && doc.data) {
+        // Render CV preview
+        content.innerHTML = renderCvPreviewFromData(doc.data);
+    } else {
+        content.innerHTML = '<p style="color: var(--text-muted);">Isi dokumen tidak tersedia</p>';
+    }
+    
+    document.getElementById('documentDetailModal').style.display = 'flex';
+}
+
+function closeDocumentDetail() {
+    document.getElementById('documentDetailModal').style.display = 'none';
+    currentDocument = null;
+}
+
+function renderCvPreviewFromData(data) {
+    if (!data) return '<p style="color: var(--text-muted);">Data tidak tersedia</p>';
+    
+    return `
+        <div class="cv-detail-preview">
+            <h2>${data.cv2Name || 'Nama Anda'}</h2>
+            <p style="color: #666;">${data.cv2Title || ''}</p>
+            <p style="font-size: 0.8rem; color: #999;">
+                📍 ${data.cv2Address || '-'} · 📞 ${data.cv2Phone || '-'} · ✉️ ${data.cv2Email || '-'}
+            </p>
+            
+            ${data.cv2Summary ? `
+                <h3>Ringkasan Profesional</h3>
+                <p>${data.cv2Summary}</p>
+            ` : ''}
+            
+            ${data.cv2Job1Title ? `
+                <h3>Pengalaman Kerja</h3>
+                <p><strong>${data.cv2Job1Title}</strong> - ${data.cv2Job1Company || ''}</p>
+                <p style="font-size: 0.75rem; color: #999;">${data.cv2Job1Date || ''}</p>
+                <p style="white-space: pre-line;">${data.cv2Job1Bullets || ''}</p>
+                ${data.cv2Job2Title ? `
+                    <p><strong>${data.cv2Job2Title}</strong> - ${data.cv2Job2Company || ''}</p>
+                    <p style="font-size: 0.75rem; color: #999;">${data.cv2Job2Date || ''}</p>
+                    <p style="white-space: pre-line;">${data.cv2Job2Bullets || ''}</p>
+                ` : ''}
+            ` : ''}
+            
+            ${data.cv2EduDegree ? `
+                <h3>Pendidikan</h3>
+                <p><strong>${data.cv2EduDegree}</strong></p>
+                <p>${data.cv2EduSchool || ''} · ${data.cv2EduDate || ''}</p>
+            ` : ''}
+            
+            ${data.cv2HardSkills ? `
+                <h3>Keahlian</h3>
+                <p><strong>Hard Skills:</strong> ${data.cv2HardSkills}</p>
+                ${data.cv2SoftSkills ? `<p><strong>Soft Skills:</strong> ${data.cv2SoftSkills}</p>` : ''}
+            ` : ''}
+        </div>
+    `;
+}
+
+async function deleteCurrentDocument() {
+    if (!currentDocument) return;
+    
+    if (!confirm(`Hapus dokumen "${currentDocument.title}"?\n\nTindakan ini tidak bisa dibatalkan.`)) return;
+    
+    try {
+        const { error } = await supabaseClient
+            .from('documents')
+            .delete()
+            .eq('id', currentDocument.id)
+            .eq('user_id', currentUser.id);
+        
+        if (error) throw error;
+        
+        alert('✅ Dokumen dihapus');
+        closeDocumentDetail();
+        await loadDocuments();
+        
+    } catch (err) {
+        console.error('Delete error:', err);
+        alert('❌ Gagal menghapus: ' + err.message);
+    }
+}
+
+async function downloadCurrentDocument() {
+    if (!currentDocument) return;
+    
+    const doc = currentDocument;
+    
+    if (doc.type === 'cover_letter') {
+        // Download surat sebagai PDF
+        try {
+            if (!window.jspdf) {
+                await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const docPdf = new jsPDF({ unit: "mm", format: "a4" });
+            
+            const marginLeft = 20;
+            let cursorY = 20;
+            const pageHeight = 297;
+            const marginBottom = 20;
+            const maxLineWidth = 170;
+            
+            docPdf.setFont("times", "normal");
+            docPdf.setFontSize(11);
+            
+            const cleanText = (doc.content || '').replace(/\r\n/g, '\n');
+            const paragraphs = cleanText.split("\n");
+            
+            for (let i = 0; i < paragraphs.length; i++) {
+                const line = paragraphs[i].trim();
+                if (line === "") { cursorY += 5; continue; }
+                if (cursorY + 8 > pageHeight - marginBottom) { docPdf.addPage(); cursorY = 20; }
+                const splitText = docPdf.splitTextToSize(line, maxLineWidth);
+                for (let j = 0; j < splitText.length; j++) {
+                    if (cursorY + 7 > pageHeight - marginBottom) { docPdf.addPage(); cursorY = 20; }
+                    docPdf.text(splitText[j], marginLeft, cursorY);
+                    cursorY += 6;
+                }
+            }
+            
+            // Watermark jika gratis
+            if (typeof isPremium === 'function' && !isPremium()) {
+                const totalPages = docPdf.internal.getNumberOfPages();
+                for (let p = 1; p <= totalPages; p++) {
+                    docPdf.setPage(p);
+                    docPdf.setFontSize(8);
+                    docPdf.setTextColor(180, 180, 180);
+                    docPdf.setFont("helvetica", "italic");
+                    docPdf.text("Dibuat dengan LamaranAI - lamaranai.com", 105, 289, { align: 'center' });
+                    docPdf.setTextColor(0, 0, 0);
+                    docPdf.setFont("times", "normal");
+                }
+            }
+            
+            docPdf.save(`Surat_Lamaran_${doc.id}.pdf`);
+            
+        } catch (err) {
+            console.error('Download error:', err);
+            alert('❌ Gagal download: ' + err.message);
+        }
+    } else {
+        // Untuk CV — load data ke form & buka preview
+        if (doc.data) {
+            // Isi form dengan data tersimpan
+            Object.keys(doc.data).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) el.value = doc.data[key] || '';
+            });
+            
+            closeDocumentDetail();
+            closeHistoryModal();
+            
+            alert('📝 Data CV telah dimuat ke form.\n\nSilakan buka tab CV untuk preview dan download ulang.');
+        }
+    }
+}
+
+// Helper: loadScript
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+    });
+}
+
 // ============================================
 // INIT ON DOM READY
 // ============================================

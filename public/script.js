@@ -488,6 +488,32 @@ async function generateCoverLetter() {
         const result = await callGeminiAPI(promptText, "You are a professional career consultant.");
         state.outputLetter = result;
         renderLetterPreview();
+
+      // AUTO-SAVE KE RIWAYAT
+if (typeof saveDocument === 'function' && typeof isLoggedIn === 'function' && isLoggedIn()) {
+    try {
+        const docTitle = `${jobTitle} - ${company}`;
+        await saveDocument(
+            'cover_letter',
+            docTitle,
+            result,
+            {
+                name: name,
+                location: location,
+                phone: phone,
+                email: email,
+                jobTitle: jobTitle,
+                company: company,
+                companyAddress: companyAddress,
+                tone: tone,
+                jobDescription: jobDescription,
+                experience: experience
+            }
+        );
+    } catch (e) {
+        console.error('Auto-save error:', e);
+    }
+}
         document.getElementById('quickActions').classList.remove('hidden');
         document.getElementById('letterActions').style.display = 'flex';
         document.getElementById('letterDownloadSection').style.display = 'block';
@@ -676,6 +702,32 @@ async function exportPDF() {
             }
         }
         
+        // ============================================
+        // WATERMARK UNTUK USER GRATIS
+        // ============================================
+        if (typeof isPremium === 'function' && !isPremium()) {
+            const totalPages = doc.internal.getNumberOfPages();
+            
+            for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                doc.setPage(pageNum);
+                doc.setFontSize(8);
+                doc.setTextColor(180, 180, 180);
+                doc.setFont("helvetica", "italic");
+                
+                // Footer watermark
+                doc.text(
+                    "Dibuat dengan LamaranAI - lamaranai.com",
+                    pageWidth / 2,
+                    pageHeight - 8,
+                    { align: 'center' }
+                );
+                
+                // Reset warna
+                doc.setTextColor(0, 0, 0);
+                doc.setFont("times", "normal");
+            }
+        }
+        
         const company = document.getElementById('company').value || 'Lamaran';
         const safeFileName = company.replace(/[^a-zA-Z0-9]/g, "_");
         doc.save('Surat_Lamaran_' + safeFileName + '.pdf');
@@ -798,6 +850,38 @@ function openCvPreview() {
 
     const previewContainer = document.getElementById('cvPdfPreviewContainer');
     previewContainer.innerHTML = cvHTML;
+
+  // AUTO-SAVE CV KE RIWAYAT
+if (typeof saveDocument === 'function' && typeof isLoggedIn === 'function' && isLoggedIn()) {
+    try {
+        const cvTitle = `${name} - ${title}`;
+        const cvData = {
+            cv2Name: name,
+            cv2Title: title,
+            cv2Address: address,
+            cv2Phone: phone,
+            cv2Email: email,
+            cv2Summary: summary,
+            cv2Job1Title: job1Title,
+            cv2Job1Company: job1Company,
+            cv2Job1Date: job1Date,
+            cv2Job1Bullets: job1BulletsRaw,
+            cv2Job2Title: job2Title,
+            cv2Job2Company: job2Company,
+            cv2Job2Date: job2Date,
+            cv2Job2Bullets: job2BulletsRaw,
+            cv2EduDegree: eduDegree,
+            cv2EduSchool: eduSchool,
+            cv2EduDate: eduDate,
+            cv2EduDetail: eduDetail,
+            cv2HardSkills: hardSkills,
+            cv2SoftSkills: softSkills
+        };
+        await saveDocument('cv', cvTitle, null, cvData);
+    } catch (e) {
+        console.error('Auto-save CV error:', e);
+    }
+}
     document.getElementById('cvPdfModal').style.display = 'flex';
     applyPreviewScale();
     document.getElementById('btnDownloadCvPdf').disabled = false;
@@ -835,6 +919,29 @@ async function downloadCvFromPreview() {
         clone.style.transform = 'none';
         clone.style.margin = '0';
         clone.style.boxShadow = 'none';
+        
+        // ============================================
+        // TAMBAHKAN WATERMARK KE CLONE JIKA GRATIS
+        // ============================================
+        if (typeof isPremium === 'function' && !isPremium()) {
+            const watermark = document.createElement('div');
+            watermark.style.cssText = `
+                position: absolute;
+                bottom: 15mm;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 9px;
+                color: #b4b4b4;
+                font-style: italic;
+                font-family: Arial, sans-serif;
+            `;
+            watermark.textContent = 'Dibuat dengan LamaranAI - lamaranai.com';
+            
+            // Pastikan parent punya position relative
+            clone.style.position = 'relative';
+            clone.appendChild(watermark);
+        }
         
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'fixed';
