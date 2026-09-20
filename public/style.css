@@ -1556,3 +1556,485 @@ textarea { resize: vertical; min-height: 80px; }
         font-size: 0.75rem;
     }
 }
+
+/* ==========================================
+   MODAL PRICING — BELI KREDIT
+   ========================================== */
+.modal-pricing {
+    max-width: 900px !important;
+    width: 95% !important;
+}
+
+.modal-body-pricing {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.current-credits {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(234, 179, 8, 0.1);
+    border: 1px solid rgba(234, 179, 8, 0.3);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.current-credits strong {
+    font-size: 1.5rem;
+    color: #eab308;
+    font-weight: 800;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.pricing-card {
+    position: relative;
+    padding: 20px 16px;
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: 14px;
+    text-align: center;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(234, 179, 8, 0.15);
+}
+
+.pricing-card.popular {
+    border-color: var(--accent-color);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(217, 119, 6, 0.05));
+}
+
+.popular-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #ca8a04, #d97706);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+}
+
+.pricing-header {
+    margin-bottom: 4px;
+}
+
+.pricing-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pricing-price {
+    margin: 12px 0 8px;
+    color: var(--text-primary);
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 2px;
+}
+
+.pricing-price .currency {
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.7;
+}
+
+.pricing-price .amount {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent-color);
+}
+
+.pricing-credits {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    padding: 6px 10px;
+    background: rgba(234, 179, 8, 0.08);
+    border-radius: 8px;
+}
+
+.pricing-credits i {
+    color: #eab308;
+}
+
+.pricing-credits .bonus {
+    font-size: 0.65rem;
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    padding: 2px 6px;
+    border-radius: 999px;
+    font-weight: 700;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+    text-align: left;
+    flex: 1;
+}
+
+.pricing-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    line-height: 1.4;
+}
+
+.pricing-features li i {
+    color: #22c55e;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.btn-buy {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.btn-buy:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(234, 179, 8, 0.05);
+}
+
+.btn-buy.popular-btn {
+    background: linear-gradient(135deg, #ca8a04, #d97706);
+    color: #fff;
+    border: none;
+}
+
+.btn-buy.popular-btn:hover {
+    transform: scale(1.03);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(202, 138, 4, 0.4);
+}
+
+/* ==========================================
+   MODAL PAYMENT — INSTRUKSI PEMBAYARAN
+   ========================================== */
+.modal-payment {
+    max-width: 500px !important;
+    width: 95% !important;
+}
+
+.modal-body-payment {
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.payment-info {
+    background: var(--bg-input);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.payment-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.payment-row strong {
+    color: var(--text-primary);
+}
+
+.payment-row.total {
+    border-top: 1px solid var(--border-color);
+    margin-top: 8px;
+    padding-top: 12px;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.payment-row.total strong {
+    color: var(--accent-color);
+    font-size: 1.3rem;
+    font-weight: 800;
+}
+
+.payment-methods h4 {
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.payment-methods h4 i {
+    color: var(--accent-color);
+}
+
+.payment-method {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.method-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.method-header i {
+    color: var(--accent-color);
+}
+
+.method-detail {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.bank-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.bank-row strong {
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.copy-small {
+    padding: 4px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.7rem;
+    transition: all 0.2s;
+}
+
+.copy-small:hover {
+    background: var(--accent-color);
+    color: #fff;
+}
+
+.qris-detail {
+    text-align: center;
+}
+
+.qris-image {
+    max-width: 200px;
+    margin: 8px auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.qris-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.upload-proof {
+    margin-top: 20px;
+}
+
+.upload-proof h4 {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.upload-proof h4 i {
+    color: var(--accent-color);
+}
+
+.upload-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.upload-zone {
+    border: 2px dashed var(--border-color);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    background: var(--bg-input);
+}
+
+.upload-zone:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+    background: rgba(234, 179, 8, 0.05);
+}
+
+.upload-zone i {
+    font-size: 2rem;
+}
+
+.upload-zone small {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.proof-preview {
+    position: relative;
+    margin-top: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 200px;
+    border: 1px solid var(--border-color);
+}
+
+.proof-preview img {
+    width: 100%;
+    object-fit: contain;
+    background: #fff;
+    display: block;
+}
+
+.remove-proof {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.remove-proof:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+.payment-note {
+    margin-top: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1.5;
+}
+
+.payment-note i {
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+/* ==========================================
+   RESPONSIVE — MODAL PRICING & PAYMENT
+   ========================================== */
+@media (max-width: 500px) {
+    .pricing-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .pricing-card {
+        padding: 14px 10px;
+    }
+    
+    .pricing-name {
+        font-size: 0.85rem;
+    }
+    
+    .pricing-price .amount {
+        font-size: 1.4rem;
+    }
+    
+    .pricing-features li {
+        font-size: 0.65rem;
+    }
+    
+    .btn-buy {
+        font-size: 0.75rem;
+        padding: 8px;
+    }
+    
+    .popular-badge {
+        font-size: 0.6rem;
+        padding: 3px 8px;
+    }
+}
+
+@media (max-width: 340px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+}
