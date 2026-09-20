@@ -763,7 +763,7 @@ function applyPreviewScale() {
     container.style.marginBottom = '-' + ((1 - scale) * 50) + '%';
 }
 
-function openCvPreview() {
+async function openCvPreview() {
     if (typeof isLoggedIn === 'function' && !isLoggedIn()) {
         showLoginModal(); return;
     }
